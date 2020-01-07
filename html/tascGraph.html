@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tasc Graph Editor</title>
+    <link rel="stylesheet" href="../css/tasc.css">
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+</head>
+<body>
+<div class="tasc-editor">
+    <button onclick="addTascItem()">Add tasc</button>
+    <div class="drag-drop condition-item"> anytime </div>
+    <div class="drag-drop condition-item"> get a successful response </div>
+    <div class="drag-drop condition-item"> get target's money </div>
+    <div class="drag-drop condition-item"> get target's position </div>
+
+    <div class="drag-drop terminus-item"> Thomas </div>
+    <div class="drag-drop terminus-item"> Jinki </div>
+    <div class="drag-drop terminus-item"> Oliver </div>
+    <div class="drag-drop terminus-item"> Ship-1 </div>
+    <div class="drag-drop terminus-item"> 55.061551, 13.278340 </div>
+
+    <div class="drag-drop tasc-item"> board </div>
+    <div class="drag-drop tasc-item"> move to </div>
+    <div class="drag-drop tasc-item"> hit </div>
+    <div class="drag-drop tasc-item"> request a service </div>
+
+    <div id="tasc0" class="dropzone">
+        Sample Tasc
+        <div class="condition">Entrance</div>
+        <div class="terminus">Actor</div>
+        <div class="tasc">Action</div>
+        <div class="terminus">Target</div>
+        <div class="condition">Exit</div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/editor/tascGraph.js"></script>
+</body>
+</html>

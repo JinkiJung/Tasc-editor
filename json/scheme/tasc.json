@@ -1,0 +1,223 @@
+{
+  "title": "Tasc scenario",
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "properties": {
+    "title": {
+      "title": "Title",
+      "type": "string",
+      "options": {
+        "inputAttributes": {
+          "placeholder": "Enter a scenario name"
+        }
+      }
+    },
+    "scenario": {
+      "title": "Scenario",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/tasc"
+      }
+    }
+  },
+  "definitions": {
+    "condition": {
+      "title": "Condition",
+      "type": "object",
+      "properties": {
+        "state": {
+          "$ref": "#/definitions/state"
+        }
+      }
+    },
+    "state": {
+      "title": "State",
+      "type": "object",
+      "properties": {
+        "type": {
+          "title": "State type",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter a state type"
+            }
+          }
+        }
+      }
+    },
+    "terminus":{
+      "title": "Terminus",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Terminus ID",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter a terminus ID"
+            }
+          }
+        }
+      }
+    },
+    "action":{
+      "title": "Action",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Action",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter an action ID"
+            }
+          }
+        }
+      }
+    },
+    "tasc": {
+      "title": "Tasc",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "string",
+          "propertyOrder": 4,
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter ID"
+            }
+          }
+        },
+        "title": {
+          "title": "Title",
+          "type": "string",
+          "propertyOrder": 1,
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter a title"
+            }
+          }
+        },
+        "atomic": {
+          "title": "Atomic tasc",
+          "type": "string",
+          "default": "N/A",
+          "enum": ["N/A", "movePos2Pos", "requestService"],
+          "propertyOrder": 3
+        },
+        "desc": {
+          "title": "Description",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter description"
+            }
+          },
+          "propertyOrder": 2
+        },
+        "context": {
+          "title": "Context",
+          "type": "object",
+          "properties": {
+            "given": {
+              "type": "string"
+            },
+            "and": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "propertyOrder": 2
+        },
+        "exit": {
+          "title": "Exit (should)",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/condition"
+          },
+          "propertyOrder": 9
+        },
+        "entrance": {
+          "title": "Entrance",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/condition"
+          },
+          "propertyOrder": 5
+        },
+        "actor": {
+          "title": "Actor",
+          "$ref": "#/definitions/terminus",
+          "propertyOrder": 6
+        },
+        "target": {
+          "title": "Target",
+          "$ref": "#/definitions/terminus",
+          "propertyOrder": 8
+        },
+        "action": {
+          "title": "Action",
+          "$ref": "#/definitions/action",
+          "propertyOrder": 7
+        },
+        "instructions": {
+          "title": "Instruction",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "propertyOrder": 10
+        },
+        "priority": {
+          "title": "Priority",
+          "type": "object",
+          "format": "table",
+          "properties": {
+            "priority": {
+              "title": "Priority",
+              "type": "number"
+            },
+            "importance": {
+              "title": "Importance",
+              "type": "number"
+            },
+            "difficulty": {
+              "title": "Difficulty",
+              "type": "number"
+            },
+            "estimatedTime": {
+              "title": "Estimated Time (sec)",
+              "type": "number"
+            }
+          }
+        },
+        "evaluation": {
+          "title": "Evaluation",
+          "type": "array",
+          "format": "table",
+          "items": {
+            "properties": {
+              "measurement": {
+                "type": "string"
+              },
+              "value": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "next": {
+          "title": "Next",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "propertyOrder": 11
+        }
+      }
+    }
+  }
+}

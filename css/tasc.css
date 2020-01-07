@@ -1,0 +1,103 @@
+#inner-dropzone {
+    height: 50px;
+}
+
+.tasc-editor {
+    background-color: ghostwhite;
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+}
+
+.dropzone {
+    background-color: #ccc;
+    text-align: center;
+    border: dashed 4px transparent;
+    border-radius: 4px;
+    margin: 10px auto 30px;
+    padding: 0px;
+    width: 200px;
+    transition: background-color 0.3s;
+    touch-action: none;
+}
+
+.tasc {
+    background-color: indianred;
+    border: dashed 4px transparent;
+    border-radius: 4px;
+    margin: 10px auto 30px;
+    padding: 10px;
+    width: 80%;
+    transition: background-color 0.3s;
+}
+
+.terminus {
+    background-color: indianred;
+    border: dashed 4px transparent;
+    border-radius: 4px;
+    margin: 10px auto 30px;
+    padding: 10px;
+    width: 80%;
+    transition: background-color 0.3s;
+}
+
+.condition {
+    background-color: indianred;
+    border: dashed 4px transparent;
+    border-radius: 4px;
+    margin: 10px auto 30px;
+    padding: 10px;
+    width: 80%;
+    transition: background-color 0.3s;
+}
+
+.drop-active {
+    border-color: #aaa;
+}
+
+.drop-target {
+    background-color: #29e;
+    border-color: #fff;
+    border-style: solid;
+}
+
+.tasc-item{
+    background-color: darkslategrey;
+}
+
+.condition-item{
+    background-color: palevioletred;
+}
+
+.terminus-item{
+    background-color: midnightblue;
+}
+
+.drag-drop {
+    text-align: center;
+    display: inline-block;
+    min-width: 40px;
+    padding: 2em 0.5em;
+
+    color: #fff;
+    border: solid 2px #fff;
+
+    touch-action: none;
+    -webkit-transform: translate(0px, 0px);
+    transform: translate(0px, 0px);
+
+    transition: background-color 0.3s;
+}
+
+.drag-drop.can-drop {
+    color: #000;
+    background-color: #4e4;
+}
+
+.field-settled {
+    background-color: forestgreen;
+    transition: background-color 0.3s;
+}
+
+.tasc-settled {
+    background-color: mediumseagreen;
+    transition: background-color 0.3s;
+}
