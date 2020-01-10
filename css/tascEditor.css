@@ -1,0 +1,116 @@
+html, body, svg {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.handle {
+    fill: dodgerblue;
+}
+
+.path {
+    fill: transparent;
+    stroke: dimgray;
+    stroke-width: 2;
+}
+
+.chosen-path {
+    fill: transparent;
+    stroke: firebrick;
+    stroke-width: 3;
+}
+
+.tasc-editor {
+    fill: ghostwhite;
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+}
+
+.tasc-block{
+    fill: #ccc;
+    text-align: center;
+    border: dashed 4px transparent;
+    border-radius: 4px;
+    margin: 10px auto 30px;
+    padding: 0px;
+    width: 200px;
+    transition: background-color 0.3s;
+    touch-action: none;
+}
+
+.static {
+    cursor: not-allowed;
+}
+.draggable {
+    cursor: move;
+}
+.linkable {
+
+}
+
+.titleDescription{
+    font-family: Verdana;
+    font-size: medium;
+    fill: black;
+}
+
+.fieldDescription{
+    font-family: Verdana;
+    font-size: small;
+    fill: gray;
+}
+
+.unselectable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+.field{
+    fill: indianred;
+    background-color: indianred;
+    border: dashed 4px transparent;
+    border-radius: 4px;
+    margin: 10px auto 30px;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.linkItem{
+    fill: lightcyan;
+    dominant-baseline: middle;
+}
+
+.linkedItem{
+    fill: dodgerblue;
+    dominant-baseline: middle;
+}
+
+.terminus-field{
+
+}
+
+.action-field{
+
+}
+
+.condition-field{
+
+}
+
+.field-item{
+
+}
+
+.terminus-item{
+    fill: mediumseagreen;
+}
+
+.action-item{
+    fill: forestgreen;
+}
+
+.condition-item{
+    fill: darkseagreen;
+}

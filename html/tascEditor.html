@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../css/tascEditor.css">
+    <title>Tasc editor testbed</title>
+
+</head>
+<body>
+<svg id="editorPane" xmlns="http://www.w3.org/2000/svg" onload="makeDraggable(evt)">
+
+    <script type="text/javascript"><![CDATA[
+    var selectedElement, offset, linkPath;
+    var paths = [];
+    var linkItemSizeOffset = 5;
+    var chosenPath;
+
+    function makeDraggable(evt) {
+        var svg = evt.target;
+        svg.addEventListener('mousedown', startDrag);
+        svg.addEventListener('mousemove', drag);
+        svg.addEventListener('mouseup', endDrag);
+
+        function getMousePosition(evt) {
+            var CTM = svg.getScreenCTM();
+            return {
+                x: (evt.clientX - CTM.e) / CTM.a,
+                y: (evt.clientY - CTM.f) / CTM.d
+            };
+        }
+
+        function startDrag(evt) {
+            // we will create path to make the link
+            if(evt.target.classList.contains('linkable')){
+                linkPath = document.createElementNS( svgURI, 'path');
+                linkPath.setAttributeNS(null, 'start_x', getMousePosition(evt).x);
+                linkPath.setAttributeNS(null, 'start_y', getMousePosition(evt).y);
+                linkPath.setAttributeNS(null, 'class', 'path');
+                linkPath.setAttributeNS(null, 'startID', evt.target.id);
+                linkPath.classList.add('unselectable');
+                svg.appendChild(linkPath);
+            }
+            else if(evt.target.parentElement.nodeName === 'g'){
+                if(evt.target.parentElement.classList.contains('draggable')){
+                    selectedElement = evt.target.parentElement;
+                    offset = getMousePosition(evt);
+                    offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
+                    offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
+                }
+            }
+            else if (evt.target.classList.contains('draggable')) {
+                selectedElement = evt.target;
+                offset = getMousePosition(evt);
+                offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
+                offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
+            }
+        }
+
+        function drag(evt) {
+            if (linkPath){
+                updatePath(linkPath, linkPath.getAttributeNS(null, "start_x"), linkPath.getAttributeNS(null, "start_y"),
+                    getMousePosition(evt).x,getMousePosition(evt).y);
+            }
+            else if (selectedElement) {
+                // this is for group dragging
+                if(selectedElement.nodeName === 'g'){
+                    var coord = getMousePosition(evt);
+                    selectedElement.setAttributeNS(null, "x", coord.x - offset.x);
+                    selectedElement.setAttributeNS(null, "y", coord.y - offset.y);
+
+                    // here children will be moved together with parent
+                    for(var i= 0; i<selectedElement.children.length; i++){
+                        var target = selectedElement.children[i];
+                        var new_x = coord.x - offset.x+parseFloat(target.getAttributeNS(null, "offset-x"));
+                        var new_y = coord.y - offset.y+parseFloat(target.getAttributeNS(null, "offset-y"));
+
+                        // when it is linkable
+                        if(target.classList.contains('linkable')) {
+                            for(var t=0; t<paths.length ; t++){
+                                if (paths[t].getAttributeNS(null, 'endID') === target.id) {
+                                    updatePath(paths[t], parseFloat(paths[t].getAttributeNS(null, "start_x")), parseFloat(paths[t].getAttributeNS(null, "start_y")), new_x + linkItemSizeOffset, new_y + linkItemSizeOffset);
+                                } else if (paths[t].getAttributeNS(null, 'startID') === target.id) {
+                                    updatePath(paths[t], new_x + linkItemSizeOffset, new_y + linkItemSizeOffset, parseFloat(paths[t].getAttributeNS(null, "end_x")), parseFloat(paths[t].getAttributeNS(null, "end_y")));
+                                }
+                            }
+                        }
+                        target.setAttributeNS(null, "x", new_x);
+                        target.setAttributeNS(null, "y", new_y);
+                    }
+
+                }
+                else{
+                    var coord = getMousePosition(evt);
+                    selectedElement.setAttributeNS(null, "x", coord.x - offset.x);
+                    selectedElement.setAttributeNS(null, "y", coord.y - offset.y);
+                }
+            }
+
+        }
+
+        function endDrag(evt) {
+            selectedElement = null;
+            if(linkPath){
+                if(evt.target.classList.contains('linkable')){
+                    // if it is already included then do nothing
+                    // otherwise store it to both side
+                    var dstTascItemID = evt.target.id.split('::')[0];
+                    var srcTascItemID = linkPath.getAttributeNS(null,"startID").split('::')[0];
+                    if(IsAlreadyIncluded(srcTascItemID,dstTascItemID) || IsAlreadyIncluded(dstTascItemID,srcTascItemID)){
+                        svg.removeChild(linkPath);
+                        linkPath = null;
+                        return ;
+                    }
+
+                    linkPath.setAttributeNS(null, 'endID', evt.target.id);
+                    linkPath.classList.remove('unselectable');
+                    activateLinkedItemStyle(document.getElementById(linkPath.getAttributeNS(null, 'startID')));
+                    activateLinkedItemStyle(evt.target);
+                    evt.target.setAttributeNS(null, 'pathIndex', paths.length);
+                    paths.push(linkPath);
+                }
+                else
+                    svg.removeChild(linkPath);
+            }
+            linkPath = null;
+
+            if(evt.target.nodeName === 'path'){
+                if(chosenPath)
+                    deactiveChosenPathStyle(chosenPath);
+                chosenPath = evt.target;
+                activeChosenPathStyle(chosenPath);
+            }
+            else{
+                if(chosenPath)
+                    deactiveChosenPathStyle(chosenPath);
+                chosenPath = null;
+            }
+        }
+
+        var bezierWeight = 0.675;
+
+        function deactiveChosenPathStyle(path){
+            path.classList.remove("chosen-path");
+            path.classList.add("path");
+        }
+
+        function activeChosenPathStyle(path){
+            path.classList.add("chosen-path");
+            path.classList.remove("path");
+        }
+
+        function updatePath(path, x1, y1, x4, y4) {
+            /*
+            if( path.getAttributeNS(null, "start_x") < x_now ){
+                x1= x_now;
+                y1 = y_now;
+                x4 = path.getAttributeNS(null, "start_x");
+                y4 = path.getAttributeNS(null, "start_y");
+            }*/
+
+            var dx = Math.abs(x4 - x1) * bezierWeight;
+            var x2 = x1 - dx;
+            var x3 = x4 + dx;
+            var data = `M${x1} ${y1} C ${x2} ${y1} ${x3} ${y4} ${x4} ${y4}`;
+            path.setAttribute("d", data);
+
+            path.setAttributeNS(null, 'start_x', x1);
+            path.setAttributeNS(null, 'start_y', y1);
+            path.setAttributeNS(null, 'end_x', x4);
+            path.setAttributeNS(null, 'end_y', y4);
+        }
+
+        function IsAlreadyIncluded(one, another){
+            var links = document.getElementById(one).getAttributeNS(null,'data-links');
+            if(links ===null)
+                links = [];
+            else
+                links = links.split(',');
+
+            if(links.includes(another)){
+                return true;
+            }
+            else{
+                links.push(another);
+                document.getElementById(one).setAttributeNS(null,'data-links',links);
+                return false;
+            }
+        }
+    }
+
+    function removeInterrelationship(one, another){
+        removeRelationship(document.getElementById(one), another);
+        removeRelationship(document.getElementById(another), one);
+    }
+    function removeRelationship(element, id_of_another){
+        var links = element.getAttributeNS(null, 'data-links');
+        if(links ===null)
+            links = [];
+        else
+            links = links.split(',');
+        if(links.includes(id_of_another)){
+            links.splice( links.indexOf(id_of_another), 1 );
+            element.setAttributeNS(null,'data-links',links);
+        }
+    }
+
+    function activateLinkedItemStyle(item){
+        item.classList.remove('linkItem');
+        item.classList.add('linkedItem');
+    }
+
+    function deactivateLinkedItemStyle(item){
+        item.classList.add('linkItem');
+        item.classList.remove('linkedItem');
+    }
+
+    document.addEventListener('keydown', function(event) {
+        const key = event.key; // const {key} = event; ES6+
+        if (key === "Delete" || key ==="Backspace") {
+            if (chosenPath) {
+                deletePath(chosenPath);
+            }
+        }
+    });
+
+    function deletePath(path){
+        var one = path.getAttributeNS(null,'startID');
+        var another = path.getAttributeNS(null,'endID')
+        removeInterrelationship(one.split('::')[0], another.split('::')[0]);
+        deactivateLinkedItemStyle(document.getElementById(one));
+        deactivateLinkedItemStyle(document.getElementById(another));
+        document.getElementById('editorPane').removeChild(path);
+        paths.splice( paths.indexOf(path), 1 );
+        path = null;
+    }
+    ]]> </script>
+</svg>
+<script type="text/javascript" src="../js/editor/tascEditor.js"></script>
+
+<!--
+<button id="search-button">
+    <svg id="search-icon" class="search-icon" viewBox="0 0 40 40">
+        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        <path d="M0 0h24v24H0z" fill="none"/>
+    </svg>
+</button>
+-->
+</body>
+</html>
