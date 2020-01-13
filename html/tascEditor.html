@@ -14,6 +14,9 @@
     var paths = [];
     var linkItemSizeOffset = 5;
     var chosenPath;
+    var isHighlighted = false;
+    var focusedElement;
+    var fieldTypes = ['terminus', 'action', 'condition'];
 
     function makeDraggable(evt) {
         var svg = evt.target;
@@ -54,6 +57,13 @@
                 offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
                 offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
             }
+
+            if(selectedElement && selectedElement.classList.contains('field-item') && !isHighlighted){
+                makeFieldItemUnselectable(selectedElement);
+                activateFieldHighlight(selectedElement, 'terminus');
+                activateFieldHighlight(selectedElement, 'condition');
+                activateFieldHighlight(selectedElement, 'action');
+            }
         }
 
         function drag(evt) {
@@ -88,6 +98,13 @@
                         target.setAttributeNS(null, "y", new_y);
                     }
 
+                    if(isHighlighted){
+                        if(evt.target.classList.contains('field-highlighted'))
+                            activeFieldFocused(evt.target);
+                        else
+                            deactiveFieldFocused();
+                    }
+
                 }
                 else{
                     var coord = getMousePosition(evt);
@@ -95,10 +112,16 @@
                     selectedElement.setAttributeNS(null, "y", coord.y - offset.y);
                 }
             }
-
         }
 
         function endDrag(evt) {
+            if(selectedElement){
+                if(focusedElement)
+                    setFieldValue(focusedElement, getFieldItemValue(selectedElement));//setFieldValue(focusedElement, getValue(selectedElement));
+                makeFieldItemSelectable(selectedElement);
+                deactiveFieldHighlight();
+            }
+            deactiveFieldFocused();
             selectedElement = null;
             if(linkPath){
                 if(evt.target.classList.contains('linkable')){
@@ -139,6 +162,76 @@
 
         var bezierWeight = 0.675;
 
+        function setFieldValue(item, value){
+            var order = item.getAttribute('order');
+            for(var i=0; i<item.parentNode.children.length ; i++){
+                if(item.parentNode.children[i].tagName ==='text' && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
+                    item.parentNode.children[i].classList.add('field-value-confirmed');
+                    item.parentNode.children[i].innerHTML = value;
+                }
+            }
+        }
+        function getFieldItemValue(item){
+            for(var i=0; i<item.children.length ; i++){
+                if(item.children[i].classList.contains('field-value-confirmed')){
+                    return item.children[i].innerHTML;
+                }
+            }
+            return undefined;
+        }
+
+        function activeFieldFocused(item){
+            if(focusedElement)
+                return ;
+            focusedElement = item;
+            focusedElement.classList.add("field-focused");
+        }
+
+        function deactiveFieldFocused(){
+            if(focusedElement){
+                focusedElement.classList.remove("field-focused");
+            }
+            focusedElement = null;
+        }
+
+        function makeFieldItemSelectable(item){
+            for (var i = 0; i < item.childNodes.length; i++) {
+                for (var t=0; t < fieldTypes.length ; t++) {
+                    if (item.childNodes[i].classList.contains(fieldTypes[t] + '-item')) {
+                        item.childNodes[i].classList.remove('unselectable');
+                    }
+                }
+            }
+        }
+
+        function makeFieldItemUnselectable(item){
+            for (var i = 0; i < item.childNodes.length; i++) {
+                for (var t=0; t < fieldTypes.length ; t++){
+                    if (item.childNodes[i].classList.contains(fieldTypes[t] + '-item')) {
+                        item.childNodes[i].classList.add('unselectable');
+                    }
+                }
+            }
+        }
+
+        function activateFieldHighlight(item, type){
+            if(hasChildOfClass(item, type + '-item')){
+                var items = document.getElementsByClassName( type + '-field');
+                for(var t=0; t<items.length ; t++){
+                    items[t].classList.add('field-highlighted');
+                }
+                isHighlighted = true;
+            }
+        }
+
+        function deactiveFieldHighlight(){
+            var items = document.getElementsByClassName('field-highlighted');
+            while (items[0]) {
+                items[0].classList.remove('field-highlighted')
+            }
+            isHighlighted = false;
+        }
+
         function deactiveChosenPathStyle(path){
             path.classList.remove("chosen-path");
             path.classList.add("path");
@@ -150,14 +243,6 @@
         }
 
         function updatePath(path, x1, y1, x4, y4) {
-            /*
-            if( path.getAttributeNS(null, "start_x") < x_now ){
-                x1= x_now;
-                y1 = y_now;
-                x4 = path.getAttributeNS(null, "start_x");
-                y4 = path.getAttributeNS(null, "start_y");
-            }*/
-
             var dx = Math.abs(x4 - x1) * bezierWeight;
             var x2 = x1 - dx;
             var x3 = x4 + dx;
@@ -185,6 +270,15 @@
                 document.getElementById(one).setAttributeNS(null,'data-links',links);
                 return false;
             }
+        }
+
+        function hasChildOfClass(doc, className){
+            for (var i = 0; i < doc.childNodes.length; i++) {
+                if (doc.childNodes[i].classList.contains(className)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 

@@ -47,28 +47,20 @@ html, body, svg {
 
 }
 
-.titleDescription{
+.title-description{
     font-family: Verdana;
     font-size: medium;
     fill: black;
 }
 
-.fieldDescription{
+.field-description{
     font-family: Verdana;
     font-size: small;
     fill: gray;
 }
 
-.unselectable {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: none;
-}
-
 .field{
-    fill: indianred;
+    fill: lightgray;
     background-color: indianred;
     border: dashed 4px transparent;
     border-radius: 4px;
@@ -103,6 +95,24 @@ html, body, svg {
 
 }
 
+.field-value{
+    font-family: Verdana;
+    font-size: small;
+    fill: gray;
+    dominant-baseline: middle;
+    text-anchor: middle;
+    font-weight: normal;
+}
+
+.field-value-confirmed{
+    font-family: Verdana;
+    font-size: small;
+    fill: black;
+    dominant-baseline: middle;
+    text-anchor: middle;
+    font-weight: bold;
+}
+
 .terminus-item{
     fill: mediumseagreen;
 }
@@ -113,4 +123,20 @@ html, body, svg {
 
 .condition-item{
     fill: darkseagreen;
+}
+
+.unselectable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+.field-highlighted{
+    fill: palevioletred;
+}
+
+.field-focused{
+    fill: mediumvioletred;
 }

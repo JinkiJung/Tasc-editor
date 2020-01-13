@@ -2,6 +2,7 @@ var innerOffset = 10;
 var fieldOffset = 43;
 var fieldWidthOffset = innerOffset * 2;
 var linkItemSize = 10;
+var itemHeight = 25;
 var svgURI = 'http://www.w3.org/2000/svg';
 
 function createTascItem(id, x, y, width, height, title) {
@@ -32,15 +33,22 @@ function createTascItem(id, x, y, width, height, title) {
     titleText.setAttribute( 'y', y + 12);
     titleText.setAttribute( 'width', width );
     titleText.setAttribute( 'height', 30 );
-    titleText.setAttribute('class','unselectable titleDescription');
+    titleText.setAttribute('class','unselectable title-description');
     titleText.setAttribute('dominant-baseline','middle');
     titleText.setAttribute('text-anchor','middle');
     titleText.innerHTML = title;
     group.appendChild( titleText );
 
-    // Field items
-    group.appendChild(createField('text',x,y, width, 0, 'unselectable fieldDescription','Given'));
+    createField(group,'context', x, y, width, 0, 'Given','Test');
+    createField(group,'condition', x, y, width, 1, 'When','Test');
+    createField(group,'terminus', x, y, width, 2, 'Who','Test');
+    createField(group,'action', x, y, width, 3, 'Do','Test');
+    createField(group,'condition', x, y, width, 4, 'Until','Test');
+    /*
+    // fields
+    group.appendChild(createFieldText(x,y, width, 0, 'unselectable fieldDescription','Given'));
     group.appendChild(createFieldInteractable('rect',x,y, width - fieldWidthOffset , 0, 'field',''));
+    group.appendChild(createField('text',x,y, width, 0, 'unselectable field-value','Value'));
     group.appendChild(createField('text',x,y, width, 1, 'unselectable fieldDescription','When'));
     group.appendChild(createFieldInteractable('rect',x,y, width - fieldWidthOffset , 1, 'field condition-field',''));
     group.appendChild(createField('text',x,y, width, 2, 'unselectable fieldDescription','Who'));
@@ -49,7 +57,7 @@ function createTascItem(id, x, y, width, height, title) {
     group.appendChild(createFieldInteractable('rect',x,y, width - fieldWidthOffset , 3, 'field action-field',''));
     group.appendChild(createField('text',x,y, width, 4, 'unselectable fieldDescription','Until'));
     group.appendChild(createFieldInteractable('rect',x,y, width - fieldWidthOffset , 4, 'field condition-field',''));
-
+    */
     // Link items
     group.appendChild(createLinkItem(id, x, y, width, height,'top'));
     group.appendChild(createLinkItem(id, x, y, width, height, 'bottom'));
@@ -114,22 +122,60 @@ function createLinkItem(parent_id, x, y, width, height, location){
 }
 
 function createFieldInteractable(elementType, x, y, width, order, classValue, text){
-    var item = createField(elementType, x, y, width, order, classValue, text);
+    //var item = createField(elementType, x, y, width, order, classValue, text);
     //item.setAttribute('onclick',"alert('!!')");
-    return item;
+    //return item;
 }
 
-function createField(elementType, x, y, width, order, classValue, text){
-    var defaultYOffset = 32;
-    if(elementType ==='rect')
-        defaultYOffset += 2;
-    var element = document.createElementNS( svgURI, elementType);
+function createField(group, elementType, x, y, width, order, description, defaultValue){
+    if(defaultValue===undefined)
+        defaultValue = '';
+    group.appendChild(createFieldText(x,y, width, order, 'unselectable field-description',description));
+    group.appendChild(createFieldRect(x,y, width - fieldWidthOffset , order, 'field ' +elementType+'-field'));
+    group.appendChild(createFieldValue(x,y, width, order, 'unselectable field-value',defaultValue));
+}
+
+function createFieldRect(x, y, width, order, classValue){
+    var defaultYOffset = 34;
+    var element = document.createElementNS( svgURI, 'rect');
     element.setAttribute( 'offset-x', innerOffset );
     element.setAttribute( 'offset-y', defaultYOffset + (fieldOffset* parseFloat(order)) );
     element.setAttribute( 'x', x+ innerOffset );
     element.setAttribute( 'y', y + defaultYOffset + (fieldOffset* parseFloat(order)));
     element.setAttribute( 'width', width );
-    element.setAttribute( 'height', 25 );
+    element.setAttribute( 'height', itemHeight );
+    element.setAttribute( 'order', order );
+    element.setAttribute('class',classValue);
+    return element;
+}
+
+function createFieldValue(x, y, width, order, classValue, text){
+    var defaultYOffset = 34;
+    var element = document.createElementNS( svgURI, 'text');
+    var widthOffset = width/2;
+    var heightOffset = itemHeight / 2;
+    element.setAttribute( 'offset-x', x + widthOffset);
+    element.setAttribute( 'offset-y', defaultYOffset + (fieldOffset* parseFloat(order)) +heightOffset );
+    element.setAttribute( 'x', x+ widthOffset );
+    element.setAttribute( 'y', y + defaultYOffset + (fieldOffset* parseFloat(order))+heightOffset);
+    element.setAttribute( 'width', width );
+    element.setAttribute( 'height', itemHeight );
+    element.setAttribute( 'order', order );
+    element.setAttribute('class',classValue);
+    if(text !== undefined && text.length>0)
+        element.innerHTML = text;
+    return element;
+}
+
+function createFieldText(x, y, width, order, classValue, text){
+    var defaultYOffset = 32;
+    var element = document.createElementNS( svgURI, 'text');
+    element.setAttribute( 'offset-x', innerOffset );
+    element.setAttribute( 'offset-y', defaultYOffset + (fieldOffset* parseFloat(order)) );
+    element.setAttribute( 'x', x+ innerOffset );
+    element.setAttribute( 'y', y + defaultYOffset + (fieldOffset* parseFloat(order)));
+    element.setAttribute( 'width', width );
+    element.setAttribute( 'height', itemHeight );
     element.setAttribute('class',classValue);
     if(text !== undefined && text.length>0)
         element.innerHTML = text;
@@ -174,18 +220,18 @@ function createFieldItem(id, x, y, width, height, type, title) {
     titleText.setAttribute( 'y', y + 12);
     titleText.setAttribute( 'width', width );
     titleText.setAttribute( 'height', height/2 );
-    titleText.setAttribute('class','unselectable titleDescription');
-    titleText.setAttribute('dominant-baseline','middle');
-    titleText.setAttribute('text-anchor','middle');
+    titleText.setAttribute('class','unselectable field-value-confirmed');
     titleText.innerHTML = title;
     group.appendChild( titleText );
 
     return group;
 }
 
-registerItem(createTascItem(0,0,0,180,250, 'Test1'));
-registerItem(createTascItem(1,0,0,180,250, 'Test2'));
-registerItem(createTascItem(2,0,0,180,250, 'Test3'));
-registerItem(createFieldItem("terminus001", 100, 100, 160, 25, 'terminus',"Jinki"));
-registerItem(createFieldItem("action001", 100, 100, 160, 25, 'action',"hit"));
-registerItem(createFieldItem("condition001", 100, 100, 160, 25, 'condition',"anytime"));
+registerItem(createTascItem(0,0,300,180,250, 'Test1'));
+registerItem(createTascItem(1,200,300,180,250, 'Test2'));
+registerItem(createTascItem(2,400,300,180,250, 'Test3'));
+registerItem(createFieldItem("action001", 100, 0, 160, itemHeight, 'action',"drive"));
+registerItem(createFieldItem("condition001", 200, 0, 160, itemHeight, 'condition',"anytime"));
+registerItem(createFieldItem("condition001", 300, 0, 160, itemHeight, 'condition',"get position of [terminus]"));
+registerItem(createFieldItem("terminus001", 400, 0, 160, itemHeight, 'terminus',"Jinki"));
+registerItem(createFieldItem("terminus002", 500, 0, 160, itemHeight, 'terminus',"Thomas"));
