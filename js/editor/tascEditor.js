@@ -307,13 +307,3 @@ function closeForm() {
 }
 
 registerItem(createStartingTascItem("start",0+ xOffset,200 + yOffset,30,30));
-//registerItem(createTascItem(ID(), getNewStepName(),0+ xOffset,200 + yOffset,180,250));
-//registerItem(createTascItem(ID(),getNewStepName(),200 + xOffset,200 + yOffset,180,250 ));
-//registerItem(createTascItem(ID(),getNewStepName(),400 + xOffset,200 + yOffset,180,250));
-/*
-registerItem(createFieldItem(ID(),"drive", 0 + xOffset, 0 + yOffset, 160, itemHeight, 'action'));
-registerItem(createFieldItem(ID(),"anytime", 170 + xOffset, 0 + yOffset, 160, itemHeight, 'condition'));
-registerItem(createFieldItem(ID(),"get position of [terminus]", 340 + xOffset, 0 + yOffset, 160, itemHeight, 'condition'));
-registerItem(createFieldItem(ID(),"Jinki", 510 + xOffset, 0 + yOffset, 160, itemHeight, 'terminus'));
-registerItem(createFieldItem(ID(),"Thomas", 680 + xOffset, 0 + yOffset, 160, itemHeight, 'terminus'));
-*/

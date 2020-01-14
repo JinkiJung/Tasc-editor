@@ -33,6 +33,9 @@ var starting_value = [
             },
             {
                 "name": "have a meeting"
+            },
+            {
+                "name": "sleep"
             }
         ],
         "conditions": [
@@ -40,24 +43,50 @@ var starting_value = [
                 "name": "anytime"
             },
             {
+                "name": "under 200km/h"
+            },
+            {
                 "name": "21st Jan, 2020"
             },
             {
-                "name": "get to [terminus]"
+                "name": "get to Kiel office"
             },
             {
-                "name": "within two hours"
+                "name": "for two hours"
             }
         ],
         "scenario": [
             {
+                "id": "start",
+                "next": ["step001"]
+            },
+            {
                 "id": "step001",
                 "title": "Cycling",
                 "given": {"name":  "a helmet"},
-                "when": {"name": "every morning"},
+                "when": {"name": "Morning of 21th January, 2020"},
                 "who": {"name": "Jinki"},
                 "do": { "name" :"ride a bike"},
-                "until": {"name": "get to the office"}
+                "until": {"name": "get to the office"},
+                "next": ["step002"]
+            },
+            {
+                "id": "step002",
+                "title": "Riding-1",
+                "given": {"name":  "a fancy car and Jinki"},
+                "when": {"name": ""},
+                "who": {"name": "Thomas"},
+                "do": { "name" :"drive"},
+                "until": {"name": "get to the Micheal's office"}
+            },
+            {
+                "id": "step003",
+                "title": "Riding-2",
+                "given": {"name":  "a fancy car and Jinki and Micheal"},
+                "when": {"name": ""},
+                "who": {"name": "Thomas"},
+                "do": { "name" :"drive"},
+                "until": {"name": "get to Kiel office"}
             }
         ]
     }

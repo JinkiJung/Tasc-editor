@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../css/tascEditor.css">
+    <script type="text/javascript" src="../js/editor/bezierPath.js"></script>
     <title>Tasc editor testbed</title>
 
 </head>
@@ -62,21 +63,36 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             };
         }
 
+        function createLinkPath(start_id, start_x, start_y){
+            var tempPath = document.createElementNS( svgURI, 'path');
+            tempPath.setAttributeNS(null, 'start_x', start_x);
+            tempPath.setAttributeNS(null, 'start_y', start_y);
+            tempPath.setAttributeNS(null, 'class', 'path');
+            tempPath.setAttributeNS(null, 'startID', start_id);
+            tempPath.classList.add('unselectable');
+            return tempPath;
+        }
+
+        ///////////////////////////////////
+        function orderingElement(element){
+            svg.appendChild(element);
+            for(var i=0; i<paths.length ; i++){
+                svg.appendChild(paths[i]);
+            }
+        }
+        ///////////////////////////////////
+
+
         function startDrag(evt) {
 
             // we will create path to make the link
             if(evt.target.classList.contains('linkable')){
-                linkPath = document.createElementNS( svgURI, 'path');
-                linkPath.setAttributeNS(null, 'start_x', getMousePosition(evt).x);
-                linkPath.setAttributeNS(null, 'start_y', getMousePosition(evt).y);
-                linkPath.setAttributeNS(null, 'class', 'path');
-                linkPath.setAttributeNS(null, 'startID', evt.target.id);
-                linkPath.classList.add('unselectable');
+                linkPath = createLinkPath(evt.target.id, getMousePosition(evt).x + linkItemSizeOffset,getMousePosition(evt).y + linkItemSizeOffset);
                 svg.appendChild(linkPath);
             }
             else if(evt.target.parentElement.nodeName === 'g'){
                 // put the object to the top
-                svg.appendChild(evt.target.parentElement);
+                orderingElement(evt.target.parentElement);
 
                 if(evt.target.parentElement.classList.contains('draggable')){
                     selectedElement = evt.target.parentElement;
@@ -171,6 +187,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 
                     linkPath.setAttributeNS(null, 'endID', evt.target.id);
                     linkPath.classList.remove('unselectable');
+                    linkPath.setAttribute('id',getSortedPathID(linkPath.getAttribute('startID'),linkPath.getAttribute('endID')));
                     activateLinkedItemStyle(document.getElementById(linkPath.getAttributeNS(null, 'startID')));
                     activateLinkedItemStyle(evt.target);
                     evt.target.setAttributeNS(null, 'pathIndex', paths.length);
@@ -193,8 +210,6 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                 chosenPath = null;
             }
         }
-
-        var bezierWeight = 0.675;
 
         function setFieldValue(item, value){
             var order = item.getAttribute('order');
@@ -276,19 +291,6 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             path.classList.remove("path");
         }
 
-        function updatePath(path, x1, y1, x4, y4) {
-            var dx = Math.abs(x4 - x1) * bezierWeight;
-            var x2 = x1 - dx;
-            var x3 = x4 + dx;
-            var data = `M${x1} ${y1} C ${x2} ${y1} ${x3} ${y4} ${x4} ${y4}`;
-            path.setAttribute("d", data);
-
-            path.setAttributeNS(null, 'start_x', x1);
-            path.setAttributeNS(null, 'start_y', y1);
-            path.setAttributeNS(null, 'end_x', x4);
-            path.setAttributeNS(null, 'end_y', y4);
-        }
-
         function IsAlreadyIncluded(one, another){
             var links = document.getElementById(one).getAttributeNS(null,'data-links');
             if(links ===null)
@@ -351,6 +353,16 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         }
     });
 
+    function getSortedPathID(one, another){
+        var values = [];
+        values.push(one);
+        values.push(another);
+        values.sort(function (a, b) {
+            return ('' + a.attr).localeCompare(b.attr);
+        })
+        return values.join('--');
+    }
+
     function deletePath(path){
         var one = path.getAttributeNS(null,'startID');
         var another = path.getAttributeNS(null,'endID')
@@ -363,6 +375,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
     }
     ]]> </script>
 </svg>
+
 <script type="text/javascript" src="../js/data/tascDataModel.js"></script>
 <script type="text/javascript" src="../js/editor/tascEditor.js"></script>
 <script type="text/javascript" src="../js/editor/tascJSONEditor.js"></script>

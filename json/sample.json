@@ -29,6 +29,9 @@
     },
     {
       "name": "have a meeting"
+    },
+    {
+      "name": "sleep"
     }
   ],
   "conditions": [
@@ -36,13 +39,16 @@
       "name": "anytime"
     },
     {
+      "name": "under 200km/h"
+    },
+    {
       "name": "21st Jan, 2020"
     },
     {
-      "name": "get to [terminus]"
+      "name": "get to Kiel office"
     },
     {
-      "name": "within two hours"
+      "name": "for two hours"
     }
   ],
   "scenario": [
@@ -62,12 +68,21 @@
     },
     {
       "id": "step002",
-      "title": "Riding",
+      "title": "Riding-1",
       "given": {"name":  "a fancy car and Jinki"},
       "when": {"name": ""},
       "who": {"name": "Thomas"},
       "do": { "name" :"drive"},
       "until": {"name": "get to the Micheal's office"}
+    },
+    {
+      "id": "step003",
+      "title": "Riding-2",
+      "given": {"name":  "a fancy car and Jinki and Micheal"},
+      "when": {"name": ""},
+      "who": {"name": "Thomas"},
+      "do": { "name" :"drive"},
+      "until": {"name": "get to Kiel office"}
     }
   ]
 }
