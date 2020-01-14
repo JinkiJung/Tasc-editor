@@ -8,8 +8,38 @@
       "type": "string",
       "options": {
         "inputAttributes": {
-          "placeholder": "Enter a scenario name"
+          "placeholder": "Enter name"
         }
+      }
+    },
+    "description": {
+      "title": "Description",
+      "type": "string",
+      "options": {
+        "inputAttributes": {
+          "placeholder": "Enter description"
+        }
+      }
+    },
+    "terminuses": {
+      "title": "Actors",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/terminus"
+      }
+    },
+    "actions": {
+      "title": "Actions",
+      "type": "array",
+      "items": {
+        "$ref" : "#/definitions/action"
+      }
+    },
+    "conditions": {
+      "title": "Conditions",
+      "type": "array",
+      "items": {
+        "$ref" : "#/definitions/condition"
       }
     },
     "scenario": {
@@ -70,6 +100,15 @@
           "options": {
             "inputAttributes": {
               "placeholder": "Enter name"
+            }
+          }
+        },
+        "location": {
+          "title": "location",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter position"
             }
           }
         },
@@ -163,7 +202,7 @@
         "id": {
           "title": "ID",
           "type": "string",
-          "propertyOrder": 4,
+          "propertyOrder": 1,
           "options": {
             "inputAttributes": {
               "placeholder": "Enter ID"
@@ -173,7 +212,7 @@
         "title": {
           "title": "Title",
           "type": "string",
-          "propertyOrder": 1,
+          "propertyOrder": 2,
           "options": {
             "inputAttributes": {
               "placeholder": "Enter a title"
@@ -188,17 +227,12 @@
               "placeholder": "Enter description"
             }
           },
-          "propertyOrder": 2
+          "propertyOrder": 3
         },
         "given": {
           "title": "Given",
           "$ref": "#/definitions/context",
-          "propertyOrder": 2
-        },
-        "until": {
-          "title": "Until",
-          "$ref": "#/definitions/condition",
-          "propertyOrder": 9
+          "propertyOrder": 4
         },
         "when": {
           "title": "When",
@@ -215,15 +249,20 @@
           "$ref": "#/definitions/action",
           "propertyOrder": 7
         },
+        "until": {
+          "title": "Until",
+          "$ref": "#/definitions/condition",
+          "propertyOrder": 8
+        },
         "following": {
           "title": "Following",
           "$ref": "#/definitions/instruction",
-          "propertyOrder": 8
+          "propertyOrder": 9
         },
         "should": {
           "title": "Should",
           "$ref": "#/definitions/evaluation",
-          "propertyOrder": 9
+          "propertyOrder": 10
         },
         "priority": {
           "title": "Priority",

@@ -3,16 +3,61 @@
 // and to provide a "Restore to Default" button.
 var starting_value = [
     {
-        title: "Meeting in Kiel",
-        scenario: [
+        "title": "Meeting in Kiel",
+        "terminuses": [
             {
-                id: "step001",
-                title: "Step 1",
-                given: {name: "nothing"},
-                actor: {name: "Jinki"},
-                action: {name: "ride a bike"},
-                entrance: {name: "every morning"},
-                exit: {name: "get to the office"}
+                "name": "Jinki"
+            },
+            {
+                "name": "Thomas"
+            },
+            {
+                "name": "Michael"
+            },
+            {
+                "name": "Fabienne"
+            },
+            {
+                "name": "Michael's office"
+            },
+            {
+                "name": "office at Kiel"
+            }
+        ],
+        "actions": [
+            {
+                "name": "drive a car"
+            },
+            {
+                "name": "ride a bike"
+            },
+            {
+                "name": "have a meeting"
+            }
+        ],
+        "conditions": [
+            {
+                "name": "anytime"
+            },
+            {
+                "name": "21st Jan, 2020"
+            },
+            {
+                "name": "get to [terminus]"
+            },
+            {
+                "name": "within two hours"
+            }
+        ],
+        "scenario": [
+            {
+                "id": "step001",
+                "title": "Cycling",
+                "given": {"name":  "a helmet"},
+                "when": {"name": "every morning"},
+                "who": {"name": "Jinki"},
+                "do": { "name" :"ride a bike"},
+                "until": {"name": "get to the office"}
             }
         ]
     }

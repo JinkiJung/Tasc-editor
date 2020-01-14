@@ -24,29 +24,45 @@ function readFileContent(file) {
 }
 
 function convertJSONToTasc(json){
+    var linkedPair = [];
     if(json.scenario!==undefined){
         for(var i=0; i<json.scenario.length ; i++){
             var elem = json.scenario[i];
-            var data = new Tasc(elem.id, elem.title, elem.given, elem.when, elem.who, elem.do, elem.until);
-            registerItem(createTascItem(data, 400 + xOffset,200 + yOffset,180,250));
+            if(document.getElementById(elem.id)===null){
+                var data = new Tasc(elem.id, elem.title, elem.given, elem.when, elem.who, elem.do, elem.until);
+                registerItem(createTascItem(data, 400 + xOffset,200 + yOffset,180,250));
+                if(elem.next)
+                    linkedPair.push({from:elem.id, to:elem.next});
+            }
         }
     }
+    makeLink(linkedPair);
     if(json.terminuses!==undefined){
         for(var i=0; i<json.terminuses.length ; i++){
             var elem = json.terminuses[i];
-            registerItem(createFieldItem(ID(),elem.name, 0 + xOffset, 0 + yOffset, 160, itemHeight, 'terminus'));
+            if(document.getElementById(elem.id)===null) {
+                registerItem(createFieldItem(ID(), elem.name, 0 + xOffset, 0 + yOffset, 160, itemHeight, 'terminus'));
+            }
         }
     }
     if(json.actions!==undefined){
         for(var i=0; i<json.actions.length ; i++){
             var elem = json.actions[i];
-            registerItem(createFieldItem(ID(),elem.name, 0 + xOffset, 0 + yOffset, 160, itemHeight, 'action'));
+            if(document.getElementById(elem.id)===null) {
+                registerItem(createFieldItem(ID(), elem.name, 0 + xOffset, 0 + yOffset, 160, itemHeight, 'action'));
+            }
         }
     }
     if(json.conditions!==undefined){
         for(var i=0; i<json.conditions.length ; i++){
             var elem = json.conditions[i];
-            registerItem(createFieldItem(ID(),elem.name, 0 + xOffset, 0 + yOffset, 160, itemHeight, 'condition'));
+            if(document.getElementById(elem.id)===null) {
+                registerItem(createFieldItem(ID(), elem.name, 0 + xOffset, 0 + yOffset, 160, itemHeight, 'condition'));
+            }
         }
     }
+}
+
+function makeLink(linkList){
+
 }

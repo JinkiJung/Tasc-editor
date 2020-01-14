@@ -306,7 +306,7 @@ function closeForm() {
     document.getElementById("myForm").style.display = "none";
 }
 
-registerItem(createStartingTascItem("starting-tasc-item",0+ xOffset,200 + yOffset,30,30));
+registerItem(createStartingTascItem("start",0+ xOffset,200 + yOffset,30,30));
 //registerItem(createTascItem(ID(), getNewStepName(),0+ xOffset,200 + yOffset,180,250));
 //registerItem(createTascItem(ID(),getNewStepName(),200 + xOffset,200 + yOffset,180,250 ));
 //registerItem(createTascItem(ID(),getNewStepName(),400 + xOffset,200 + yOffset,180,250));
