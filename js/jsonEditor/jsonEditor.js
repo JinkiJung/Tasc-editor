@@ -3,10 +3,17 @@
 // and to provide a "Restore to Default" button.
 var starting_value = [
     {
-        title: "Test scenario",
+        title: "Meeting in Kiel",
         scenario: [
-            {"id": "sample1",
-                "title": "sample1"}
+            {
+                id: "step001",
+                title: "Step 1",
+                given: {name: "nothing"},
+                actor: {name: "Jinki"},
+                action: {name: "ride a bike"},
+                entrance: {name: "every morning"},
+                exit: {name: "get to the office"}
+            }
         ]
     }
 ];

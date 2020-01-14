@@ -7,6 +7,36 @@
 
 </head>
 <body>
+<div id="top-bar">
+Tasc editor <button class="tasc-editor-button" onclick="">run</button>
+<button class="tasc-editor-button" onclick="">save scenario</button>
+<button class="tasc-editor-button" onclick="document.getElementById('file-input').click();">load scenario</button><input id='file-input' type="file" style="display: none">
+<button class="tasc-editor-button">initialize</button>
+<button class="tasc-editor-button" onclick="addNewTascItem(ID(),getNewStepName())">add tasc</button>
+<button class="tasc-editor-button" onclick="openForm()">add terminus</button>
+<button class="tasc-editor-button" onclick="openForm()">add action</button>
+<button class="tasc-editor-button" onclick="openForm()">add condition</button>
+<button class="tasc-editor-button">delete</button><br>
+</div>
+
+<div class="form-popup" id="myForm">
+    <form action="/action_page.php" class="form-container">
+        <h1>Login</h1>
+
+        <label for="email"><b>Email</b></label>
+        <input type="text" placeholder="Enter Email" name="email" required>
+
+        <label for="psw"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="psw" required>
+
+        <label for="name"><b>Name</b></label>
+        <input type="text" placeholder="Enter Password" name="psw" required>
+
+        <button type="submit" class="btn">Login</button>
+        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+    </form>
+</div>
+
 <svg id="editorPane" xmlns="http://www.w3.org/2000/svg" onload="makeDraggable(evt)">
 
     <script type="text/javascript"><![CDATA[
@@ -33,6 +63,7 @@
         }
 
         function startDrag(evt) {
+
             // we will create path to make the link
             if(evt.target.classList.contains('linkable')){
                 linkPath = document.createElementNS( svgURI, 'path');
@@ -44,6 +75,9 @@
                 svg.appendChild(linkPath);
             }
             else if(evt.target.parentElement.nodeName === 'g'){
+                // put the object to the top
+                svg.appendChild(evt.target.parentElement);
+
                 if(evt.target.parentElement.classList.contains('draggable')){
                     selectedElement = evt.target.parentElement;
                     offset = getMousePosition(evt);
@@ -329,7 +363,9 @@
     }
     ]]> </script>
 </svg>
+<script type="text/javascript" src="../js/data/tascDataModel.js"></script>
 <script type="text/javascript" src="../js/editor/tascEditor.js"></script>
+<script type="text/javascript" src="../js/editor/tascJSONEditor.js"></script>
 
 <!--
 <button id="search-button">
