@@ -1,12 +1,3 @@
-var innerOffset = 10;
-var fieldOffset = 43;
-var fieldWidthOffset = innerOffset * 2;
-var linkItemSize = 10;
-var itemHeight = 25;
-var xOffset= 10;
-var yOffset= 10;
-var svgURI = 'http://www.w3.org/2000/svg';
-
 function createStartingTascItem(id, x, y, width, height, title) {
     var group = document.createElementNS( svgURI, 'g');
     group.setAttribute('id',id);
@@ -198,7 +189,7 @@ function createFieldRect(x, y, width, order, classValue){
     element.setAttribute( 'x', x+ innerOffset );
     element.setAttribute( 'y', y + defaultYOffset + (fieldOffset* parseFloat(order)));
     element.setAttribute( 'width', width );
-    element.setAttribute( 'height', itemHeight );
+    element.setAttribute( 'height', fieldItemHeight );
     element.setAttribute( 'order', order );
     element.setAttribute('class',classValue);
     return element;
@@ -208,13 +199,13 @@ function createFieldValue(x, y, width, order, classValue, text){
     var defaultYOffset = 34;
     var element = document.createElementNS( svgURI, 'text');
     var widthOffset = width/2;
-    var heightOffset = itemHeight / 2;
+    var heightOffset = fieldItemHeight / 2;
     element.setAttribute( 'offset-x', widthOffset);
     element.setAttribute( 'offset-y', defaultYOffset + (fieldOffset* parseFloat(order)) +heightOffset );
     element.setAttribute( 'x', x+ widthOffset );
     element.setAttribute( 'y', y + defaultYOffset + (fieldOffset* parseFloat(order))+heightOffset);
     element.setAttribute( 'width', width );
-    element.setAttribute( 'height', itemHeight );
+    element.setAttribute( 'height', fieldItemHeight );
     element.setAttribute( 'order', order );
     element.setAttribute('class',classValue);
     if(text !== undefined && text.length>0)
@@ -230,7 +221,7 @@ function createFieldText(x, y, width, order, classValue, text){
     element.setAttribute( 'x', x+ innerOffset );
     element.setAttribute( 'y', y + defaultYOffset + (fieldOffset* parseFloat(order)));
     element.setAttribute( 'width', width );
-    element.setAttribute( 'height', itemHeight );
+    element.setAttribute( 'height', fieldItemHeight );
     element.setAttribute('class',classValue);
     if(text !== undefined && text.length>0)
         element.innerHTML = text;
@@ -241,9 +232,9 @@ function registerItem(item){
     document.getElementById('editorPane').appendChild(item);
 }
 
-function createFieldItem(id, title, x, y, width, height, type) {
+function createFieldItem(fieldObject, x, y, width, height, type) {
     var group = document.createElementNS( svgURI, 'g');
-    group.setAttribute('id',id);
+    group.setAttribute('id',fieldObject.id);
     group.setAttribute( 'x', x );
     group.setAttribute( 'y', y );
     group.setAttribute('class', 'draggable field-item');
@@ -277,7 +268,7 @@ function createFieldItem(id, title, x, y, width, height, type) {
     titleText.setAttribute( 'width', width );
     titleText.setAttribute( 'height', height/2 );
     titleText.setAttribute('class','unselectable field-value-confirmed');
-    titleText.innerHTML = title;
+    titleText.innerHTML = fieldObject.name;
     group.appendChild( titleText );
 
     return group;
@@ -290,15 +281,42 @@ var ID = function () {
     return '_' + Math.random().toString(36).substr(2, 9);
 };
 
-function getNewStepName(){
-    return 'Step '+(document.getElementsByClassName('tasc-item').length+1);
+function getDummyName(type){
+    return type+' '+(document.getElementsByClassName(type + '-item').length+1);
 }
 
-function addNewTascItem(id, title){
+function addNewItem(type, id, title){
+    if(id===undefined)
+        id = ID();
     if(title===undefined)
-        title = getNewStepName();
-    var pos = avoidOverlap(document.getElementsByClassName('tasc-item-pane'),300, document.body.clientWidth, 180, 250);
-    registerItem(createTascItem(new Tasc(ID(),title),pos[0],pos[1],180,250, title));
+        title = getDummyName(type);
+
+    var pos;
+    if(type==='tasc'){
+        pos = avoidOverlap(document.getElementsByClassName('tasc-item-pane'),300, document.body.clientWidth, tascItemWidth, tascItemHeight);
+        if(pos!==undefined)
+            registerItem(createTascItem(new Tasc(id, title),pos[0]+ xOffset,pos[1],tascItemWidth,tascItemHeight, title));
+    }
+    else{
+        pos = avoidOverlap(document.getElementsByClassName('field-item-pane'),0, document.body.clientWidth, fieldItemWidth, fieldItemHeight);
+        if(pos!==undefined)
+            registerItem(createFieldItem(new DummyField(type, id, title), pos[0] + xOffset, pos[1] + yOffset, fieldItemWidth, fieldItemHeight, type));
+    }
+}
+
+function addNewItemWithObject(dataObject){
+    var pos;
+    console.log(dataObject.constructor.name);
+    if(dataObject instanceof Tasc){
+        pos = avoidOverlap(document.getElementsByClassName('tasc-item-pane'),300, document.body.clientWidth, tascItemWidth, tascItemHeight);
+        if(pos!==undefined)
+            registerItem(createTascItem(dataObject,pos[0]+ xOffset,pos[1],tascItemWidth,tascItemHeight, dataObject.name));
+    }
+    else{
+        pos = avoidOverlap(document.getElementsByClassName('field-item-pane'),0, document.body.clientWidth, fieldItemWidth, fieldItemHeight);
+        if(pos!==undefined)
+            registerItem(createFieldItem(dataObject, pos[0] + xOffset, pos[1] + yOffset, fieldItemWidth, fieldItemHeight, dataObject.constructor.name.toLowerCase()));
+    }
 }
 
 function openForm() {

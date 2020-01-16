@@ -40,8 +40,9 @@ function convertJSONToTasc(json){
                 prepareMakingLink(elem, linkedPair);
             }
             else if(document.getElementById(elem.id)===null){
-                var data = new Tasc(elem.id, elem.title, elem.given, elem.when, elem.who, elem.do, elem.until);
-                registerItem(createTascItem(data, 400 + xOffset,200 + yOffset,180,250));
+                var data = new Tasc(elem.id, elem.name, elem.given, elem.when, elem.who, elem.do, elem.until);
+                addNewItemWithObject(data);
+                //registerItem(createTascItem(data, 400 + xOffset,200 + yOffset,tascItemWidth,tascItemHeight));
                 prepareMakingLink(elem, linkedPair);
             }
         }
@@ -51,7 +52,8 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.terminuses.length ; i++){
             var elem = json.terminuses[i];
             if(document.getElementById(elem.id)===null) {
-                registerItem(createFieldItem(ID(), elem.name, 0 + xOffset, 0 + yOffset, 160, itemHeight, 'terminus'));
+                addNewItem('terminus',elem.id,elem.name);
+                //registerItem(new Terminus(ID(), elem.name), 0 + xOffset, 0 + yOffset, fieldItemWidth, fieldItemHeight, 'terminus');
             }
         }
     }
@@ -59,7 +61,8 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.actions.length ; i++){
             var elem = json.actions[i];
             if(document.getElementById(elem.id)===null) {
-                registerItem(createFieldItem(ID(), elem.name, 0 + xOffset, 0 + yOffset, 160, itemHeight, 'action'));
+                addNewItem('action',elem.id,elem.name);
+                //registerItem(new Action(ID(), elem.name), 0 + xOffset, 0 + yOffset, fieldItemWidth, fieldItemHeight, 'action');
             }
         }
     }
@@ -67,7 +70,8 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.conditions.length ; i++){
             var elem = json.conditions[i];
             if(document.getElementById(elem.id)===null) {
-                registerItem(createFieldItem(ID(), elem.name, 0 + xOffset, 0 + yOffset, 160, itemHeight, 'condition'));
+                addNewItem('condition',elem.id,elem.name);
+                //registerItem(new Condition(ID(), elem.name), 0 + xOffset, 0 + yOffset, fieldItemWidth, fieldItemHeight, 'condition');
             }
         }
     }
@@ -82,7 +86,6 @@ function createLinkPath(start_id, end_id){
 }
 
 function makeLink(linkListGroup){
-    console.log(linkListGroup);
     if(linkListGroup === undefined)
     {
         console.log("ERROR: there is no link list.");
@@ -97,7 +100,6 @@ function makeLink(linkListGroup){
         }
         var fromItem = document.getElementById(linkItem.from + "::right");
         var toItem = document.getElementById(linkItem.to + "::left");
-
         var tempLinkPath = createLinkPath(fromItem.id, toItem.id);
         document.getElementById("editorPane").appendChild(tempLinkPath);
 

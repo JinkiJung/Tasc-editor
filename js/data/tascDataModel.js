@@ -14,6 +14,17 @@ function Tasc(id, title, given, when, who, does, until){ //, instruction, evalua
     Tasc.prototype.toString = function(){console.log(this.who);};
 }
 
+function DummyField(type, id, name){
+    if(type ==='terminus')
+        return new Terminus(id,name);
+    else if(type ==='action')
+        return new Action(id,name);
+    else if(type ==='condition')
+        return new Condition(id,name);
+    else
+        return undefined;
+}
+
 function Terminus(id, name, location, role){
     this.id = id;
     this.name = name;

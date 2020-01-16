@@ -1,6 +1,5 @@
 var margin = 10;
 function avoidOverlap(items, startingHeight, editorPaneWidth, newItemWidth, newItemHeight){
-    console.log(items);
     for (var y=startingHeight; y< 10000 ;){
         for (var x=0; x<editorPaneWidth ; ){
             var everOverlapped = false;
@@ -27,7 +26,9 @@ function avoidOverlap(items, startingHeight, editorPaneWidth, newItemWidth, newI
 
             if(x+newItemWidth>=editorPaneWidth){
                 x = 0;
-                y += itemHeight + margin;
+                console.log()
+                y = maxOverlappedHeight + margin;
+                console.log(y);
                 break;
             }
             else if(everOverlapped){

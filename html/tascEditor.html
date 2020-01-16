@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../css/tascEditor.css">
+    <script type="text/javascript" src="../js/tascConstraint.js"></script>
     <script type="text/javascript" src="../js/editor/itemAllocator.js"></script>
     <script type="text/javascript" src="../js/editor/bezierPath.js"></script>
     <title>Tasc editor testbed</title>
@@ -14,10 +15,10 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 <button class="tasc-editor-button" onclick="">save scenario</button>
 <button class="tasc-editor-button" onclick="document.getElementById('file-input').click();">load scenario</button><input id='file-input' type="file" style="display: none">
 <button class="tasc-editor-button">initialize</button>
-<button class="tasc-editor-button" onclick="addNewTascItem(ID(),getNewStepName())">add tasc</button>
+<button class="tasc-editor-button" onclick="addNewItem('tasc',ID())">add tasc</button>
 <button class="tasc-editor-button" onclick="openForm()">add terminus</button>
-<button class="tasc-editor-button" onclick="openForm()">add action</button>
-<button class="tasc-editor-button" onclick="openForm()">add condition</button>
+<button class="tasc-editor-button" onclick="addNewItem('action',ID())">add action</button>
+<button class="tasc-editor-button" onclick="addNewItem('condition',ID())">add condition</button>
 <button class="tasc-editor-button">delete</button><br>
 </div>
 

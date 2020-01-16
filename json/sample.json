@@ -58,7 +58,7 @@
     },
     {
       "id": "step001",
-      "title": "Cycling",
+      "name": "Cycling",
       "given": {"name":  "a helmet"},
       "when": {"name": "Morning of 21th January, 2020"},
       "who": {"name": "Jinki"},
@@ -68,7 +68,7 @@
     },
     {
       "id": "step002",
-      "title": "Riding-1",
+      "name": "Riding-1",
       "given": {"name":  "a fancy car and Jinki"},
       "when": {"name": ""},
       "who": {"name": "Thomas"},
@@ -77,7 +77,7 @@
     },
     {
       "id": "step003",
-      "title": "Riding-2",
+      "name": "Riding-2",
       "given": {"name":  "a fancy car and Jinki and Micheal"},
       "when": {"name": ""},
       "who": {"name": "Thomas"},

@@ -209,13 +209,13 @@
             }
           }
         },
-        "title": {
-          "title": "Title",
+        "name": {
+          "title": "Name",
           "type": "string",
           "propertyOrder": 2,
           "options": {
             "inputAttributes": {
-              "placeholder": "Enter a title"
+              "placeholder": "Enter name"
             }
           }
         },
