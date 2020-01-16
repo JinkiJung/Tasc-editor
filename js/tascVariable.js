@@ -9,3 +9,7 @@ var tascItemHeight = 250;
 var xOffset= 10;
 var yOffset= 10;
 var svgURI = 'http://www.w3.org/2000/svg';
+
+var paths = [];
+var tascItems = [];
+var fieldItems = [];

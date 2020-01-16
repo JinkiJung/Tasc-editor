@@ -52,6 +52,7 @@ function createStartingTascItem(id, x, y, width, height, title) {
     group.appendChild(createLinkItem(id, x, y, width, height, 'left'));
     group.appendChild(createLinkItem(id, x, y, width, height,'right'));
 
+    tascItems.push(group);
     return group;
 }
 
@@ -107,6 +108,7 @@ function createTascItem(tascObject, x, y, width, height) {
     group.appendChild(createLinkItem(tascObject.id, x, y, width, height, 'left'));
     group.appendChild(createLinkItem(tascObject.id, x, y, width, height,'right'));
 
+    tascItems.push(group);
     return group;
 }
 
@@ -271,6 +273,7 @@ function createFieldItem(fieldObject, x, y, width, height, type) {
     titleText.innerHTML = fieldObject.name;
     group.appendChild( titleText );
 
+    fieldItems.push(group);
     return group;
 }
 
@@ -306,7 +309,6 @@ function addNewItem(type, id, title){
 
 function addNewItemWithObject(dataObject){
     var pos;
-    console.log(dataObject.constructor.name);
     if(dataObject instanceof Tasc){
         pos = avoidOverlap(document.getElementsByClassName('tasc-item-pane'),300, document.body.clientWidth, tascItemWidth, tascItemHeight);
         if(pos!==undefined)
@@ -327,4 +329,19 @@ function closeForm() {
     document.getElementById("myForm").style.display = "none";
 }
 
-registerItem(createStartingTascItem("start",0+ xOffset,200 + yOffset,30,30));
+function removeAllItems(){
+    var node = document.getElementById('editorPane');
+    while (node.firstChild) {
+        node.removeChild(node.firstChild);
+    }
+    paths = [];
+    tascItems = [];
+    fieldItems = [];
+    initialize();
+}
+
+function initialize(){
+    registerItem(createStartingTascItem("start",0+ xOffset,200 + yOffset,30,30));
+}
+
+initialize();

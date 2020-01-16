@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../css/tascEditor.css">
-    <script type="text/javascript" src="../js/tascConstraint.js"></script>
+    <script type="text/javascript" src="../js/tascVariable.js"></script>
     <script type="text/javascript" src="../js/editor/itemAllocator.js"></script>
     <script type="text/javascript" src="../js/editor/bezierPath.js"></script>
     <title>Tasc editor testbed</title>
@@ -14,7 +14,7 @@
 Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 <button class="tasc-editor-button" onclick="">save scenario</button>
 <button class="tasc-editor-button" onclick="document.getElementById('file-input').click();">load scenario</button><input id='file-input' type="file" style="display: none">
-<button class="tasc-editor-button">initialize</button>
+<button class="tasc-editor-button" onclick="removeAllItems()">initialize</button>
 <button class="tasc-editor-button" onclick="addNewItem('tasc',ID())">add tasc</button>
 <button class="tasc-editor-button" onclick="openForm()">add terminus</button>
 <button class="tasc-editor-button" onclick="addNewItem('action',ID())">add action</button>
@@ -44,7 +44,6 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 
     <script type="text/javascript"><![CDATA[
     var selectedElement, offset, linkPath;
-    var paths = [];
     var linkItemSizeOffset = 5;
     var chosenPath;
     var isHighlighted = false;
@@ -77,9 +76,9 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 
         ///////////////////////////////////
         function orderingElement(element){
-            svg.appendChild(element);
-            for(var i=0; i<paths.length ; i++){
-                svg.appendChild(paths[i]);
+            //svg.appendChild(element);
+            for(var i=0; i<fieldItems.length ; i++){
+                svg.appendChild(fieldItems[i]);
             }
         }
         ///////////////////////////////////
