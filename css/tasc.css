@@ -19,6 +19,14 @@
     touch-action: none;
 }
 
+.tasc-item-pane{
+
+}
+
+.field-item-pane{
+
+}
+
 .tasc {
     background-color: indianred;
     border: dashed 4px transparent;

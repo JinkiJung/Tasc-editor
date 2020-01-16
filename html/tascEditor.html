@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../css/tascEditor.css">
+    <script type="text/javascript" src="../js/editor/itemAllocator.js"></script>
     <script type="text/javascript" src="../js/editor/bezierPath.js"></script>
     <title>Tasc editor testbed</title>
 
@@ -82,12 +83,10 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         }
         ///////////////////////////////////
 
-
         function startDrag(evt) {
-
             // we will create path to make the link
             if(evt.target.classList.contains('linkable')){
-                linkPath = createLinkPath(evt.target.id, getMousePosition(evt).x + linkItemSizeOffset,getMousePosition(evt).y + linkItemSizeOffset);
+                linkPath = createLinkPath(evt.target.id, getMousePosition(evt).x ,getMousePosition(evt).y);
                 svg.appendChild(linkPath);
             }
             else if(evt.target.parentElement.nodeName === 'g'){

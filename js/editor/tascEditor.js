@@ -26,6 +26,7 @@ function createStartingTascItem(id, x, y, width, height, title) {
     pane.setAttribute('rx','2');
     pane.setAttribute('ry','2');
     pane.setAttribute('fill','#00BFFF');
+    pane.classList.add('tasc-item-pane');
     group.appendChild( pane );
 
     /*
@@ -82,6 +83,7 @@ function createTascItem(tascObject, x, y, width, height) {
     pane.setAttribute('rx','10');
     pane.setAttribute('ry','10');
     pane.setAttribute('fill','#eee');
+    pane.setAttribute('class','tasc-item-pane');
     group.appendChild( pane );
 
     // title description
@@ -256,13 +258,13 @@ function createFieldItem(id, title, x, y, width, height, type) {
     pane.setAttribute( 'width', width );
     pane.setAttribute( 'height', height );
     if(type ==='terminus'){
-        pane.setAttribute('class', 'terminus-item');
+        pane.setAttribute('class', 'field-item-pane terminus-item');
     }
     else if(type ==='action'){
-        pane.setAttribute('class', 'action-item');
+        pane.setAttribute('class', 'field-item-pane action-item');
     }
     else if(type ==='condition'){
-        pane.setAttribute('class', 'condition-item');
+        pane.setAttribute('class', 'field-item-pane condition-item');
     }
     group.appendChild( pane );
 
@@ -295,7 +297,8 @@ function getNewStepName(){
 function addNewTascItem(id, title){
     if(title===undefined)
         title = getNewStepName();
-    registerItem(createTascItem(new Tasc(ID(),title),0,300,180,250, title));
+    var pos = avoidOverlap(document.getElementsByClassName('tasc-item-pane'),300, document.body.clientWidth, 180, 250);
+    registerItem(createTascItem(new Tasc(ID(),title),pos[0],pos[1],180,250, title));
 }
 
 function openForm() {
