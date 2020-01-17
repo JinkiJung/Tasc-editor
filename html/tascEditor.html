@@ -192,6 +192,9 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                     activateLinkedItemStyle(document.getElementById(linkPath.getAttributeNS(null, 'startID')));
                     activateLinkedItemStyle(evt.target);
                     evt.target.setAttributeNS(null, 'pathIndex', paths.length);
+
+                    updateNextOfData(srcTascItemID, dstTascItemID);
+
                     paths.push(linkPath);
                 }
                 else
@@ -333,6 +336,18 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         if(tascObjectindex && fieldDatum){
             updateData(tascData[tascObjectindex], fieldContext, fieldDatum);
             setFieldValue(focusedElement, fieldDatum);
+        }
+    }
+
+    function updateNextOfData(targetID, nextID){
+        console.log(nextID);
+        for(var i=0; i<tascData.length ; i++){
+            if(tascData[i].id === targetID){
+                if(tascData[i].next=== undefined)
+                    tascData[i].next = [];
+                tascData[i].next.push(nextID);
+                console.log(tascData[i]);
+            }
         }
     }
 
