@@ -406,6 +406,7 @@ function updateData(tascObject, fieldName, fieldObject){
 
 function clearDatabase(){
     paths = [];
+    pathHeads = [];
     tascItems = [];
     fieldItems = [];
     tascData = [];

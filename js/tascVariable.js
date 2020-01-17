@@ -11,6 +11,7 @@ var yOffset= 10;
 var svgURI = 'http://www.w3.org/2000/svg';
 
 var paths = [];
+var pathHeads = [];
 var tascItems = [];
 var fieldItems = [];
 var tascData = [];

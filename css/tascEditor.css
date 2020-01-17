@@ -98,6 +98,12 @@ svg {
     stroke-width: 2;
 }
 
+.path-head {
+    fill: dimgray;
+    stroke: dimgray;
+    stroke-width: 2;
+}
+
 .chosen-path {
     fill: transparent;
     stroke: firebrick;

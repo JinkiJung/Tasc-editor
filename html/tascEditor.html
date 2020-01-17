@@ -46,7 +46,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 <svg id="editorPane" xmlns="http://www.w3.org/2000/svg" onload="makeDraggable(evt)">
 
     <script type="text/javascript"><![CDATA[
-    var selectedElement, offset, linkPath;
+    var selectedElement, offset, linkPath, linkHead;
     var linkItemSizeOffset = 5;
     var chosenPath;
     var isHighlighted = false;
@@ -77,6 +77,25 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             return tempPath;
         }
 
+        function getHeadPath(x,y){
+            return 'M'+(x-12)+","+(y-4)+ " L"+(x-12)+","+(y+4)+" L"+(x)+","+(y)+" z";
+        }
+
+        function updateHead(head, x, y){
+            head.setAttributeNS(null, 'd', getHeadPath(x,y));
+        }
+
+        function createLinkHead(start_id, start_x, start_y){
+            var head = document.createElementNS( svgURI, 'path');
+            head.setAttributeNS(null, 'start_x', start_x);
+            head.setAttributeNS(null, 'start_y', start_y);
+            head.setAttributeNS(null, 'class', 'path-head');
+            head.setAttributeNS(null, 'd', getHeadPath(start_x,start_y));
+            head.setAttributeNS(null, 'fill', '#f00');
+            head.classList.add('unselectable');
+            return head;
+        }
+
         function orderingElement(element){
             //svg.appendChild(element);
             for(var i=0; i<fieldItems.length ; i++){
@@ -89,6 +108,8 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             if(evt.target.classList.contains('linkable')){
                 linkPath = createLinkPath(evt.target.id, getMousePosition(evt).x ,getMousePosition(evt).y);
                 svg.appendChild(linkPath);
+                linkHead = createLinkHead(evt.target.id, getMousePosition(evt).x, getMousePosition(evt).y);
+                svg.appendChild(linkHead);
             }
             else if(evt.target.parentElement.nodeName === 'g'){
                 // put the object to the top
@@ -120,6 +141,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             if (linkPath){
                 updatePath(linkPath, linkPath.getAttributeNS(null, "start_x"), linkPath.getAttributeNS(null, "start_y"),
                     getMousePosition(evt).x,getMousePosition(evt).y);
+                updateHead(linkHead, getMousePosition(evt).x,getMousePosition(evt).y);
             }
             else if (selectedElement) {
                 // this is for group dragging
@@ -139,8 +161,10 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                             for(var t=0; t<paths.length ; t++){
                                 if (paths[t].getAttributeNS(null, 'endID') === target.id) {
                                     updatePath(paths[t], parseFloat(paths[t].getAttributeNS(null, "start_x")), parseFloat(paths[t].getAttributeNS(null, "start_y")), new_x + linkItemSizeOffset, new_y + linkItemSizeOffset);
+                                    updateHead(pathHeads[t],new_x + linkItemSizeOffset, new_y + linkItemSizeOffset);
                                 } else if (paths[t].getAttributeNS(null, 'startID') === target.id) {
                                     updatePath(paths[t], new_x + linkItemSizeOffset, new_y + linkItemSizeOffset, parseFloat(paths[t].getAttributeNS(null, "end_x")), parseFloat(paths[t].getAttributeNS(null, "end_y")));
+                                    updateHead(pathHeads[t],parseFloat(paths[t].getAttributeNS(null, "end_x")), parseFloat(paths[t].getAttributeNS(null, "end_y")));
                                 }
                             }
                         }
@@ -181,7 +205,9 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                     var srcTascItemID = linkPath.getAttributeNS(null,"startID").split('::')[0];
                     if(IsAlreadyIncluded(srcTascItemID,dstTascItemID) || IsAlreadyIncluded(dstTascItemID,srcTascItemID)){
                         svg.removeChild(linkPath);
+                        svg.removeChild(linkHead);
                         linkPath = null;
+                        linkHead = null;
                         return ;
                     }
                     updateHistory(document.getElementById('editorPane'));
@@ -196,11 +222,15 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                     updateNextOfData(srcTascItemID, dstTascItemID);
 
                     paths.push(linkPath);
+                    pathHeads.push(linkHead);
                 }
-                else
+                else{
                     svg.removeChild(linkPath);
+                    svg.removeChild(linkHead);
+                }
             }
             linkPath = null;
+            linkHead = null;
 
             if(evt.target.nodeName === 'path'){
                 if(chosenPath)
@@ -340,13 +370,11 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
     }
 
     function updateNextOfData(targetID, nextID){
-        console.log(nextID);
         for(var i=0; i<tascData.length ; i++){
             if(tascData[i].id === targetID){
                 if(tascData[i].next=== undefined)
                     tascData[i].next = [];
                 tascData[i].next.push(nextID);
-                console.log(tascData[i]);
             }
         }
     }
