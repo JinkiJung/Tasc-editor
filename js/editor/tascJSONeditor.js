@@ -77,11 +77,7 @@ function convertJSONToTasc(json){
     }
 }
 
-function convertTascToJSON(tascObjects) {
-
-}
-
-function createLinkPath(start_id, end_id){
+function generateLinkPath(start_id, end_id){
     var tempPath = document.createElementNS( svgURI, 'path');
     tempPath.setAttributeNS(null, 'class', 'path');
     tempPath.setAttributeNS(null, 'startID', start_id);
@@ -104,7 +100,7 @@ function makeLink(linkListGroup){
         }
         var fromItem = document.getElementById(linkItem.from + "::right");
         var toItem = document.getElementById(linkItem.to + "::left");
-        var tempLinkPath = createLinkPath(fromItem.id, toItem.id);
+        var tempLinkPath = generateLinkPath(fromItem.id, toItem.id);
         document.getElementById("editorPane").appendChild(tempLinkPath);
 
         activateLinkedItemStyle(fromItem);

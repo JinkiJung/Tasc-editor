@@ -67,42 +67,6 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             };
         }
 
-        function createLinkPath(start_id, start_x, start_y){
-            var tempPath = document.createElementNS( svgURI, 'path');
-            tempPath.setAttributeNS(null, 'start_x', start_x);
-            tempPath.setAttributeNS(null, 'start_y', start_y);
-            tempPath.setAttributeNS(null, 'class', 'path');
-            tempPath.setAttributeNS(null, 'startID', start_id);
-            tempPath.classList.add('unselectable');
-            return tempPath;
-        }
-
-        function getHeadPath(x,y){
-            return 'M'+(x-12)+","+(y-4)+ " L"+(x-12)+","+(y+4)+" L"+(x)+","+(y)+" z";
-        }
-
-        function updateHead(head, x, y){
-            head.setAttributeNS(null, 'd', getHeadPath(x,y));
-        }
-
-        function createLinkHead(start_id, start_x, start_y){
-            var head = document.createElementNS( svgURI, 'path');
-            head.setAttributeNS(null, 'start_x', start_x);
-            head.setAttributeNS(null, 'start_y', start_y);
-            head.setAttributeNS(null, 'class', 'path-head');
-            head.setAttributeNS(null, 'd', getHeadPath(start_x,start_y));
-            head.setAttributeNS(null, 'fill', '#f00');
-            head.classList.add('unselectable');
-            return head;
-        }
-
-        function orderingElement(element){
-            //svg.appendChild(element);
-            for(var i=0; i<fieldItems.length ; i++){
-                svg.appendChild(fieldItems[i]);
-            }
-        }
-
         function startDrag(evt) {
             // we will create path to make the link
             if(evt.target.classList.contains('linkable')){
@@ -203,7 +167,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                     // otherwise store it to both side
                     var dstTascItemID = evt.target.id.split('::')[0];
                     var srcTascItemID = linkPath.getAttributeNS(null,"startID").split('::')[0];
-                    if(IsAlreadyIncluded(srcTascItemID,dstTascItemID) || IsAlreadyIncluded(dstTascItemID,srcTascItemID)){
+                    if(IsAlreadyIncluded(srcTascItemID,dstTascItemID)){ // || IsAlreadyIncluded(dstTascItemID,srcTascItemID)){
                         svg.removeChild(linkPath);
                         svg.removeChild(linkHead);
                         linkPath = null;
@@ -245,183 +209,12 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             }
         }
 
-        function activeFieldFocused(item){
-            if(focusedElement)
-                return ;
-            focusedElement = item;
-            focusedElement.classList.add("field-focused");
-        }
-
-        function deactiveFieldFocused(){
-            if(focusedElement){
-                focusedElement.classList.remove("field-focused");
-            }
-            focusedElement = null;
-        }
-
-        function makeFieldItemSelectable(item){
-            for (var i = 0; i < item.childNodes.length; i++) {
-                for (var t=0; t < fieldTypes.length ; t++) {
-                    if (item.childNodes[i].classList.contains(fieldTypes[t] + '-item')) {
-                        item.childNodes[i].classList.remove('unselectable');
-                    }
-                }
+        function orderingElement(element){
+            //svg.appendChild(element);
+            for(var i=0; i<fieldItems.length ; i++){
+                svg.appendChild(fieldItems[i]);
             }
         }
-
-        function makeFieldItemUnselectable(item){
-            for (var i = 0; i < item.childNodes.length; i++) {
-                for (var t=0; t < fieldTypes.length ; t++){
-                    if (item.childNodes[i].classList.contains(fieldTypes[t] + '-item')) {
-                        item.childNodes[i].classList.add('unselectable');
-                    }
-                }
-            }
-        }
-
-        function activateFieldHighlight(item, type){
-            if(hasChildOfClass(item, type + '-item')){
-                var items = document.getElementsByClassName( type + '-field');
-                for(var t=0; t<items.length ; t++){
-                    items[t].classList.add('field-highlighted');
-                }
-                isHighlighted = true;
-            }
-        }
-
-        function deactiveFieldHighlight(){
-            var items = document.getElementsByClassName('field-highlighted');
-            while (items[0]) {
-                items[0].classList.remove('field-highlighted')
-            }
-            isHighlighted = false;
-        }
-
-        function deactiveChosenPathStyle(path){
-            path.classList.remove("chosen-path");
-            path.classList.add("path");
-            if(paths.indexOf(path)>=0){
-                pathHeads[paths.indexOf(path)].classList.remove("chosen-path-head");
-                pathHeads[paths.indexOf(path)].classList.add("path-head");
-            }
-        }
-
-        function activeChosenPathStyle(path){
-            path.classList.add("chosen-path");
-            path.classList.remove("path");
-            if(paths.indexOf(path)>=0) {
-                pathHeads[paths.indexOf(path)].classList.add("chosen-path-head");
-                pathHeads[paths.indexOf(path)].classList.remove("path-head");
-            }
-        }
-
-        function IsAlreadyIncluded(one, another){
-            var links = document.getElementById(one).getAttributeNS(null,'data-links');
-            if(links ===null)
-                links = [];
-            else
-                links = links.split(',');
-
-            if(links.includes(another)){
-                return true;
-            }
-            else{
-                links.push(another);
-                document.getElementById(one).setAttributeNS(null,'data-links',links);
-                return false;
-            }
-        }
-
-        function hasChildOfClass(doc, className){
-            for (var i = 0; i < doc.childNodes.length; i++) {
-                if (doc.childNodes[i].classList.contains(className)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    function setFieldValue(item, object){
-        var order = item.getAttribute('order');
-        for(var i=0; i<item.parentNode.children.length ; i++){
-            if(item.parentNode.children[i].tagName ==='text' && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
-                item.parentNode.children[i].classList.add('field-value-confirmed');
-                item.parentNode.children[i].innerHTML = object.name;
-            }
-        }
-    }
-    function getFieldData(item){
-        var index = item.getAttribute('data-array-index');
-        if(index)
-            return fieldData[index];
-        else
-            return undefined;
-        /*
-        for(var i=0; i<item.children.length ; i++){
-            if(item.children[i].classList.contains('field-value-confirmed')){
-                return item.children[i].innerHTML;
-            }
-        }
-         */
-    }
-
-    function updateValue(focusedElement, selectedElement){
-        var tascObjectindex = focusedElement.parentNode.getAttribute('data-array-index');
-        var fieldDatum = getFieldData(selectedElement);
-        var fieldContext = orderToContext(focusedElement.getAttribute('order'));
-
-        if(tascObjectindex && fieldDatum){
-            updateData(tascData[tascObjectindex], fieldContext, fieldDatum);
-            setFieldValue(focusedElement, fieldDatum);
-        }
-    }
-
-    function updateNextOfData(targetID, nextID){
-        for(var i=0; i<tascData.length ; i++){
-            if(tascData[i].id === targetID){
-                if(tascData[i].next=== undefined)
-                    tascData[i].next = [];
-                tascData[i].next.push(nextID);
-            }
-        }
-    }
-
-    function removeInterrelationship(one, another){
-        removeRelationship(document.getElementById(one), another);
-        removeRelationship(document.getElementById(another), one);
-        removeNextLink(document.getElementById(one), document.getElementById(another));
-    }
-
-    function removeNextLink(from, to){
-        var fromIndex = from.getAttribute('data-array-index');
-        var toIndex = to.getAttribute('data-array-index');
-        if(fromIndex && toIndex){
-            var toID = tascData[toIndex].id;
-            tascData[fromIndex].next.splice( tascData[fromIndex].next.indexOf(toID), 1 );
-        }
-    }
-
-    function removeRelationship(element, id_of_another){
-        var links = element.getAttributeNS(null, 'data-links');
-        if(links ===null)
-            links = [];
-        else
-            links = links.split(',');
-        if(links.includes(id_of_another)){
-            links.splice( links.indexOf(id_of_another), 1 );
-            element.setAttributeNS(null,'data-links',links);
-        }
-    }
-
-    function activateLinkedItemStyle(item){
-        item.classList.remove('linkItem');
-        item.classList.add('linkedItem');
-    }
-
-    function deactivateLinkedItemStyle(item){
-        item.classList.add('linkItem');
-        item.classList.remove('linkedItem');
     }
 
     document.addEventListener('keydown', function(event) {
@@ -433,34 +226,10 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         }
     });
 
-    function getSortedPathID(one, another){
-        var values = [];
-        values.push(one);
-        values.push(another);
-        values.sort(function (a, b) {
-            return ('' + a.attr).localeCompare(b.attr);
-        })
-        return values.join('--');
-    }
-
-    function deletePath(path){
-        // removing style of link boxes
-        var one = path.getAttributeNS(null,'startID');
-        var another = path.getAttributeNS(null,'endID')
-        removeInterrelationship(one.split('::')[0], another.split('::')[0]);
-        deactivateLinkedItemStyle(document.getElementById(one));
-        deactivateLinkedItemStyle(document.getElementById(another));
-        document.getElementById('editorPane').removeChild(path);
-        var pathIndex = paths.indexOf(path);
-
-        document.getElementById('editorPane').removeChild(pathHeads[pathIndex]);
-        paths.splice( pathIndex, 1 );
-        pathHeads.splice( pathIndex, 1 );
-        path = null;
-    }
     ]]> </script>
 </svg>
 
+<script type="text/javascript" src="../js/editor/tascSVG.js"></script>
 <script type="text/javascript" src="../js/data/tascDataModel.js"></script>
 <script type="text/javascript" src="../js/editor/tascEditor.js"></script>
 <script type="text/javascript" src="../js/editor/tascJSONEditor.js"></script>
