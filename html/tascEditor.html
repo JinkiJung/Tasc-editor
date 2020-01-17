@@ -12,11 +12,14 @@
 <body>
 <div id="top-bar">
 Tasc editor <button class="tasc-editor-button" onclick="">run</button>
-<button class="tasc-editor-button" onclick="">save scenario</button>
-<button class="tasc-editor-button" onclick="document.getElementById('file-input').click();">load scenario</button><input id='file-input' type="file" style="display: none">
-<button class="tasc-editor-button" onclick="removeAllItems()">initialize</button>
+<button class="tasc-editor-button" onclick="saveScenario()">save scenario</button>
+<button class="tasc-editor-button" onclick="loadScenario()">load scenario</button><input id='file-input' type="file" style="display: none">
+<button class="tasc-editor-button" onclick="removeAllItems()">clear</button>
+<!--<button class="tasc-editor-button" onclick="undo()">undo</button>
+<button class="tasc-editor-button" onclick="redo()">redo</button>-->
 <button class="tasc-editor-button" onclick="addNewItem('tasc',ID())">add tasc</button>
-<button class="tasc-editor-button" onclick="openForm()">add terminus</button>
+<button class="tasc-editor-button" onclick="addNewItem('terminus',ID())">add terminus</button>
+<!--<button class="tasc-editor-button" onclick="openForm()">add terminus</button>-->
 <button class="tasc-editor-button" onclick="addNewItem('action',ID())">add action</button>
 <button class="tasc-editor-button" onclick="addNewItem('condition',ID())">add condition</button>
 <button class="tasc-editor-button">delete</button><br>
@@ -74,14 +77,12 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             return tempPath;
         }
 
-        ///////////////////////////////////
         function orderingElement(element){
             //svg.appendChild(element);
             for(var i=0; i<fieldItems.length ; i++){
                 svg.appendChild(fieldItems[i]);
             }
         }
-        ///////////////////////////////////
 
         function startDrag(evt) {
             // we will create path to make the link
@@ -153,7 +154,6 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                         else
                             deactiveFieldFocused();
                     }
-
                 }
                 else{
                     var coord = getMousePosition(evt);
@@ -165,8 +165,9 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 
         function endDrag(evt) {
             if(selectedElement){
-                if(focusedElement)
-                    setFieldValue(focusedElement, getFieldItemValue(selectedElement));//setFieldValue(focusedElement, getValue(selectedElement));
+                if(focusedElement){
+                    updateValue(focusedElement, selectedElement);
+                }
                 makeFieldItemSelectable(selectedElement);
                 deactiveFieldHighlight();
             }
@@ -183,6 +184,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                         linkPath = null;
                         return ;
                     }
+                    updateHistory(document.getElementById('editorPane'));
 
                     linkPath.setAttributeNS(null, 'endID', evt.target.id);
                     linkPath.classList.remove('unselectable');
@@ -208,24 +210,6 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                     deactiveChosenPathStyle(chosenPath);
                 chosenPath = null;
             }
-        }
-
-        function setFieldValue(item, value){
-            var order = item.getAttribute('order');
-            for(var i=0; i<item.parentNode.children.length ; i++){
-                if(item.parentNode.children[i].tagName ==='text' && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
-                    item.parentNode.children[i].classList.add('field-value-confirmed');
-                    item.parentNode.children[i].innerHTML = value;
-                }
-            }
-        }
-        function getFieldItemValue(item){
-            for(var i=0; i<item.children.length ; i++){
-                if(item.children[i].classList.contains('field-value-confirmed')){
-                    return item.children[i].innerHTML;
-                }
-            }
-            return undefined;
         }
 
         function activeFieldFocused(item){
@@ -317,10 +301,46 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         }
     }
 
+    function setFieldValue(item, object){
+        var order = item.getAttribute('order');
+        for(var i=0; i<item.parentNode.children.length ; i++){
+            if(item.parentNode.children[i].tagName ==='text' && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
+                item.parentNode.children[i].classList.add('field-value-confirmed');
+                item.parentNode.children[i].innerHTML = object.name;
+            }
+        }
+    }
+    function getFieldData(item){
+        var index = item.getAttribute('data-array-index');
+        if(index)
+            return fieldData[index];
+        else
+            return undefined;
+        /*
+        for(var i=0; i<item.children.length ; i++){
+            if(item.children[i].classList.contains('field-value-confirmed')){
+                return item.children[i].innerHTML;
+            }
+        }
+         */
+    }
+
+    function updateValue(focusedElement, selectedElement){
+        var tascObjectindex = focusedElement.parentNode.getAttribute('data-array-index');
+        var fieldDatum = getFieldData(selectedElement);
+        var fieldContext = orderToContext(focusedElement.getAttribute('order'));
+
+        if(tascObjectindex && fieldDatum){
+            updateData(tascData[tascObjectindex], fieldContext, fieldDatum);
+            setFieldValue(focusedElement, fieldDatum);
+        }
+    }
+
     function removeInterrelationship(one, another){
         removeRelationship(document.getElementById(one), another);
         removeRelationship(document.getElementById(another), one);
     }
+
     function removeRelationship(element, id_of_another){
         var links = element.getAttributeNS(null, 'data-links');
         if(links ===null)

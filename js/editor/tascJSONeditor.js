@@ -77,6 +77,10 @@ function convertJSONToTasc(json){
     }
 }
 
+function convertTascToJSON(tascObjects) {
+
+}
+
 function createLinkPath(start_id, end_id){
     var tempPath = document.createElementNS( svgURI, 'path');
     tempPath.setAttributeNS(null, 'class', 'path');
@@ -112,5 +116,8 @@ function makeLink(linkListGroup){
             parseFloat(toItem.getAttribute('x')) + linkItemSizeOffset,
             parseFloat(toItem.getAttribute('y')) + linkItemSizeOffset);
     }
+}
 
+function updateTasc(item, field){
+    //if(field.)
 }

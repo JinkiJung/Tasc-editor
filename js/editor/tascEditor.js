@@ -1,6 +1,13 @@
-function createStartingTascItem(id, x, y, width, height, title) {
+var ID = function () {
+    // Math.random should be unique because of its seeding algorithm.
+    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+    // after the decimal.
+    return '_' + Math.random().toString(36).substr(2, 9);
+};
+
+function createSpecialTascItem(type, x, y, width, height) {
     var group = document.createElementNS( svgURI, 'g');
-    group.setAttribute('id',id);
+    group.setAttribute('id',type);
     group.setAttribute( 'x', x );
     group.setAttribute( 'y', y );
     group.setAttribute('class', 'draggable');
@@ -16,23 +23,30 @@ function createStartingTascItem(id, x, y, width, height, title) {
     pane.setAttribute( 'height', height );
     pane.setAttribute('rx','2');
     pane.setAttribute('ry','2');
-    pane.setAttribute('fill','#00BFFF');
+    if(type==='start')
+        pane.setAttribute('fill','#00BFFF');
+    else if(type==='end')
+        pane.setAttribute('fill','blue');
+
     pane.classList.add('tasc-item-pane');
     group.appendChild( pane );
 
-    /*
+    //*
     // title description
     var titleText = document.createElementNS( svgURI, 'text');
     titleText.setAttribute( 'offset-x', width/2 );
-    titleText.setAttribute( 'offset-y', '12' );
+    titleText.setAttribute( 'offset-y', (height/2) );
     titleText.setAttribute( 'x', x+ (width/2) );
-    titleText.setAttribute( 'y', y + 12);
+    titleText.setAttribute( 'y', y + (height/2));
     titleText.setAttribute( 'width', width );
-    titleText.setAttribute( 'height', 30 );
+    titleText.setAttribute( 'height', height );
     titleText.setAttribute('class','unselectable title-description');
     titleText.setAttribute('dominant-baseline','middle');
     titleText.setAttribute('text-anchor','middle');
-    titleText.innerHTML = title;
+    if(type==='start')
+        titleText.innerHTML = 'S';
+    else if(type==='end')
+        titleText.innerHTML = 'E';
     group.appendChild( titleText );
 
     /*
@@ -47,10 +61,10 @@ function createStartingTascItem(id, x, y, width, height, title) {
      */
 
     // Link items
-    group.appendChild(createLinkItem(id, x, y, width, height,'top'));
-    group.appendChild(createLinkItem(id, x, y, width, height, 'bottom'));
-    group.appendChild(createLinkItem(id, x, y, width, height, 'left'));
-    group.appendChild(createLinkItem(id, x, y, width, height,'right'));
+    group.appendChild(createLinkItem(type, x, y, width, height,'top'));
+    group.appendChild(createLinkItem(type, x, y, width, height, 'bottom'));
+    group.appendChild(createLinkItem(type, x, y, width, height, 'left'));
+    group.appendChild(createLinkItem(type, x, y, width, height,'right'));
 
     tascItems.push(group);
     return group;
@@ -63,6 +77,7 @@ function createTascItem(tascObject, x, y, width, height) {
     group.setAttribute( 'y', y );
     group.setAttribute('class', 'draggable tasc-item');
     group.setAttribute('render-order',0);
+    group.setAttribute('data-array-index',tascData.length);
 
     // background pane
     var pane = document.createElementNS( svgURI, 'rect');
@@ -89,7 +104,7 @@ function createTascItem(tascObject, x, y, width, height) {
     titleText.setAttribute('class','unselectable title-description');
     titleText.setAttribute('dominant-baseline','middle');
     titleText.setAttribute('text-anchor','middle');
-    titleText.innerHTML = tascObject.title;
+    titleText.innerHTML = tascObject.name;
     group.appendChild( titleText );
 
     var givenValue = (tascObject.given === undefined) ? '' : tascObject.given.name;
@@ -108,7 +123,7 @@ function createTascItem(tascObject, x, y, width, height) {
     group.appendChild(createLinkItem(tascObject.id, x, y, width, height, 'left'));
     group.appendChild(createLinkItem(tascObject.id, x, y, width, height,'right'));
 
-    tascItems.push(group);
+    appendToDatabase(tascObject, group);
     return group;
 }
 
@@ -183,7 +198,7 @@ function createField(group, elementType, x, y, width, order, description, givenV
     group.appendChild(createFieldValue(x,y, width, order, classvalue, givenValue));
 }
 
-function createFieldRect(x, y, width, order, classValue){
+function createFieldRect(x, y, width, order, classValue, context){
     var defaultYOffset = 34;
     var element = document.createElementNS( svgURI, 'rect');
     element.setAttribute( 'offset-x', innerOffset );
@@ -241,7 +256,7 @@ function createFieldItem(fieldObject, x, y, width, height, type) {
     group.setAttribute( 'y', y );
     group.setAttribute('class', 'draggable field-item');
     group.setAttribute('render-order',1);
-
+    group.setAttribute('data-array-index',fieldData.length);
     // background pane
     var pane = document.createElementNS( svgURI, 'rect');
     pane.setAttribute( 'offset-x', '0' );
@@ -273,16 +288,9 @@ function createFieldItem(fieldObject, x, y, width, height, type) {
     titleText.innerHTML = fieldObject.name;
     group.appendChild( titleText );
 
-    fieldItems.push(group);
+    appendToDatabase(fieldObject, group);
     return group;
 }
-
-var ID = function () {
-    // Math.random should be unique because of its seeding algorithm.
-    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
-    // after the decimal.
-    return '_' + Math.random().toString(36).substr(2, 9);
-};
 
 function getDummyName(type){
     return type+' '+(document.getElementsByClassName(type + '-item').length+1);
@@ -294,6 +302,7 @@ function addNewItem(type, id, title){
     if(title===undefined)
         title = getDummyName(type);
 
+    updateHistory(document.getElementById('editorPane'));
     var pos;
     if(type==='tasc'){
         pos = avoidOverlap(document.getElementsByClassName('tasc-item-pane'),300, document.body.clientWidth, tascItemWidth, tascItemHeight);
@@ -308,6 +317,7 @@ function addNewItem(type, id, title){
 }
 
 function addNewItemWithObject(dataObject){
+    updateHistory(document.getElementById('editorPane'));
     var pos;
     if(dataObject instanceof Tasc){
         pos = avoidOverlap(document.getElementsByClassName('tasc-item-pane'),300, document.body.clientWidth, tascItemWidth, tascItemHeight);
@@ -321,6 +331,19 @@ function addNewItemWithObject(dataObject){
     }
 }
 
+function orderToContext(order){
+    if(order === '0')
+        return 'given';
+    else if(order === '1')
+        return 'when';
+    else if(order === '2')
+        return 'who';
+    else if(order === '3')
+        return 'do';
+    else if(order === '4')
+        return 'until';
+}
+
 function openForm() {
     document.getElementById("myForm").style.display = "block";
 }
@@ -329,19 +352,92 @@ function closeForm() {
     document.getElementById("myForm").style.display = "none";
 }
 
+function saveScenario(){
+    console.log(JSON.stringify(tascData));
+}
+
+function loadScenario(){
+    document.getElementById('file-input').click();
+}
+
 function removeAllItems(){
     var node = document.getElementById('editorPane');
     while (node.firstChild) {
         node.removeChild(node.firstChild);
     }
-    paths = [];
-    tascItems = [];
-    fieldItems = [];
+    clearDatabase();
     initialize();
 }
 
+function appendToDatabase(object, item){
+    if(object.constructor.name ==='Tasc'){
+        tascData.push(object);
+        tascItems.push(item);
+    }
+    else{
+        fieldData.push(object);
+        fieldItems.push(item);
+    }
+}
+
+function updateData(tascObject, fieldName, fieldObject){
+    tascObject[fieldName] = fieldObject;
+}
+
+function clearDatabase(){
+    paths = [];
+    tascItems = [];
+    fieldItems = [];
+    tascData = [];
+    fieldData = [];
+}
+
+function updateHistory(svg) {
+}
+
+/*
+// future implementation - UNDO REDO
+function importItemsFromOld(svg, old){
+    console.log(old);
+    for(var i=0; i<old.length; i++){
+        console.log(old[i]);
+        svg.appendChild(old[i]);
+    }
+}
+
+function updateHistory(svg){
+    var clone = [];
+    for(var i=0; i<tascItems.length ; i++){
+        clone.push(tascItems[i]);
+    }
+    for(var i=0; i<paths.length ; i++){
+        clone.push(paths[i]);
+    }
+    for(var i=0; i<fieldItems.length ; i++){
+        clone.push(fieldItems[i]);
+    }
+
+    svgHistory.push(clone);
+}
+
+function undo(){
+    removeAllItems();
+    var svg = document.getElementById('editorPane');
+    importItemsFromOld(svg, svgHistory[svgHistory.length - svgHistoryIndex]);
+
+    //console.log(svgHistory[svgHistory.length - svgHistoryIndex]);
+    //svg = svgHistory[svgHistory.length - svgHistoryIndex];
+    svgHistoryIndex+=1;
+}
+
+function redo(){
+
+}
+*/
+
 function initialize(){
-    registerItem(createStartingTascItem("start",0+ xOffset,200 + yOffset,30,30));
+    registerItem(createSpecialTascItem("start",0+ xOffset,200 + yOffset,30,30));
+    registerItem(createSpecialTascItem("end",1000+ xOffset,200 + yOffset,30,30));
 }
 
 initialize();

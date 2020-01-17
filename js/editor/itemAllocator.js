@@ -26,9 +26,7 @@ function avoidOverlap(items, startingHeight, editorPaneWidth, newItemWidth, newI
 
             if(x+newItemWidth>=editorPaneWidth){
                 x = 0;
-                console.log()
                 y = maxOverlappedHeight + margin;
-                console.log(y);
                 break;
             }
             else if(everOverlapped){
