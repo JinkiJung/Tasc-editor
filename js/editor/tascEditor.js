@@ -420,7 +420,7 @@ function clearDatabase(){
     pathHeads = [];
     tascItems = [];
     fieldItems = [];
-    tascData = [];
+    tascData = [{id:"start"},{id:"end"}];
     actionData = [];
     terminusData = [];
     conditionData = [];

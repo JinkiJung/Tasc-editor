@@ -398,7 +398,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         var toIndex = to.getAttribute('data-array-index');
         if(fromIndex && toIndex){
             var toID = tascData[toIndex].id;
-            tascData[fromIndex].next.splice( tascData[fromIndex].next.indexOf(to.id), 1 );
+            tascData[fromIndex].next.splice( tascData[fromIndex].next.indexOf(toID), 1 );
         }
     }
 
