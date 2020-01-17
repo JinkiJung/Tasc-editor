@@ -2,7 +2,7 @@ function Tasc(id, name, given, when, who, does, until, next){ //, instruction, e
     this.id = id;
     this.name = name;
     if(given)
-        this.given = new Context(ID(), given);
+        this.given = new Context(ID(), given.name);
     if(when)
         this.when = new Condition(ID(), when.name);
     if(who)

@@ -396,15 +396,10 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
     function removeNextLink(from, to){
         var fromIndex = from.getAttribute('data-array-index');
         var toIndex = to.getAttribute('data-array-index');
-        console.log(fromIndex);
         if(fromIndex && toIndex){
             var toID = tascData[toIndex].id;
-            console.log(tascData[fromIndex].next);
             tascData[fromIndex].next.splice( tascData[fromIndex].next.indexOf(to.id), 1 );
-            console.log(tascData[fromIndex].next);
         }
-
-
     }
 
     function removeRelationship(element, id_of_another){

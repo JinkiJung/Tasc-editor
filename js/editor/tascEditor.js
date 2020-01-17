@@ -256,7 +256,12 @@ function createFieldItem(fieldObject, x, y, width, height, type) {
     group.setAttribute( 'y', y );
     group.setAttribute('class', 'draggable field-item');
     group.setAttribute('render-order',1);
-    group.setAttribute('data-array-index',fieldData.length);
+    if(fieldObject.constructor.name === "Terminus")
+        group.setAttribute('data-array-index',terminusData.length);
+    else if(fieldObject.constructor.name === "Action")
+        group.setAttribute('data-array-index',actionData.length);
+    else if(fieldObject.constructor.name === "Condition")
+        group.setAttribute('data-array-index',conditionData.length);
     // background pane
     var pane = document.createElementNS( svgURI, 'rect');
     pane.setAttribute( 'offset-x', '0' );
@@ -371,9 +376,10 @@ function download(data, filename, type) {
 }
 
 function saveScenario(){
-    console.log(JSON.stringify(tascData));
-    // Function to download data to a file
-    download(JSON.stringify(tascData), "tasc", "json");
+    //console.log(JSON.stringify(tascData));
+    var scenario = { id: ID(), name:"testing", terminuses: terminusData, actions: actionData, conditions: conditionData, scenario:tascData };
+    console.log(JSON.stringify(scenario));
+    //download(JSON.stringify(tascData), "tasc", "json");
 }
 
 function loadScenario(){
@@ -395,7 +401,12 @@ function appendToDatabase(object, item){
         tascItems.push(item);
     }
     else{
-        fieldData.push(object);
+        if(object.constructor.name === 'Terminus')
+            terminusData.push(object);
+        else if(object.constructor.name === 'Action')
+            actionData.push(object);
+        else if(object.constructor.name === 'Condition')
+            conditionData.push(object);
         fieldItems.push(item);
     }
 }
@@ -410,7 +421,9 @@ function clearDatabase(){
     tascItems = [];
     fieldItems = [];
     tascData = [];
-    fieldData = [];
+    actionData = [];
+    terminusData = [];
+    conditionData = [];
 }
 
 function updateHistory(svg) {
