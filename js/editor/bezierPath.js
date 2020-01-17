@@ -16,5 +16,5 @@ function updatePath(path, x4, y4, x1, y1) {
     path.setAttributeNS(null, 'start_y', y4);
     path.setAttributeNS(null, 'end_x', x1);
     path.setAttributeNS(null, 'end_y', y1);
-    
+
 }
