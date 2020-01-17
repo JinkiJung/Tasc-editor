@@ -104,6 +104,12 @@ svg {
     stroke-width: 2;
 }
 
+.chosen-path-head {
+    fill: firebrick;
+    stroke: firebrick;
+    stroke-width: 3;
+}
+
 .chosen-path {
     fill: transparent;
     stroke: firebrick;

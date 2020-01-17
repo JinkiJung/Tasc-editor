@@ -300,11 +300,19 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         function deactiveChosenPathStyle(path){
             path.classList.remove("chosen-path");
             path.classList.add("path");
+            if(paths.indexOf(path)>=0){
+                pathHeads[paths.indexOf(path)].classList.remove("chosen-path-head");
+                pathHeads[paths.indexOf(path)].classList.add("path-head");
+            }
         }
 
         function activeChosenPathStyle(path){
             path.classList.add("chosen-path");
             path.classList.remove("path");
+            if(paths.indexOf(path)>=0) {
+                pathHeads[paths.indexOf(path)].classList.add("chosen-path-head");
+                pathHeads[paths.indexOf(path)].classList.remove("path-head");
+            }
         }
 
         function IsAlreadyIncluded(one, another){
@@ -382,6 +390,21 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
     function removeInterrelationship(one, another){
         removeRelationship(document.getElementById(one), another);
         removeRelationship(document.getElementById(another), one);
+        removeNextLink(document.getElementById(one), document.getElementById(another));
+    }
+
+    function removeNextLink(from, to){
+        var fromIndex = from.getAttribute('data-array-index');
+        var toIndex = to.getAttribute('data-array-index');
+        console.log(fromIndex);
+        if(fromIndex && toIndex){
+            var toID = tascData[toIndex].id;
+            console.log(tascData[fromIndex].next);
+            tascData[fromIndex].next.splice( tascData[fromIndex].next.indexOf(to.id), 1 );
+            console.log(tascData[fromIndex].next);
+        }
+
+
     }
 
     function removeRelationship(element, id_of_another){
@@ -426,13 +449,18 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
     }
 
     function deletePath(path){
+        // removing style of link boxes
         var one = path.getAttributeNS(null,'startID');
         var another = path.getAttributeNS(null,'endID')
         removeInterrelationship(one.split('::')[0], another.split('::')[0]);
         deactivateLinkedItemStyle(document.getElementById(one));
         deactivateLinkedItemStyle(document.getElementById(another));
         document.getElementById('editorPane').removeChild(path);
-        paths.splice( paths.indexOf(path), 1 );
+        var pathIndex = paths.indexOf(path);
+
+        document.getElementById('editorPane').removeChild(pathHeads[pathIndex]);
+        paths.splice( pathIndex, 1 );
+        pathHeads.splice( pathIndex, 1 );
         path = null;
     }
     ]]> </script>
