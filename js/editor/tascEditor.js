@@ -98,7 +98,7 @@ function loadScenario(){
     document.getElementById('file-input').click();
 }
 
-function removeAllItems(){
+function clear(){
     var node = document.getElementById('editorPane');
     while (node.firstChild) {
         node.removeChild(node.firstChild);
@@ -304,7 +304,7 @@ function updateHistory(svg){
 }
 
 function undo(){
-    removeAllItems();
+    clear();
     var svg = document.getElementById('editorPane');
     importItemsFromOld(svg, svgHistory[svgHistory.length - svgHistoryIndex]);
 

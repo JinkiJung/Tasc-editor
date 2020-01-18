@@ -14,7 +14,7 @@
 Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 <button class="tasc-editor-button" onclick="saveScenario()">save scenario</button>
 <button class="tasc-editor-button" onclick="loadScenario()">load scenario</button><input id='file-input' type="file" style="display: none">
-<button class="tasc-editor-button" onclick="removeAllItems()">clear</button>
+<button class="tasc-editor-button" onclick="clear()">clear</button>
 <!--<button class="tasc-editor-button" onclick="undo()">undo</button>
 <button class="tasc-editor-button" onclick="redo()">redo</button>-->
 <button class="tasc-editor-button" onclick="addNewItem('tasc',ID())">add tasc</button>
@@ -84,14 +84,17 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                     offset = getMousePosition(evt);
                     offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
                     offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
+                    storeOriginPos(selectedElement, parseFloat(selectedElement.getAttributeNS(null, "x")),
+                        parseFloat(selectedElement.getAttributeNS(null, "y")));
                 }
             }
+            /*
             else if (evt.target.classList.contains('draggable')) {
                 selectedElement = evt.target;
                 offset = getMousePosition(evt);
                 offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
                 offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
-            }
+            }*/
 
             if(selectedElement && selectedElement.classList.contains('field-item') && !isHighlighted){
                 makeFieldItemUnselectable(selectedElement);
@@ -111,30 +114,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                 // this is for group dragging
                 if(selectedElement.nodeName === 'g'){
                     var coord = getMousePosition(evt);
-                    selectedElement.setAttributeNS(null, "x", coord.x - offset.x);
-                    selectedElement.setAttributeNS(null, "y", coord.y - offset.y);
-
-                    // here children will be moved together with parent
-                    for(var i= 0; i<selectedElement.children.length; i++){
-                        var target = selectedElement.children[i];
-                        var new_x = coord.x - offset.x+parseFloat(target.getAttributeNS(null, "offset-x"));
-                        var new_y = coord.y - offset.y+parseFloat(target.getAttributeNS(null, "offset-y"));
-
-                        // when it is linkable
-                        if(target.classList.contains('linkable')) {
-                            for(var t=0; t<paths.length ; t++){
-                                if (paths[t].getAttributeNS(null, 'endID') === target.id) {
-                                    updatePath(paths[t], parseFloat(paths[t].getAttributeNS(null, "start_x")), parseFloat(paths[t].getAttributeNS(null, "start_y")), new_x + linkItemSizeOffset, new_y + linkItemSizeOffset);
-                                    updateHead(pathHeads[t],new_x + linkItemSizeOffset, new_y + linkItemSizeOffset);
-                                } else if (paths[t].getAttributeNS(null, 'startID') === target.id) {
-                                    updatePath(paths[t], new_x + linkItemSizeOffset, new_y + linkItemSizeOffset, parseFloat(paths[t].getAttributeNS(null, "end_x")), parseFloat(paths[t].getAttributeNS(null, "end_y")));
-                                    updateHead(pathHeads[t],parseFloat(paths[t].getAttributeNS(null, "end_x")), parseFloat(paths[t].getAttributeNS(null, "end_y")));
-                                }
-                            }
-                        }
-                        target.setAttributeNS(null, "x", new_x);
-                        target.setAttributeNS(null, "y", new_y);
-                    }
+                    moveItem(selectedElement, coord.x - offset.x, coord.y - offset.y);
 
                     if(isHighlighted){
                         if(evt.target.classList.contains('field-highlighted'))
@@ -155,6 +135,8 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             if(selectedElement){
                 if(focusedElement){
                     updateValue(focusedElement, selectedElement);
+                    var orgPos = loadOriginPos(selectedElement);
+                    moveItem(selectedElement, orgPos[0], orgPos[1]);
                 }
                 makeFieldItemSelectable(selectedElement);
                 deactiveFieldHighlight();
@@ -213,6 +195,41 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             //svg.appendChild(element);
             for(var i=0; i<fieldItems.length ; i++){
                 svg.appendChild(fieldItems[i]);
+            }
+        }
+
+        function storeOriginPos(selectedElement, x, y){
+            selectedElement.setAttribute("origin-x",x);
+            selectedElement.setAttribute("origin-y",y);
+        }
+        function loadOriginPos(selectedElement){
+            return [selectedElement.getAttribute("origin-x"), selectedElement.getAttribute("origin-y")];
+        }
+
+        function moveItem(selectedElement, x, y){
+            x = parseFloat(x);
+            y = parseFloat(y);
+            selectedElement.setAttributeNS(null, "x", x);
+            selectedElement.setAttributeNS(null, "y", y);
+            // here children will be moved together with parent
+            for(var i= 0; i<selectedElement.children.length; i++){
+                var target = selectedElement.children[i];
+                var new_x = x + parseFloat(target.getAttributeNS(null, "offset-x"));
+                var new_y = y + parseFloat(target.getAttributeNS(null, "offset-y"));
+                // when it is linkable
+                if(target.classList.contains('linkable')) {
+                    for(var t=0; t<paths.length ; t++){
+                        if (paths[t].getAttributeNS(null, 'endID') === target.id) {
+                            updatePath(paths[t], parseFloat(paths[t].getAttributeNS(null, "start_x")), parseFloat(paths[t].getAttributeNS(null, "start_y")), new_x + linkItemSizeOffset, new_y + linkItemSizeOffset);
+                            updateHead(pathHeads[t],new_x + linkItemSizeOffset, new_y + linkItemSizeOffset);
+                        } else if (paths[t].getAttributeNS(null, 'startID') === target.id) {
+                            updatePath(paths[t], new_x + linkItemSizeOffset, new_y + linkItemSizeOffset, parseFloat(paths[t].getAttributeNS(null, "end_x")), parseFloat(paths[t].getAttributeNS(null, "end_y")));
+                            updateHead(pathHeads[t],parseFloat(paths[t].getAttributeNS(null, "end_x")), parseFloat(paths[t].getAttributeNS(null, "end_y")));
+                        }
+                    }
+                }
+                target.setAttributeNS(null, "x", new_x);
+                target.setAttributeNS(null, "y", new_y);
             }
         }
     }

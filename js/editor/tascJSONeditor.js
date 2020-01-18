@@ -11,6 +11,7 @@ function getFile(event) {
 
 function placeFileContent(target, file) {
     readFileContent(file).then(content => {
+        clear();
         convertJSONToTasc(JSON.parse(content)); //target.value = content
     }).catch(error => console.log(error));
 }
@@ -42,7 +43,6 @@ function convertJSONToTasc(json){
             else if(document.getElementById(elem.id)===null){
                 var data = new Tasc(elem.id, elem.name, elem.given, elem.when, elem.who, elem.do, elem.until);
                 addNewItemWithObject(data);
-                //registerItem(createTascItem(data, 400 + xOffset,200 + yOffset,tascItemWidth,tascItemHeight));
                 prepareMakingLink(elem, linkedPair);
             }
         }
@@ -91,6 +91,7 @@ function makeLink(linkListGroup){
         console.log("ERROR: there is no link list.");
         return ;
     }
+    var svg = document.getElementById("editorPane");
     for(var g=0 ; g<linkListGroup.length ; g++){
         var linkItem = linkListGroup[g];
         if(linkItem.from === undefined || document.getElementById(linkItem.from) === undefined
@@ -101,11 +102,16 @@ function makeLink(linkListGroup){
         var fromItem = document.getElementById(linkItem.from + "::right");
         var toItem = document.getElementById(linkItem.to + "::left");
         var tempLinkPath = generateLinkPath(fromItem.id, toItem.id);
-        document.getElementById("editorPane").appendChild(tempLinkPath);
+        svg.appendChild(tempLinkPath);
 
         activateLinkedItemStyle(fromItem);
         activateLinkedItemStyle(toItem);
         //evt.target.setAttributeNS(null, 'pathIndex', paths.length);
+        var tempLinkHead = createLinkHead("",parseFloat(toItem.getAttribute('x')) + linkItemSizeOffset,
+            parseFloat(toItem.getAttribute('y')) + linkItemSizeOffset);
+        svg.appendChild(tempLinkHead);
+
+        pathHeads.push(tempLinkHead);
         paths.push(tempLinkPath);
         updatePath(tempLinkPath, parseFloat(fromItem.getAttribute('x')) + linkItemSizeOffset,
             parseFloat(fromItem.getAttribute('y')) + linkItemSizeOffset,
