@@ -57,3 +57,20 @@ function doOverlap(l1_x, l1_y, r1_x, r1_y, l2_x, l2_y, r2_x, r2_y)
 
     return true;
 }
+
+function isAssignable(src, dst, threshold){
+    var intersection = getOverlappingArea(getNumber(src, 'x'), getNumber(src, 'y'),
+        getNumber(src, 'x') + getNumber(src, 'width'), getNumber(src, 'y') +getNumber(src, 'height'),
+        getNumber(dst, 'x'), getNumber(dst, 'y'),
+        getNumber(dst, 'x') + getNumber(dst, 'width'), getNumber(dst, 'y') +getNumber(dst, 'height'));
+    if((intersection / (getNumber(dst, 'width')*getNumber(dst, 'height'))) > threshold)
+        return true;
+    else
+        return false;
+}
+
+function getOverlappingArea(l1_x, l1_y, r1_x, r1_y, l2_x, l2_y, r2_x, r2_y){
+    var x_overlap = Math.max(0, Math.min(r1_x,r2_x) - Math.max(l1_x,l2_x));
+    var y_overlap = Math.max(0, Math.min(r1_y,r2_y) - Math.max(l1_y,l2_y));
+    return x_overlap * y_overlap;
+}

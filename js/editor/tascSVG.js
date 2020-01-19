@@ -322,7 +322,7 @@ function activateFieldHighlight(item, type){
         for(var t=0; t<items.length ; t++){
             items[t].classList.add('field-highlighted');
         }
-        isHighlighted = true;
+        relatedFieldHighlighted = true;
     }
 }
 
@@ -331,7 +331,7 @@ function deactiveFieldHighlight(){
     while (items[0]) {
         items[0].classList.remove('field-highlighted')
     }
-    isHighlighted = false;
+    relatedFieldHighlighted = false;
 }
 
 function deactiveChosenPathStyle(path){
@@ -389,4 +389,63 @@ function createLinkHead(start_id, start_x, start_y){
     head.setAttributeNS(null, 'fill', '#f00');
     head.classList.add('unselectable');
     return head;
+}
+
+function doIfItOverlaps(classType, target, callback){
+    var items = document.getElementsByClassName(classType);
+    for(var i=0; i<items.length ; i++){
+        if(isAssignable(items[i], target, 0.5)){
+            callback(items[i]);
+        }
+    }
+}
+
+function setSelectedElement(element){
+    selectedElement = element;
+    if(selectedElement)
+        setSelectedArea(selectedElement);
+    else
+        selectedArea = undefined;
+}
+
+function setSelectedArea(selectedElement){
+    for(var i=0; i<selectedElement.children.length ; i++){
+        if(selectedElement.children[i].nodeName ==='rect')
+            selectedArea = selectedElement.children[i];
+    }
+}
+
+function storeOriginPos(selectedElement, x, y){
+    selectedElement.setAttribute("origin-x",x);
+    selectedElement.setAttribute("origin-y",y);
+}
+function loadOriginPos(selectedElement){
+    return [selectedElement.getAttribute("origin-x"), selectedElement.getAttribute("origin-y")];
+}
+
+function moveItem(selectedElement, x, y){
+    x = parseFloat(x);
+    y = parseFloat(y);
+    selectedElement.setAttributeNS(null, "x", x);
+    selectedElement.setAttributeNS(null, "y", y);
+    // here children will be moved together with parent
+    for(var i= 0; i<selectedElement.children.length; i++){
+        var target = selectedElement.children[i];
+        var new_x = x + parseFloat(target.getAttributeNS(null, "offset-x"));
+        var new_y = y + parseFloat(target.getAttributeNS(null, "offset-y"));
+        // when it is linkable
+        if(target.classList.contains('linkable')) {
+            for(var t=0; t<paths.length ; t++){
+                if (paths[t].getAttributeNS(null, 'endID') === target.id) {
+                    updatePath(paths[t], parseFloat(paths[t].getAttributeNS(null, "start_x")), parseFloat(paths[t].getAttributeNS(null, "start_y")), new_x + linkItemSizeOffset, new_y + linkItemSizeOffset);
+                    updateHead(pathHeads[t],new_x + linkItemSizeOffset, new_y + linkItemSizeOffset);
+                } else if (paths[t].getAttributeNS(null, 'startID') === target.id) {
+                    updatePath(paths[t], new_x + linkItemSizeOffset, new_y + linkItemSizeOffset, parseFloat(paths[t].getAttributeNS(null, "end_x")), parseFloat(paths[t].getAttributeNS(null, "end_y")));
+                    updateHead(pathHeads[t],parseFloat(paths[t].getAttributeNS(null, "end_x")), parseFloat(paths[t].getAttributeNS(null, "end_y")));
+                }
+            }
+        }
+        target.setAttributeNS(null, "x", new_x);
+        target.setAttributeNS(null, "y", new_y);
+    }
 }
