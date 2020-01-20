@@ -1,99 +1,70 @@
+function createTascItem(tascObject, x, y, width, height) {
+    var topOffset = 0;
+    if(tascObject.name === undefined || tascObject.name.length == 0)
+        topOffset = tascItemNamelessOffset;
 
-function createLinkItem(parent_id, x, y, width, height, location){
-    var linkItem = document.createElementNS( svgURI, 'rect');
-    var sizeOffset = linkItemSize/2;
-    var widthOffset = width/2-sizeOffset;
-    var heightOffset = height/2-sizeOffset;
-    if(location ==='top'){
-        linkItem.setAttribute( 'offset-x', widthOffset);
-        linkItem.setAttribute( 'offset-y', - linkItemSize );
-        linkItem.setAttribute( 'x', x+ widthOffset);
-        linkItem.setAttribute( 'y', y- linkItemSize);
+    var group = document.createElementNS( svgURI, 'g');
+    group.setAttribute('id',tascObject.id);
+    group.setAttribute( 'x', x );
+    group.setAttribute( 'y', y );
+    group.setAttribute('class', 'draggable tasc-item');
+    group.setAttribute('render-order',0);
+    group.setAttribute('data-array-index',tascData.length);
+    if(topOffset !== 0) // if it does not contain name
+        group.classList.add('nameless');
+
+    // background pane
+    var pane = document.createElementNS( svgURI, 'rect');
+    pane.setAttribute( 'offset-x', '0' );
+    pane.setAttribute( 'offset-y', '0' );
+    pane.setAttribute( 'x', x );
+    pane.setAttribute( 'y', y );
+    pane.setAttribute( 'width', width );
+    pane.setAttribute( 'height', height + topOffset );
+    pane.setAttribute('rx','10');
+    pane.setAttribute('ry','10');
+    pane.setAttribute('fill','#eee');
+    pane.setAttribute('class','tasc-item-pane');
+    group.appendChild( pane );
+
+    // if it has no name
+    if(topOffset ===0){
+        // title description
+        var titleText = document.createElementNS( svgURI, 'text');
+        titleText.setAttribute( 'offset-x', width/2 );
+        titleText.setAttribute( 'offset-y', '12' );
+        titleText.setAttribute( 'x', x+ (width/2) );
+        titleText.setAttribute( 'y', y + 12);
+        titleText.setAttribute( 'width', width );
+        titleText.setAttribute( 'height', 30 );
+        titleText.setAttribute('class','unselectable title-description');
+        titleText.setAttribute('dominant-baseline','middle');
+        titleText.setAttribute('text-anchor','middle');
+        titleText.innerHTML = tascObject.name;
+        group.appendChild( titleText );
     }
-    else if(location ==='bottom'){
-        linkItem.setAttribute( 'offset-x', widthOffset);
-        linkItem.setAttribute( 'offset-y', height);
-        linkItem.setAttribute( 'x', x+ widthOffset);
-        linkItem.setAttribute( 'y', y + height);
-    }
-    else if(location ==='left'){
-        linkItem.setAttribute( 'offset-x', - linkItemSize );
-        linkItem.setAttribute( 'offset-y', heightOffset );
-        linkItem.setAttribute( 'x', x - linkItemSize);
-        linkItem.setAttribute( 'y', y + heightOffset);
-    }
-    else if(location ==='right'){
-        linkItem.setAttribute( 'offset-x', width );
-        linkItem.setAttribute( 'offset-y', heightOffset );
-        linkItem.setAttribute( 'x', x+ width );
-        linkItem.setAttribute( 'y', y + heightOffset);
-    }
-    linkItem.setAttribute( 'id', parent_id + "::"+location);
-    linkItem.setAttribute( 'width', 10 );
-    linkItem.setAttribute( 'height', 10 );
-    linkItem.setAttribute('class','linkItem linkable');
-    return linkItem;
+
+    var givenValue = (tascObject.given === undefined) ? '' : tascObject.given.name;
+    var whenValue =(tascObject.when === undefined) ? '' : tascObject.when.name;
+    var whoValue = (tascObject.who === undefined) ? '' : tascObject.who.name;
+    var doValue = (tascObject.do === undefined) ? '' : tascObject.do.name;
+    var untilValue = (tascObject.until === undefined) ? '' : tascObject.until.name;
+    var followingValue = (tascObject.following === undefined) ? '' : tascObject.following.name;
+    createField(group,'context', x, y, width, 0, topOffset, 'given',givenValue);
+    createField(group,'condition', x, y, width, 1, topOffset, 'when',whenValue);
+    createField(group,'terminus', x, y, width, 2, topOffset, 'who',whoValue);
+    createField(group,'action', x, y, width, 3, topOffset, 'do',doValue);
+    createField(group,'condition', x, y, width, 4, topOffset, 'until',untilValue);
+    createField(group,'instruction', x, y, width, 5, topOffset, 'following',followingValue);
+    // Link items
+    group.appendChild(createLinkItem(tascObject.id, x, y, width, height, 0, 'top'));
+    group.appendChild(createLinkItem(tascObject.id, x, y, width, height, topOffset, 'bottom'));
+    group.appendChild(createLinkItem(tascObject.id, x, y, width, height, topOffset, 'left'));
+    group.appendChild(createLinkItem(tascObject.id, x, y, width, height, topOffset, 'right'));
+
+    appendToDatabase(tascObject, group);
+    return group;
 }
-
-function createField(group, elementType, x, y, width, order, description, givenValue){
-    var classvalue = 'unselectable field-value';
-    if(givenValue===undefined)
-        givenValue = '';
-    else
-        classvalue += ' field-value-confirmed';
-    group.appendChild(createFieldText(x,y, width, order, 'unselectable field-description',description));
-    group.appendChild(createFieldRect(x,y, width - fieldWidthOffset , order, 'field ' +elementType+'-field'));
-    group.appendChild(createFieldValue(x,y, width, order, classvalue, givenValue));
-}
-
-function createFieldRect(x, y, width, order, classValue, context){
-    var defaultYOffset = 34;
-    var element = document.createElementNS( svgURI, 'rect');
-    element.setAttribute( 'offset-x', innerOffset );
-    element.setAttribute( 'offset-y', defaultYOffset + (fieldOffset* parseFloat(order)) );
-    element.setAttribute( 'x', x+ innerOffset );
-    element.setAttribute( 'y', y + defaultYOffset + (fieldOffset* parseFloat(order)));
-    element.setAttribute( 'width', width );
-    element.setAttribute( 'height', fieldItemHeight );
-    element.setAttribute( 'order', order );
-    element.setAttribute('class',classValue);
-    return element;
-}
-
-function createFieldValue(x, y, width, order, classValue, text){
-    var defaultYOffset = 34;
-    var element = document.createElementNS( svgURI, 'text');
-    var widthOffset = width/2;
-    var heightOffset = fieldItemHeight / 2;
-    element.setAttribute( 'offset-x', widthOffset);
-    element.setAttribute( 'offset-y', defaultYOffset + (fieldOffset* parseFloat(order)) +heightOffset );
-    element.setAttribute( 'x', x+ widthOffset );
-    element.setAttribute( 'y', y + defaultYOffset + (fieldOffset* parseFloat(order))+heightOffset);
-    element.setAttribute( 'width', width );
-    element.setAttribute( 'height', fieldItemHeight );
-    element.setAttribute( 'order', order );
-    element.setAttribute('class',classValue);
-    if(text !== undefined && text.length>0)
-        element.innerHTML = text;
-    return element;
-}
-
-function createFieldText(x, y, width, order, classValue, text){
-    var defaultYOffset = 32;
-    var element = document.createElementNS( svgURI, 'text');
-    element.setAttribute( 'offset-x', innerOffset );
-    element.setAttribute( 'offset-y', defaultYOffset + (fieldOffset* parseFloat(order)) );
-    element.setAttribute( 'x', x+ innerOffset );
-    element.setAttribute( 'y', y + defaultYOffset + (fieldOffset* parseFloat(order)));
-    element.setAttribute( 'width', width );
-    element.setAttribute( 'height', fieldItemHeight );
-    element.setAttribute('class',classValue);
-    if(text !== undefined && text.length>0)
-        element.innerHTML = text;
-    return element;
-}
-
-
 
 function createSpecialTascItem(type, x, y, width, height) {
     var group = document.createElementNS( svgURI, 'g');
@@ -151,70 +122,108 @@ function createSpecialTascItem(type, x, y, width, height) {
      */
 
     // Link items
-    group.appendChild(createLinkItem(type, x, y, width, height,'top'));
-    group.appendChild(createLinkItem(type, x, y, width, height, 'bottom'));
-    group.appendChild(createLinkItem(type, x, y, width, height, 'left'));
-    group.appendChild(createLinkItem(type, x, y, width, height,'right'));
+    group.appendChild(createLinkItem(type, x, y, width, height, 0,'top'));
+    group.appendChild(createLinkItem(type, x, y, width, height, 0, 'bottom'));
+    group.appendChild(createLinkItem(type, x, y, width, height, 0,'left'));
+    group.appendChild(createLinkItem(type, x, y, width, height,0,'right'));
 
     tascItems.push(group);
     return group;
 }
 
-function createTascItem(tascObject, x, y, width, height) {
-    var group = document.createElementNS( svgURI, 'g');
-    group.setAttribute('id',tascObject.id);
-    group.setAttribute( 'x', x );
-    group.setAttribute( 'y', y );
-    group.setAttribute('class', 'draggable tasc-item');
-    group.setAttribute('render-order',0);
-    group.setAttribute('data-array-index',tascData.length);
+function createLinkItem(parent_id, x, y, width, height, namelessOffset, location){
+    var linkItem = document.createElementNS( svgURI, 'rect');
+    var sizeOffset = linkItemSize/2;
+    var widthOffset = width/2-sizeOffset;
+    var heightOffset = height/2-sizeOffset;
+    if(location ==='top'){
+        linkItem.setAttribute( 'offset-x', widthOffset);
+        linkItem.setAttribute( 'offset-y', - linkItemSize + namelessOffset);
+        linkItem.setAttribute( 'x', x+ widthOffset);
+        linkItem.setAttribute( 'y', y- linkItemSize + namelessOffset);
+    }
+    else if(location ==='bottom'){
+        linkItem.setAttribute( 'offset-x', widthOffset);
+        linkItem.setAttribute( 'offset-y', height + namelessOffset);
+        linkItem.setAttribute( 'x', x+ widthOffset);
+        linkItem.setAttribute( 'y', y + height + namelessOffset);
+    }
+    else if(location ==='left'){
+        linkItem.setAttribute( 'offset-x', - linkItemSize );
+        linkItem.setAttribute( 'offset-y', heightOffset + namelessOffset);
+        linkItem.setAttribute( 'x', x - linkItemSize);
+        linkItem.setAttribute( 'y', y + heightOffset + namelessOffset);
+    }
+    else if(location ==='right'){
+        linkItem.setAttribute( 'offset-x', width );
+        linkItem.setAttribute( 'offset-y', heightOffset + namelessOffset);
+        linkItem.setAttribute( 'x', x+ width );
+        linkItem.setAttribute( 'y', y + heightOffset + namelessOffset);
+    }
+    linkItem.setAttribute( 'id', parent_id + "::"+location);
+    linkItem.setAttribute( 'width', 10 );
+    linkItem.setAttribute( 'height', 10 );
+    linkItem.setAttribute('class','linkItem linkable');
+    return linkItem;
+}
 
-    // background pane
-    var pane = document.createElementNS( svgURI, 'rect');
-    pane.setAttribute( 'offset-x', '0' );
-    pane.setAttribute( 'offset-y', '0' );
-    pane.setAttribute( 'x', x );
-    pane.setAttribute( 'y', y );
-    pane.setAttribute( 'width', width );
-    pane.setAttribute( 'height', height );
-    pane.setAttribute('rx','10');
-    pane.setAttribute('ry','10');
-    pane.setAttribute('fill','#eee');
-    pane.setAttribute('class','tasc-item-pane');
-    group.appendChild( pane );
+function createField(group, elementType, x, y, width, order, namelessOffset, description, givenValue){
+    var classvalue = 'unselectable field-value';
+    if(givenValue===undefined)
+        givenValue = '';
+    else
+        classvalue += ' field-value-confirmed';
+    group.appendChild(createFieldRect(x,y, width - fieldWidthOffset , order,namelessOffset, 'field ' +elementType+'-field'));
+    group.appendChild(createFieldValue(x,y, width, order, namelessOffset,classvalue, givenValue));
+    group.appendChild(createFieldDescription(x,y, width, order, namelessOffset,'unselectable field-description',description));
+}
 
-    // title description
-    var titleText = document.createElementNS( svgURI, 'text');
-    titleText.setAttribute( 'offset-x', width/2 );
-    titleText.setAttribute( 'offset-y', '12' );
-    titleText.setAttribute( 'x', x+ (width/2) );
-    titleText.setAttribute( 'y', y + 12);
-    titleText.setAttribute( 'width', width );
-    titleText.setAttribute( 'height', 30 );
-    titleText.setAttribute('class','unselectable title-description');
-    titleText.setAttribute('dominant-baseline','middle');
-    titleText.setAttribute('text-anchor','middle');
-    titleText.innerHTML = tascObject.name;
-    group.appendChild( titleText );
+function createFieldRect(x, y, width, order, namelessOffset, classValue){
+    var element = document.createElementNS( svgURI, 'rect');
+    element.setAttribute( 'offset-x', innerOffset );
+    element.setAttribute( 'offset-y', tascItemHeaderOffset + (fieldOffset* parseFloat(order)) + namelessOffset );
+    element.setAttribute( 'x', x+ innerOffset );
+    element.setAttribute( 'y', y + tascItemHeaderOffset + (fieldOffset* parseFloat(order)) + namelessOffset);
+    element.setAttribute( 'width', width );
+    element.setAttribute( 'height', fieldItemHeight );
+    element.setAttribute( 'order', order );
+    element.setAttribute('class',classValue);
+    return element;
+}
 
-    var givenValue = (tascObject.given === undefined) ? '' : tascObject.given.name;
-    var whenValue =(tascObject.when === undefined) ? '' : tascObject.when.name;
-    var whoValue = (tascObject.who === undefined) ? '' : tascObject.who.name;
-    var doValue = (tascObject.do === undefined) ? '' : tascObject.do.name;
-    var untilValue = (tascObject.until === undefined) ? '' : tascObject.until.name;
-    createField(group,'context', x, y, width, 0, 'Given',givenValue);
-    createField(group,'condition', x, y, width, 1, 'When',whenValue);
-    createField(group,'terminus', x, y, width, 2, 'Who',whoValue);
-    createField(group,'action', x, y, width, 3, 'Do',doValue);
-    createField(group,'condition', x, y, width, 4, 'Until',untilValue);
-    // Link items
-    group.appendChild(createLinkItem(tascObject.id, x, y, width, height,'top'));
-    group.appendChild(createLinkItem(tascObject.id, x, y, width, height, 'bottom'));
-    group.appendChild(createLinkItem(tascObject.id, x, y, width, height, 'left'));
-    group.appendChild(createLinkItem(tascObject.id, x, y, width, height,'right'));
+function createFieldValue(x, y, width, order, namelessOffset, classValue, text){
+    var element = document.createElementNS( svgURI, 'text');
+    var widthOffset = width/2;
+    var heightOffset = fieldItemHeight / 2  + namelessOffset;
+    element.setAttribute( 'offset-x', widthOffset);
+    element.setAttribute( 'offset-y', tascItemHeaderOffset + (fieldOffset* parseFloat(order)) +heightOffset );
+    element.setAttribute( 'x', x+ widthOffset );
+    element.setAttribute( 'y', y + tascItemHeaderOffset + (fieldOffset* parseFloat(order))+heightOffset);
+    element.setAttribute( 'width', width );
+    element.setAttribute( 'height', fieldItemHeight );
+    element.setAttribute( 'order', order );
+    element.setAttribute('class',classValue);
+    if(text !== undefined && text.length>0)
+        element.innerHTML = text;
+    return element;
+}
 
-    appendToDatabase(tascObject, group);
-    return group;
+function createFieldDescription(x, y, width, order, namelessOffset, classValue, context){
+    var element = document.createElementNS( svgURI, 'text');
+    var widthOffset = width/2;
+    var heightOffset = fieldItemHeight / 2  + namelessOffset;
+    element.setAttribute( 'offset-x', widthOffset );
+    element.setAttribute( 'offset-y', tascItemHeaderOffset + (fieldOffset* parseFloat(order))+heightOffset);
+    element.setAttribute( 'x', x+ widthOffset );
+    element.setAttribute( 'y', y + tascItemHeaderOffset + (fieldOffset* parseFloat(order))+heightOffset);
+    element.setAttribute( 'width', width );
+    element.setAttribute( 'height', fieldItemHeight );
+    element.setAttribute('class',classValue);
+    element.setAttribute('order',order);
+    element.setAttribute('context',context);
+    if(context !== undefined && context.length>0)
+        element.innerHTML = context.charAt(0).toUpperCase() + context.slice(1);
+    return element;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -247,6 +256,8 @@ function createFieldItem(fieldObject, x, y, width, height, type) {
         group.setAttribute('data-array-index',actionData.length);
     else if(fieldObject.constructor.name === "Condition")
         group.setAttribute('data-array-index',conditionData.length);
+    else if(fieldObject.constructor.name === "Instruction")
+        group.setAttribute('data-array-index',instructionData.length);
     // background pane
     var pane = document.createElementNS( svgURI, 'rect');
     pane.setAttribute( 'offset-x', '0' );
@@ -263,6 +274,9 @@ function createFieldItem(fieldObject, x, y, width, height, type) {
     }
     else if(type ==='condition'){
         pane.setAttribute('class', 'field-item-pane condition-item');
+    }
+    else if(type ==='instruction'){
+        pane.setAttribute('class', 'field-item-pane instruction-item');
     }
     group.appendChild( pane );
 
@@ -391,10 +405,12 @@ function createLinkHead(start_id, start_x, start_y){
     return head;
 }
 
-function doIfItOverlaps(classType, target, callback){
+function doIfItOverlaps(classType, targetItem, callback){
     var items = document.getElementsByClassName(classType);
     for(var i=0; i<items.length ; i++){
-        if(isAssignable(items[i], target, 0.5)){
+        if(items[i] === targetItem)
+            continue;
+        if(isAssignable(items[i], targetItem, 0.5)){
             callback(items[i]);
         }
     }
@@ -428,6 +444,10 @@ function moveItem(selectedElement, x, y){
     y = parseFloat(y);
     selectedElement.setAttributeNS(null, "x", x);
     selectedElement.setAttributeNS(null, "y", y);
+
+    var topOffset = 0;
+    if(selectedElement.classList.contains('nameless'))
+        topOffset = tascItemNamelessOffset;
     // here children will be moved together with parent
     for(var i= 0; i<selectedElement.children.length; i++){
         var target = selectedElement.children[i];

@@ -15,6 +15,7 @@ function placeFileContent(target, file) {
         convertJSONToTasc(JSON.parse(content)); //target.value = content
     }).catch(error => console.log(error));
 }
+
 function readFileContent(file) {
     const reader = new FileReader()
     return new Promise((resolve, reject) => {
@@ -37,11 +38,11 @@ function convertJSONToTasc(json){
     if(json.scenario!==undefined){
         for(var i=0; i<json.scenario.length ; i++){
             var elem = json.scenario[i];
-            if(elem.id ==='start'){
+            if(elem.id ==='start' || elem.id ==='end'){
                 prepareMakingLink(elem, linkedPair);
             }
             else if(document.getElementById(elem.id)===null){
-                var data = new Tasc(elem.id, elem.name, elem.given, elem.when, elem.who, elem.do, elem.until);
+                var data = new Tasc(elem.id, elem.name, elem.given, elem.when, elem.who, elem.do, elem.until, elem.following);
                 addNewItemWithObject(data);
                 prepareMakingLink(elem, linkedPair);
             }
@@ -118,8 +119,4 @@ function makeLink(linkListGroup){
             parseFloat(toItem.getAttribute('x')) + linkItemSizeOffset,
             parseFloat(toItem.getAttribute('y')) + linkItemSizeOffset);
     }
-}
-
-function updateTasc(item, field){
-    //if(field.)
 }

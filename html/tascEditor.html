@@ -19,9 +19,10 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 <button class="tasc-editor-button" onclick="redo()">redo</button>-->
 <button class="tasc-editor-button" onclick="addNewItem('tasc',ID())">add tasc</button>
 <button class="tasc-editor-button" onclick="addNewItem('terminus',ID())">add terminus</button>
-<!--<button class="tasc-editor-button" onclick="openForm()">add terminus</button>-->
+<button class="tasc-editor-button" onclick="openForm()">add terminus</button>
 <button class="tasc-editor-button" onclick="addNewItem('action',ID())">add action</button>
 <button class="tasc-editor-button" onclick="addNewItem('condition',ID())">add condition</button>
+    <button class="tasc-editor-button" onclick="addNewItem('instruction',ID())">add instruction</button>
 <button class="tasc-editor-button">delete</button><br>
 </div>
 
@@ -58,6 +59,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         svg.addEventListener('mousedown', startDrag);
         svg.addEventListener('mousemove', drag);
         svg.addEventListener('mouseup', endDrag);
+        svg.addEventListener('dblclick', configure);
 
         function getMousePosition(evt) {
             var CTM = svg.getScreenCTM();
@@ -101,6 +103,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                 activateFieldHighlight(selectedElement, 'terminus');
                 activateFieldHighlight(selectedElement, 'condition');
                 activateFieldHighlight(selectedElement, 'action');
+                activateFieldHighlight(selectedElement, 'instruction');
             }
         }
 
@@ -112,15 +115,19 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             }
             else if (selectedElement) {
                 // this is for group dragging
-
                 var coord = getMousePosition(evt);
                 if(selectedElement.nodeName === 'g'){
                     moveItem(selectedElement, coord.x - offset.x, coord.y - offset.y);
 
                     if(relatedFieldHighlighted){
                         deactiveFieldFocused();
-                        if(selectedArea)
+                        if(selectedArea){
                             doIfItOverlaps('field-highlighted', selectedArea, activeFieldFocused);
+                            if(selectedArea.classList.contains('terminus-item'))
+                                doIfItOverlaps('terminus-item', selectedArea, console.log);
+                            else if(selectedArea.classList.contains('condition-item'))
+                                doIfItOverlaps('condition-item', selectedArea, console.log);
+                        }
                     }
                 }
                 else{
@@ -133,7 +140,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         function endDrag(evt) {
             if(selectedElement){
                 if(focusedElement){
-                    updateValue(focusedElement, selectedElement);
+                    assignValue(focusedElement, selectedElement);
                     var orgPos = loadOriginPos(selectedElement);
                     moveItem(selectedElement, orgPos[0], orgPos[1]);
                 }
@@ -188,6 +195,10 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                     deactiveChosenPathStyle(chosenPath);
                 chosenPath = null;
             }
+        }
+
+        function configure(evt){
+            console.log(selectedElement);
         }
 
         function orderingElement(element){

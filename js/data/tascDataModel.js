@@ -1,4 +1,4 @@
-function Tasc(id, name, given, when, who, does, until, next){ //, instruction, evaluation){
+function Tasc(id, name, given, when, who, does, until, next, following){ //, instruction, evaluation){
     this.id = id;
     this.name = name;
     if(given)
@@ -11,6 +11,8 @@ function Tasc(id, name, given, when, who, does, until, next){ //, instruction, e
         this.do = new Action(ID(), does.name);
     if(until)
         this.until = new Condition(ID(), until.name);
+    if(following)
+        this.following = new Instruction(ID(), following.name);
     this.next = next;
 
     Tasc.prototype.toString = function(){console.log(this.who);};
@@ -27,6 +29,8 @@ function Tasc(id, name, given, when, who, does, until, next){ //, instruction, e
             json["until"] = this.until.toJSON();
         if(this.next)
             json["next"] = JSON.stringify(this.next);
+        if(this.following)
+            json["following"] = this.following.toJSON();
         return json; };
 }
 
@@ -37,6 +41,8 @@ function DummyField(type, id, name){
         return new Action(id,name);
     else if(type ==='condition')
         return new Condition(id,name);
+    else if(type ==='instruction')
+        return new Instruction(id,name);
     else
         return undefined;
 }
@@ -74,5 +80,13 @@ function Action(id, name){
     this.name = name;
     Action.prototype.toJSON = function() {
         return { id: this.id, name: this.name };
+    }
+}
+
+function Instruction(id, name){
+    this.id = id;
+    this.name = name;
+    Instruction.prototype.toJSON = function() {
+        return { id: this.id, name: this.name};
     }
 }

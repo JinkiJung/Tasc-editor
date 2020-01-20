@@ -16,7 +16,7 @@ function getDummyName(type){
 function addNewItem(type, id, title){
     if(id===undefined)
         id = ID();
-    if(title===undefined)
+    if(title===undefined && type !== 'tasc')
         title = getDummyName(type);
 
     updateHistory(document.getElementById('editorPane'));
@@ -59,6 +59,8 @@ function orderToContext(order){
         return 'do';
     else if(order === '4')
         return 'until';
+    else if(order === '5')
+        return 'following';
 }
 
 function openForm() {
@@ -119,6 +121,8 @@ function appendToDatabase(object, item){
             actionData.push(object);
         else if(object.constructor.name === 'Condition')
             conditionData.push(object);
+        else if(object.constructor.name === 'Instruction')
+            instructionData.push(object);
         fieldItems.push(item);
     }
 }
@@ -136,9 +140,10 @@ function clearDatabase(){
     actionData = [];
     terminusData = [];
     conditionData = [];
+    instructionData = [];
 }
 
-function updateValue(focusedElement, selectedElement){
+function assignValue(focusedElement, selectedElement){
     var tascObjectindex = focusedElement.parentNode.getAttribute('data-array-index');
     var fieldDatum = getFieldDatum(selectedElement);
     var fieldContext = orderToContext(focusedElement.getAttribute('order'));
@@ -198,6 +203,8 @@ function setFieldValue(item, object){
             item.parentNode.children[i].classList.add('field-value-confirmed');
             item.parentNode.children[i].innerHTML = object.name;
         }
+        else if(item.parentNode.children[i].classList.contains('field-description') && item.parentNode.children[i].getAttributeNS(null, 'order') === order)
+            item.parentNode.children[i].innerHTML = "";
     }
 }
 
@@ -240,6 +247,8 @@ function getFieldData(item){
             return actionData;
         else if(item.children[i].classList.contains("condition-item"))
             return conditionData;
+        else if(item.children[i].classList.contains("instruction-item"))
+            return instructionData;
     }
     return undefined;
 }

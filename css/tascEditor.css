@@ -154,6 +154,8 @@ svg {
     font-family: Verdana;
     font-size: small;
     fill: gray;
+    dominant-baseline: middle;
+    text-anchor: middle;
 }
 
 .field{
@@ -220,6 +222,10 @@ svg {
 
 .condition-item{
     fill: darkseagreen;
+}
+
+.instruction-item{
+    fill: lightpink;
 }
 
 .unselectable {
