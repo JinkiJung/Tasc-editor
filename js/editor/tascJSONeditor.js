@@ -43,7 +43,7 @@ function convertJSONToTasc(json){
             }
             else if(document.getElementById(elem.id)===null){
                 var data = new Tasc(elem.id, elem.name, elem.given, elem.when, elem.who, elem.do, elem.until, elem.following);
-                addNewItemWithObject(data);
+                addNewItemWithObject(elem, 'tasc');
                 prepareMakingLink(elem, linkedPair);
             }
         }
@@ -53,8 +53,7 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.terminuses.length ; i++){
             var elem = json.terminuses[i];
             if(document.getElementById(elem.id)===null) {
-                addNewItem('terminus',elem.id,elem.name);
-                //registerItem(new Terminus(ID(), elem.name), 0 + xOffset, 0 + yOffset, fieldItemWidth, fieldItemHeight, 'terminus');
+                addNewItemWithObject(elem, 'terminus');
             }
         }
     }
@@ -62,8 +61,7 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.actions.length ; i++){
             var elem = json.actions[i];
             if(document.getElementById(elem.id)===null) {
-                addNewItem('action',elem.id,elem.name);
-                //registerItem(new Action(ID(), elem.name), 0 + xOffset, 0 + yOffset, fieldItemWidth, fieldItemHeight, 'action');
+                addNewItemWithObject(elem, 'action');
             }
         }
     }
@@ -71,8 +69,15 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.conditions.length ; i++){
             var elem = json.conditions[i];
             if(document.getElementById(elem.id)===null) {
-                addNewItem('condition',elem.id,elem.name);
-                //registerItem(new Condition(ID(), elem.name), 0 + xOffset, 0 + yOffset, fieldItemWidth, fieldItemHeight, 'condition');
+                addNewItemWithObject(elem, 'condition');
+            }
+        }
+    }
+    if(json.instructions!==undefined){
+        for(var i=0; i<json.instructions.length ; i++){
+            var elem = json.instructions[i];
+            if(document.getElementById(elem.id)===null) {
+                addNewItemWithObject(elem, 'instructions');
             }
         }
     }
@@ -102,6 +107,7 @@ function makeLink(linkListGroup){
         }
         var fromItem = document.getElementById(linkItem.from + "::right");
         var toItem = document.getElementById(linkItem.to + "::left");
+
         var tempLinkPath = generateLinkPath(fromItem.id, toItem.id);
         svg.appendChild(tempLinkPath);
 

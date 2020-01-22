@@ -1,18 +1,20 @@
-function Tasc(id, name, given, when, who, does, until, next, following){ //, instruction, evaluation){
+function Tasc(id, name, given, when, who, does, until, next, following){ //, evaluation){
+    return {id: id, name: name, given: given, when: when, who: who, do: does, until: until, next: next, following: following};
+    /*
     this.id = id;
     this.name = name;
     if(given)
-        this.given = new Context(ID(), given.name);
+        this.given = new Context("context"+ID(), given.name);
     if(when)
-        this.when = new Condition(ID(), when.name);
+        this.when = new Condition("condition"+ID(), when.name);
     if(who)
-        this.who = new Terminus(ID(), who.name, who.location, who.role);
+        this.who = new Terminus("terminus"+ID(), who.name, who.location, who.role);
     if(does)
-        this.do = new Action(ID(), does.name);
+        this.do = new Action("action"+ID(), does.name);
     if(until)
-        this.until = new Condition(ID(), until.name);
+        this.until = new Condition("condition"+ID(), until.name);
     if(following)
-        this.following = new Instruction(ID(), following.name);
+        this.following = new Instruction("instruction"+ID(), following.name);
     this.next = next;
 
     Tasc.prototype.toString = function(){console.log(this.who);};
@@ -32,6 +34,8 @@ function Tasc(id, name, given, when, who, does, until, next, following){ //, ins
         if(this.following)
             json["following"] = this.following.toJSON();
         return json; };
+
+     */
 }
 
 function DummyField(type, id, name){
@@ -48,45 +52,79 @@ function DummyField(type, id, name){
 }
 
 function Context(id, name){
+    /*
     this.id = id;
     this.name = name;
 
     Context.prototype.toJSON = function() {
-        return { id: this.id, name: this.name };
-    }
+
+     */
+        return { id: id, name: name };
+    //}
 }
 
 function Terminus(id, name, location, role){
+    /*
     this.id = id;
     this.name = name;
     this.location = location;
     this.role = role;
-    Terminus.prototype.toJSON = function() {
-        return { id: this.id, name: this.name, location: this.location, role: this.role };
-    }
+    Terminus.prototype.toJSON = function() {\
+
+     */
+        return { id: id, name: name, location: location, role: role };
+    //}
 }
 
 function Condition(id, name, state){
+    /*
     this.id = id;
     this.name = name;
     this.state = state;
     Condition.prototype.toJSON = function() {
-        return { id: this.id, name: this.name, state: this.state };
-    }
+
+     */
+        return { id: id, name: name, state: state };
+    //}
 }
 
 function Action(id, name){
+    /*
     this.id = id;
     this.name = name;
     Action.prototype.toJSON = function() {
-        return { id: this.id, name: this.name };
-    }
+
+     */
+        return { id: id, name: name };
+    //}
 }
 
 function Instruction(id, name){
+    /*
     this.id = id;
     this.name = name;
     Instruction.prototype.toJSON = function() {
-        return { id: this.id, name: this.name};
-    }
+
+     */
+        return { id: id, name: name};
+    //}
+}
+
+function Scenario(id, name, description, terminuses, actions, conditions, instructions, tascs){
+    /*
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.terminuses = terminuses;
+    this.actions = actions;
+    this.conditions = conditions;
+    this.instructions = instructions;
+    this.tascs = tascs;
+
+    Scenario.prototype.toJSON = function() {
+
+     */
+        return { id: id, name: name, description: description, terminuses: terminuses,
+        actions: actions, conditions: conditions, instructions: instructions, scenario: tascs };
+    //}
 }

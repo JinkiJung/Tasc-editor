@@ -1,10 +1,10 @@
 function createTascItem(tascObject, x, y, width, height) {
     var topOffset = 0;
-    if(tascObject.name === undefined || tascObject.name.length == 0)
+    if(tascObject.name === undefined || tascObject.name.length === 0)
         topOffset = tascItemNamelessOffset;
 
     var group = document.createElementNS( svgURI, 'g');
-    group.setAttribute('id',tascObject.id);
+    group.setAttribute('id',tascObject['id']);
     group.setAttribute( 'x', x );
     group.setAttribute( 'y', y );
     group.setAttribute('class', 'draggable tasc-item');
@@ -40,7 +40,7 @@ function createTascItem(tascObject, x, y, width, height) {
         titleText.setAttribute('class','unselectable title-description');
         titleText.setAttribute('dominant-baseline','middle');
         titleText.setAttribute('text-anchor','middle');
-        titleText.innerHTML = tascObject.name;
+        titleText.innerHTML = tascObject['name'];
         group.appendChild( titleText );
     }
 
@@ -62,7 +62,7 @@ function createTascItem(tascObject, x, y, width, height) {
     group.appendChild(createLinkItem(tascObject.id, x, y, width, height, topOffset, 'left'));
     group.appendChild(createLinkItem(tascObject.id, x, y, width, height, topOffset, 'right'));
 
-    appendToDatabase(tascObject, group);
+    appendToDatabase(tascObject, group, 'tasc');
     return group;
 }
 
@@ -175,7 +175,7 @@ function createField(group, elementType, x, y, width, order, namelessOffset, des
         classvalue += ' field-value-confirmed';
     group.appendChild(createFieldRect(x,y, width - fieldWidthOffset , order,namelessOffset, 'field ' +elementType+'-field'));
     group.appendChild(createFieldValue(x,y, width, order, namelessOffset,classvalue, givenValue));
-    group.appendChild(createFieldDescription(x,y, width, order, namelessOffset,'unselectable field-description',description));
+    group.appendChild(createFieldDescription(x,y, width, order, namelessOffset,'unselectable field-description',description, (givenValue.length===0)));
 }
 
 function createFieldRect(x, y, width, order, namelessOffset, classValue){
@@ -208,7 +208,7 @@ function createFieldValue(x, y, width, order, namelessOffset, classValue, text){
     return element;
 }
 
-function createFieldDescription(x, y, width, order, namelessOffset, classValue, context){
+function createFieldDescription(x, y, width, order, namelessOffset, classValue, context, shouldBeVisible){
     var element = document.createElementNS( svgURI, 'text');
     var widthOffset = width/2;
     var heightOffset = fieldItemHeight / 2  + namelessOffset;
@@ -221,8 +221,10 @@ function createFieldDescription(x, y, width, order, namelessOffset, classValue, 
     element.setAttribute('class',classValue);
     element.setAttribute('order',order);
     element.setAttribute('context',context);
-    if(context !== undefined && context.length>0)
+    if(context !== undefined && context.length>0 && shouldBeVisible)
         element.innerHTML = context.charAt(0).toUpperCase() + context.slice(1);
+    else
+        element.innerHTML = "";
     return element;
 }
 
@@ -245,19 +247,21 @@ function createEditableText(){
 
 function createFieldItem(fieldObject, x, y, width, height, type) {
     var group = document.createElementNS( svgURI, 'g');
-    group.setAttribute('id',fieldObject.id);
+    group.setAttribute('id',fieldObject['id']);
     group.setAttribute( 'x', x );
     group.setAttribute( 'y', y );
     group.setAttribute('class', 'draggable field-item');
     group.setAttribute('render-order',1);
-    if(fieldObject.constructor.name === "Terminus")
+
+    if(type ==='terminus')
         group.setAttribute('data-array-index',terminusData.length);
-    else if(fieldObject.constructor.name === "Action")
+    else if(type ==='action')
         group.setAttribute('data-array-index',actionData.length);
-    else if(fieldObject.constructor.name === "Condition")
+    else if(type ==='condition')
         group.setAttribute('data-array-index',conditionData.length);
-    else if(fieldObject.constructor.name === "Instruction")
+    else if(type ==='instruction')
         group.setAttribute('data-array-index',instructionData.length);
+
     // background pane
     var pane = document.createElementNS( svgURI, 'rect');
     pane.setAttribute( 'offset-x', '0' );
@@ -289,10 +293,10 @@ function createFieldItem(fieldObject, x, y, width, height, type) {
     titleText.setAttribute( 'width', width );
     titleText.setAttribute( 'height', height/2 );
     titleText.setAttribute('class','unselectable field-value-confirmed');
-    titleText.innerHTML = fieldObject.name;
+    titleText.innerHTML = fieldObject['name'];
     group.appendChild( titleText );
 
-    appendToDatabase(fieldObject, group);
+    appendToDatabase(fieldObject, group, type);
     return group;
 }
 

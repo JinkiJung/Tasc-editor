@@ -15,7 +15,7 @@ function getDummyName(type){
 
 function addNewItem(type, id, title){
     if(id===undefined)
-        id = ID();
+        id = getID(type);
     if(title===undefined && type !== 'tasc')
         title = getDummyName(type);
 
@@ -24,19 +24,21 @@ function addNewItem(type, id, title){
     if(type==='tasc'){
         pos = avoidOverlap(document.getElementsByClassName('tasc-item-pane'),300, document.body.clientWidth, tascItemWidth, tascItemHeight);
         if(pos!==undefined)
-            registerItem(createTascItem(new Tasc(id, title),pos[0]+ xOffset,pos[1],tascItemWidth,tascItemHeight, title));
+            registerItem(createTascItem(new Tasc(type+id, title),pos[0]+ xOffset,pos[1],tascItemWidth,tascItemHeight, title));
     }
     else{
         pos = avoidOverlap(document.getElementsByClassName('field-item-pane'),0, document.body.clientWidth, fieldItemWidth, fieldItemHeight);
         if(pos!==undefined)
-            registerItem(createFieldItem(new DummyField(type, id, title), pos[0] + xOffset, pos[1] + yOffset, fieldItemWidth, fieldItemHeight, type));
+            registerItem(createFieldItem(new DummyField(type, type+id, title), pos[0] + xOffset, pos[1] + yOffset, fieldItemWidth, fieldItemHeight, type));
     }
 }
 
-function addNewItemWithObject(dataObject){
+function addNewItemWithObject(dataObject, type){
+    if(dataObject.id===undefined)
+        dataObject.id = getID(type);
     updateHistory(document.getElementById('editorPane'));
     var pos;
-    if(dataObject instanceof Tasc){
+    if(type === 'tasc'){
         pos = avoidOverlap(document.getElementsByClassName('tasc-item-pane'),300, document.body.clientWidth, tascItemWidth, tascItemHeight);
         if(pos!==undefined)
             registerItem(createTascItem(dataObject,pos[0]+ xOffset,pos[1],tascItemWidth,tascItemHeight, dataObject.name));
@@ -44,7 +46,7 @@ function addNewItemWithObject(dataObject){
     else{
         pos = avoidOverlap(document.getElementsByClassName('field-item-pane'),0, document.body.clientWidth, fieldItemWidth, fieldItemHeight);
         if(pos!==undefined)
-            registerItem(createFieldItem(dataObject, pos[0] + xOffset, pos[1] + yOffset, fieldItemWidth, fieldItemHeight, dataObject.constructor.name.toLowerCase()));
+            registerItem(createFieldItem(dataObject, pos[0] + xOffset, pos[1] + yOffset, fieldItemWidth, fieldItemHeight, type));
     }
 }
 
@@ -61,14 +63,6 @@ function orderToContext(order){
         return 'until';
     else if(order === '5')
         return 'following';
-}
-
-function openForm() {
-    document.getElementById("myForm").style.display = "block";
-}
-
-function closeForm() {
-    document.getElementById("myForm").style.display = "none";
 }
 
 function download(data, filename, type) {
@@ -91,7 +85,7 @@ function download(data, filename, type) {
 
 function saveScenario(){
     //console.log(JSON.stringify(tascData));
-    var scenario = { id: ID(), name:"testing", terminuses: terminusData, actions: actionData, conditions: conditionData, scenario:tascData };
+    var scenario = new Scenario(getID('scenario'), 'test', 'This is test', terminusData, actionData, conditionData, instructionData, tascData);//{ id: ID(), name:"testing", terminuses: terminusData, actions: actionData, conditions: conditionData, instructions: instructionData, scenario:tascData };
     console.log(JSON.stringify(scenario));
     //download(JSON.stringify(tascData), "tasc", "json");
 }
@@ -109,19 +103,19 @@ function clear(){
     initialize();
 }
 
-function appendToDatabase(object, item){
-    if(object.constructor.name ==='Tasc'){
+function appendToDatabase(object, item, type){
+    if(type ==='tasc'){
         tascData.push(object);
         tascItems.push(item);
     }
     else{
-        if(object.constructor.name === 'Terminus')
+        if(type === 'terminus')
             terminusData.push(object);
-        else if(object.constructor.name === 'Action')
+        else if(type === 'action')
             actionData.push(object);
-        else if(object.constructor.name === 'Condition')
+        else if(type === 'condition')
             conditionData.push(object);
-        else if(object.constructor.name === 'Instruction')
+        else if(type === 'instruction')
             instructionData.push(object);
         fieldItems.push(item);
     }
@@ -201,7 +195,7 @@ function setFieldValue(item, object){
     for(var i=0; i<item.parentNode.children.length ; i++){
         if(item.parentNode.children[i].tagName ==='text' && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
             item.parentNode.children[i].classList.add('field-value-confirmed');
-            item.parentNode.children[i].innerHTML = object.name;
+            item.parentNode.children[i].innerHTML = object['name'];
         }
         else if(item.parentNode.children[i].classList.contains('field-description') && item.parentNode.children[i].getAttributeNS(null, 'order') === order)
             item.parentNode.children[i].innerHTML = "";

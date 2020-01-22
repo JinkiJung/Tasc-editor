@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../css/tascEditor.css">
+    <script type="text/javascript" src="../js/data/tascIDProvider.js"></script>
     <script type="text/javascript" src="../js/tascVariable.js"></script>
     <script type="text/javascript" src="../js/editor/itemAllocator.js"></script>
     <script type="text/javascript" src="../js/editor/bezierPath.js"></script>
+    <script type="text/javascript" src="../js/editor/tascPropertyForm.js"></script>
     <title>Tasc editor testbed</title>
 
 </head>
@@ -17,32 +19,15 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 <button class="tasc-editor-button" onclick="clear()">clear</button>
 <!--<button class="tasc-editor-button" onclick="undo()">undo</button>
 <button class="tasc-editor-button" onclick="redo()">redo</button>-->
-<button class="tasc-editor-button" onclick="addNewItem('tasc',ID())">add tasc</button>
-<button class="tasc-editor-button" onclick="addNewItem('terminus',ID())">add terminus</button>
-<button class="tasc-editor-button" onclick="openForm()">add terminus</button>
-<button class="tasc-editor-button" onclick="addNewItem('action',ID())">add action</button>
-<button class="tasc-editor-button" onclick="addNewItem('condition',ID())">add condition</button>
-    <button class="tasc-editor-button" onclick="addNewItem('instruction',ID())">add instruction</button>
+<button class="tasc-editor-button" onclick="addNewItem('tasc')">add tasc</button>
+<button class="tasc-editor-button" onclick="addNewItem('terminus')">add terminus</button>
+<button class="tasc-editor-button" onclick="addNewItem('action')">add action</button>
+<button class="tasc-editor-button" onclick="addNewItem('condition')">add condition</button>
+    <button class="tasc-editor-button" onclick="addNewItem('instruction')">add instruction</button>
 <button class="tasc-editor-button">delete</button><br>
 </div>
 
-<div class="form-popup" id="myForm">
-    <form action="/action_page.php" class="form-container">
-        <h1>Login</h1>
-
-        <label for="email"><b>Email</b></label>
-        <input type="text" placeholder="Enter Email" name="email" required>
-
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" required>
-
-        <label for="name"><b>Name</b></label>
-        <input type="text" placeholder="Enter Password" name="psw" required>
-
-        <button type="submit" class="btn">Login</button>
-        <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-    </form>
-</div>
+<div class="form-popup" id="itemForm"></div>
 
 <svg id="editorPane" xmlns="http://www.w3.org/2000/svg" onload="makeDraggable(evt)">
 
@@ -52,6 +37,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
     var chosenPath;
     var relatedFieldHighlighted = false;
     var focusedElement;
+    var orderedAlready = false;
     var fieldTypes = ['terminus', 'action', 'condition'];
 
     function makeDraggable(evt) {
@@ -59,7 +45,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         svg.addEventListener('mousedown', startDrag);
         svg.addEventListener('mousemove', drag);
         svg.addEventListener('mouseup', endDrag);
-        svg.addEventListener('dblclick', configure);
+        svg.addEventListener('dblclick', createItem);
 
         function getMousePosition(evt) {
             var CTM = svg.getScreenCTM();
@@ -67,6 +53,10 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                 x: (evt.clientX - CTM.e) / CTM.a,
                 y: (evt.clientY - CTM.f) / CTM.d
             };
+        }
+
+        function configure(item) {
+            showPropertyForm(item);
         }
 
         function startDrag(evt) {
@@ -78,8 +68,6 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                 svg.appendChild(linkHead);
             }
             else if(evt.target.parentElement.nodeName === 'g'){
-                // put the object to the top
-                orderingElement(evt.target.parentElement);
 
                 if(evt.target.parentElement.classList.contains('draggable')){
                     setSelectedElement(evt.target.parentElement);
@@ -99,7 +87,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             }*/
 
             if(selectedElement && selectedElement.classList.contains('field-item') && !relatedFieldHighlighted){
-                makeFieldItemUnselectable(selectedElement);
+                //makeFieldItemUnselectable(selectedElement);
                 activateFieldHighlight(selectedElement, 'terminus');
                 activateFieldHighlight(selectedElement, 'condition');
                 activateFieldHighlight(selectedElement, 'action');
@@ -117,6 +105,9 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                 // this is for group dragging
                 var coord = getMousePosition(evt);
                 if(selectedElement.nodeName === 'g'){
+                    // put the object to the top
+                    orderingElement(evt.target.parentElement);
+
                     moveItem(selectedElement, coord.x - offset.x, coord.y - offset.y);
 
                     if(relatedFieldHighlighted){
@@ -149,6 +140,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             }
             deactiveFieldFocused();
             setSelectedElement(null);
+            orderedAlready = false;
             if(linkPath){
                 if(evt.target.classList.contains('linkable')){
                     // if it is already included then do nothing
@@ -197,15 +189,22 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             }
         }
 
-        function configure(evt){
-            console.log(selectedElement);
+        function createItem(evt){
+            if(evt.target.classList.contains('field')){
+
+            }
+            configure(evt.target.parentNode);
         }
 
         function orderingElement(element){
+            if(orderedAlready)
+                return ;
+
             //svg.appendChild(element);
             for(var i=0; i<fieldItems.length ; i++){
                 svg.appendChild(fieldItems[i]);
             }
+            orderedAlready = true;
         }
 
 

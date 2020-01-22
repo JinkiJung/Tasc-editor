@@ -54,20 +54,20 @@
   "scenario": [
     {
       "id": "start",
-      "next": ["step001"]
+      "next": ["tasc_step001"]
     },
     {
-      "id": "step001",
+      "id": "tasc_step001",
       "name": "Cycling",
       "given": {"name":  "a helmet"},
       "when": {"name": "Morning of 21th January, 2020"},
       "who": {"name": "Jinki"},
       "do": { "name" :"ride a bike"},
       "until": {"name": "get to the office"},
-      "next": ["step002"]
+      "next": ["tasc_step002"]
     },
     {
-      "id": "step002",
+      "id": "tasc_step002",
       "name": "Riding-1",
       "given": {"name":  "a fancy car and Jinki"},
       "when": {"name": ""},
@@ -76,7 +76,7 @@
       "until": {"name": "get to the Micheal's office"}
     },
     {
-      "id": "step003",
+      "id": "tasc_step003",
       "name": "Riding-2",
       "given": {"name":  "a fancy car and Jinki and Micheal"},
       "when": {"name": ""},
