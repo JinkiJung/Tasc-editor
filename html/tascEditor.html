@@ -37,7 +37,9 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
     var chosenPath, chosenItem;
     var relatedFieldHighlighted = false;
     var focusedElement;
+    var dragStartPos;
     var orderedAlready = false;
+    var willChoose = false;
     var fieldTypes = ['terminus', 'action', 'condition'];
 
     function makeDraggable(evt) {
@@ -60,6 +62,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         }
 
         function startDrag(evt) {
+            willChoose = true;
             // we will create path to make the link
             if(evt.target.classList.contains('linkable')){
                 linkPath = createLinkPath(evt.target.id, getMousePosition(evt).x ,getMousePosition(evt).y);
@@ -68,10 +71,10 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                 svg.appendChild(linkHead);
             }
             else if(evt.target.parentElement.nodeName === 'g'){
-
                 if(evt.target.parentElement.classList.contains('draggable')){
                     setSelectedElement(evt.target.parentElement);
                     offset = getMousePosition(evt);
+                    dragStartPos = getMousePosition(evt);
                     offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
                     offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
                     storeOriginPos(selectedElement, parseFloat(selectedElement.getAttributeNS(null, "x")),
@@ -104,6 +107,8 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             else if (selectedElement) {
                 // this is for group dragging
                 var coord = getMousePosition(evt);
+                if(Math.abs(coord.x - dragStartPos.x) > 10 || Math.abs(coord.y - dragStartPos.y) > 10)
+                    willChoose = false;
                 if(selectedElement.nodeName === 'g'){
                     // put the object to the top
                     orderingElement(evt.target.parentElement);
@@ -169,7 +174,8 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                 }
                 makeFieldItemSelectable(selectedElement);
                 deactiveFieldHighlight();
-                setChosenItem(selectedElement);
+                if(willChoose)
+                    setChosenItem(selectedElement);
             }
             else
                 cancelChosenItem();
