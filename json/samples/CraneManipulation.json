@@ -1,0 +1,64 @@
+{
+  "name": "Maze escape 3D",
+  "description": "A user is required to memorize a way to get the goal point.",
+  "terminuses": [
+    {
+      "name": "user001"
+    },
+    {
+      "name": "CrossroadPoint1"
+    },
+    {
+      "name": "CrossroadPoint2"
+    },
+    {
+      "name": "CrossroadPoint3"
+    },
+    {
+      "name": "CrossroadPoint4"
+    },
+    {
+      "name": "CrossroadPoint5"
+    },
+    {
+      "name": "Goal"
+    }
+  ],
+  "actions": [
+    {
+      "name": "move"
+    },
+    {
+      "name": "explore"
+    },
+    {
+      "name": "give penalty to [terminus]"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "anytime"
+    },
+    {
+      "name": "approaching to [terminus]"
+    },
+    {
+      "name": "10 secs"
+    }
+  ],
+  "instructions": [
+    {
+      "name": "default",
+      "interface": ["annotation"],
+      "context": ["Title", "Narration", "Description"],
+      "content": [
+        {"Title":  "Tutorial"},
+        {"Narration": "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."},
+        {"Description":  "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."}
+      ]
+    }
+  ],
+  "scenario": [
+
+  ]
+}

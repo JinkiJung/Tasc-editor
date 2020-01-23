@@ -77,7 +77,7 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.instructions.length ; i++){
             var elem = json.instructions[i];
             if(document.getElementById(elem.id)===null) {
-                addNewItemWithObject(elem, 'instructions');
+                addNewItemWithObject(elem, 'instruction');
             }
         }
     }

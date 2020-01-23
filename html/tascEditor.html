@@ -34,7 +34,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
     <script type="text/javascript"><![CDATA[
     var selectedElement, selectedArea, offset, linkPath, linkHead;
     var linkItemSizeOffset = 5;
-    var chosenPath;
+    var chosenPath, chosenItem;
     var relatedFieldHighlighted = false;
     var focusedElement;
     var orderedAlready = false;
@@ -129,17 +129,6 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         }
 
         function endDrag(evt) {
-            if(selectedElement){
-                if(focusedElement){
-                    assignValue(focusedElement, selectedElement);
-                    var orgPos = loadOriginPos(selectedElement);
-                    moveItem(selectedElement, orgPos[0], orgPos[1]);
-                }
-                makeFieldItemSelectable(selectedElement);
-                deactiveFieldHighlight();
-            }
-            deactiveFieldFocused();
-            setSelectedElement(null);
             orderedAlready = false;
             if(linkPath){
                 if(evt.target.classList.contains('linkable')){
@@ -172,7 +161,20 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                     svg.removeChild(linkPath);
                     svg.removeChild(linkHead);
                 }
+            }else if(selectedElement){
+                if(focusedElement){
+                    assignValue(focusedElement, selectedElement);
+                    var orgPos = loadOriginPos(selectedElement);
+                    moveItem(selectedElement, orgPos[0], orgPos[1]);
+                }
+                makeFieldItemSelectable(selectedElement);
+                deactiveFieldHighlight();
+                setChosenItem(selectedElement);
             }
+            else
+                cancelChosenItem();
+            deactiveFieldFocused();
+            setSelectedElement(null);
             linkPath = null;
             linkHead = null;
 
@@ -215,6 +217,8 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
         if (key === "Delete" || key ==="Backspace") {
             if (chosenPath) {
                 deletePath(chosenPath);
+            }else if(chosenItem){
+                deleteItem(chosenItem);
             }
         }
     });

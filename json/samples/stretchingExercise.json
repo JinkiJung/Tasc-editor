@@ -1,0 +1,58 @@
+{
+  "name": "Stretching exercise 3D",
+  "description": "A user is required to memorize five stretching poses in order.",
+  "terminuses": [
+    {
+      "name": "user001"
+    },
+    {
+      "name": "leftHandBall"
+    },
+    {
+      "name": "rightHandBall"
+    },
+    {
+      "name": "headBall"
+    }
+  ],
+  "actions": [
+    {
+      "name": "take gesture"
+    },
+    {
+      "name": "take rest"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "anytime"
+    },
+    {
+      "name": "pressing [input] for 5 secs"
+    }
+  ],
+  "instructions": [
+    {
+      "name": "default",
+      "interface": ["annotation"],
+      "context": ["Title", "Narration", "Description"],
+      "information": [
+        {"Title":  "Tutorial"},
+        {"Narration": "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."},
+        {"Description":  "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."}
+      ]
+    },
+    {
+      "name": "annotation",
+      "interface": ["leftHandBall", "rightHandBall", "headBall"],
+      "content": [
+        {"Title":  "Tutorial"},
+        {"Narration": "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."},
+        {"Description":  "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."}
+      ]
+    }
+  ],
+  "scenario": [
+
+  ]
+}

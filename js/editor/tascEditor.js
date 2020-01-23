@@ -233,9 +233,21 @@ function deletePath(path){
     path = null;
 }
 
+function deleteItem(item){
+    document.getElementById('editorPane').removeChild(item);
+    //////////////////////////////////////////////////////////////////
+    // how to actually delete this object from array??
+    //var data = getFieldData(item);
+    //data.splice( item.getAttribute('data-array-index'), 1 );
+    //////////////////////////////////////////////////////////////////
+    cancelChosenItem();
+}
+
 function getFieldData(item){
     for(var i=0; i<item.children.length ; i++){
-        if(item.children[i].classList.contains("terminus-item"))
+        if(item.children[i].classList.contains("tasc-item"))
+            return tascData;
+        else if(item.children[i].classList.contains("terminus-item"))
             return terminusData;
         else if(item.children[i].classList.contains("action-item"))
             return actionData;

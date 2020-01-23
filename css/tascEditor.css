@@ -116,6 +116,11 @@ svg {
     stroke-width: 3;
 }
 
+.chosen-item {
+    stroke: firebrick;
+    stroke-width: 3;
+}
+
 .tasc-editor {
     fill: ghostwhite;
     position: absolute; top: 0; right: 0; bottom: 0; left: 0;

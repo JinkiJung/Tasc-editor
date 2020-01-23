@@ -370,6 +370,24 @@ function activeChosenPathStyle(path){
     }
 }
 
+function activeChosenItemStyle(item){
+    if(item.nodeName === 'g') {
+        for(var i=0; i<item.children.length ; i++){
+            if(item.children[i].classList.contains('tasc-item-pane') || item.children[i].classList.contains('field-item-pane'))
+                item.children[i].classList.add("chosen-item");
+        }
+    }
+}
+
+function deactiveChosenItemStyle(item){
+    if(item.nodeName === 'g') {
+        for(var i=0; i<item.children.length ; i++){
+            if(item.children[i].classList.contains('tasc-item-pane') || item.children[i].classList.contains('field-item-pane'))
+                item.children[i].classList.remove("chosen-item");
+        }
+    }
+}
+
 function activateLinkedItemStyle(item){
     item.classList.remove('linkItem');
     item.classList.add('linkedItem');
@@ -472,4 +490,16 @@ function moveItem(selectedElement, x, y){
         target.setAttributeNS(null, "x", new_x);
         target.setAttributeNS(null, "y", new_y);
     }
+}
+
+function setChosenItem(selectedElement){
+    cancelChosenItem();
+    chosenItem = selectedElement;
+    activeChosenItemStyle(chosenItem);
+}
+
+function cancelChosenItem(){
+    if(chosenItem)
+        deactiveChosenItemStyle(chosenItem);
+    chosenItem = null;
 }

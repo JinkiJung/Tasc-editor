@@ -165,20 +165,58 @@
         }
       }
     },
+    "information": {
+      "type" : "object",
+      "properties" : {
+        "context" : {
+          "type" : "string"
+        },
+        "content" : {
+          "type" : "string"
+        }
+      }
+    },
+    "interface": {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        }
+      }
+    },
     "instruction": {
       "title": "Instruction",
       "type": "object",
       "properties": {
-        "context": {
-          "$ref" : "#/definitions/context"
-        },
         "name": {
           "title": "Name",
           "type": "string",
           "options": {
             "inputAttributes": {
-              "placeholder": "Enter instruction"
+              "placeholder": "Enter name"
             }
+          }
+        },
+        "context": {
+          "title": "Context",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["none", "tutorial", "training","testing","assessment","simulation"]
+          }
+        },
+        "interface": {
+          "title": "Interface",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/interface"
+          }
+        },
+        "information": {
+          "title": "Information",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/information"
           }
         }
       }
@@ -256,7 +294,10 @@
         },
         "following": {
           "title": "Following",
-          "$ref": "#/definitions/instruction",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/instruction"
+          },
           "propertyOrder": 9
         },
         "resulting": {
