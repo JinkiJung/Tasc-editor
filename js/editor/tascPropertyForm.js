@@ -29,19 +29,19 @@ function updateObjectFromForm(object){
     for(var i=0 ; i<inputs.length; i++){
         var input = inputs[i];
         var tagName = input.getAttribute('for');
-        if(object.id.startsWith('tasc')){
+        if(getTypeFromID(object.id) === 'tasc'){
             tascData[index][tagName] = input.value;
         }
-        else if(object.id.startsWith('terminus')){
+        else if(getTypeFromID(object.id) === 'terminus'){
             terminusData[index][tagName] = input.value;
         }
-        else if(object.id.startsWith('action')){
+        else if(getTypeFromID(object.id) === 'action'){
             actionData[index][tagName] = input.value;
         }
-        else if(object.id.startsWith('condition')){
+        else if(getTypeFromID(object.id) === 'condition'){
             conditionData[index][tagName] = input.value;
         }
-        else if(object.id.startsWith('instruction')){
+        else if(getTypeFromID(object.id) === 'instruction'){
             instructionData[index][tagName] = input.value;
         }
     }
@@ -58,15 +58,20 @@ function getTascObject(item){
     openedObjectIndex = index;
 
     if(index){
-        if(item.id.startsWith('tasc'))
-            return tascData[index];
-        else if(item.id.startsWith('action'))
+        if(getTypeFromID(item.id) === 'tasc'){
+            var tascDatum = getOutputDatum(item.id);
+            if(tascDatum)
+                return tascDatum;
+            else
+                return tascData[index];
+        }
+        else if(getTypeFromID(item.id) === 'action')
             return actionData[index];
-        else if(item.id.startsWith('terminus'))
+        else if(getTypeFromID(item.id) === 'terminus')
             return terminusData[index];
-        else if(item.id.startsWith('condition'))
+        else if(getTypeFromID(item.id) === 'condition')
             return conditionData[index];
-        else if(item.id.startsWith('instruction'))
+        else if(getTypeFromID(item.id) === 'instruction')
             return instructionData[index];
     }
 }
@@ -78,10 +83,12 @@ function createForm(item){
     var div = document.getElementById("itemForm");
     //div.setAttribute('class', 'form-container');
 
-    var label = document.createElement("H1");
-    label.setAttribute('for','name');
-    label.innerHTML = json.name;
-    div.appendChild(label);
+    if(json.name){
+        var label = document.createElement("H1");
+        label.setAttribute('for','name');
+        label.innerHTML = json.name;
+        div.appendChild(label);
+    }
 
     for(var tagName in json){
         if(tagName === 'id')

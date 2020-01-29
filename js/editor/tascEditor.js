@@ -13,29 +13,29 @@ function getDummyName(type){
     return type+' '+(document.getElementsByClassName(type + '-item').length+1);
 }
 
-function addNewItem(type, id, title){
+function addNewItem(type, id, name){
     if(id===undefined)
         id = getID(type);
-    if(title===undefined && type !== 'tasc')
-        title = getDummyName(type);
+    if(name===undefined && type !== 'tasc')
+        name = getDummyName(type);
 
     updateHistory(document.getElementById('editorPane'));
     var pos;
     if(type==='tasc'){
         pos = avoidOverlap(document.getElementsByClassName('tasc-item-pane'),300, document.body.clientWidth, tascItemWidth, tascItemHeight);
         if(pos!==undefined)
-            registerItem(createTascItem(new Tasc(type+id, title),pos[0]+ xOffset,pos[1],tascItemWidth,tascItemHeight, title));
+            registerItem(createTascItem(new Tasc(id, name),pos[0]+ xOffset,pos[1],tascItemWidth,tascItemHeight, name));
     }
     else{
         pos = avoidOverlap(document.getElementsByClassName('field-item-pane'),0, document.body.clientWidth, fieldItemWidth, fieldItemHeight);
         if(pos!==undefined)
-            registerItem(createFieldItem(new DummyField(type, type+id, title), pos[0] + xOffset, pos[1] + yOffset, fieldItemWidth, fieldItemHeight, type));
+            registerItem(createFieldItem(new DummyField(type, id, name), pos[0] + xOffset, pos[1] + yOffset, fieldItemWidth, fieldItemHeight, type));
     }
 }
 
-function addNewItemWithObject(dataObject, type){
+function addNewItemWithObject(dataObject, identityProvider, type){
     if(dataObject.id===undefined)
-        dataObject.id = getID(type);
+        dataObject.id = getID(type, identityProvider, dataObject.name);
     updateHistory(document.getElementById('editorPane'));
     var pos;
     if(type === 'tasc'){
@@ -84,10 +84,9 @@ function download(data, filename, type) {
 }
 
 function saveScenario(){
-    //console.log(JSON.stringify(tascData));
-    var scenario = new Scenario(getID('scenario'), 'test', 'This is test', terminusData, actionData, conditionData, instructionData, tascData);//{ id: ID(), name:"testing", terminuses: terminusData, actions: actionData, conditions: conditionData, instructions: instructionData, scenario:tascData };
-    console.log(JSON.stringify(scenario));
-    //download(JSON.stringify(tascData), "tasc", "json");
+    var scenario = exportTascToJSON(getID('scenario'), 'test', 'This is test',outputTascData);
+    //var scenario = new Scenario(getID('scenario'), 'test', 'This is test', terminusData, actionData, conditionData, instructionData, tascData);//{ id: ID(), name:"testing", terminuses: terminusData, actions: actionData, conditions: conditionData, instructions: instructionData, scenario:tascData };
+    console.log(scenario);
 }
 
 function loadScenario(){
@@ -121,10 +120,6 @@ function appendToDatabase(object, item, type){
     }
 }
 
-function updateData(tascObject, fieldName, fieldObject){
-    tascObject[fieldName] = fieldObject;
-}
-
 function clearDatabase(){
     paths = [];
     pathHeads = [];
@@ -135,6 +130,13 @@ function clearDatabase(){
     terminusData = [];
     conditionData = [];
     instructionData = [];
+    outputTascData = [{id:"start"},{id:"end"}];
+}
+
+if (typeof JSON.clone !== "function") {
+    JSON.clone = function(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    };
 }
 
 function assignValue(focusedElement, selectedElement){
@@ -143,17 +145,19 @@ function assignValue(focusedElement, selectedElement){
     var fieldContext = orderToContext(focusedElement.getAttribute('order'));
 
     if(tascObjectindex && fieldDatum){
-        updateData(tascData[tascObjectindex], fieldContext, fieldDatum);
-        setFieldValue(focusedElement, fieldDatum);
+        updateOutput(tascData[tascObjectindex].id, fieldContext, fieldDatum);
+        setFieldValue(focusedElement, fieldDatum, selectedElement.getAttribute('data-array-index'));
     }
 }
 
 function updateNextOfData(targetID, nextID){
-    for(var i=0; i<tascData.length ; i++){
-        if(tascData[i].id === targetID){
-            if(tascData[i].next=== undefined)
-                tascData[i].next = [];
-            tascData[i].next.push(nextID);
+    registerOutput(targetID);
+    registerOutput(nextID);
+    for(var i=0; i<outputTascData.length ; i++){
+        if(outputTascData[i].id === targetID){
+            if(outputTascData[i].next=== undefined)
+                outputTascData[i].next = [];
+            outputTascData[i].next.push(nextID);
         }
     }
 }
@@ -184,21 +188,147 @@ function hasChildOfClass(doc, className){
     return false;
 }
 
+function hasClass(item, className){
+    return item.classList.contains(className);
+}
+
+function getTypeOf(item, suffix){
+    if(hasClass(item, 'tasc' + suffix))
+        return 'tasc';
+    else if(hasClass(item, 'condition' + suffix))
+        return 'condition';
+    else if(hasClass(item, 'terminus' + suffix))
+        return 'terminus';
+    else if(hasClass(item, 'action' + suffix))
+        return 'action';
+    else if(hasClass(item, 'instruction' + suffix))
+        return 'instruction';
+    else if(hasChildOfClass(item, 'tasc' + suffix))
+        return 'tasc';
+    else if(hasChildOfClass(item, 'condition' + suffix))
+        return 'condition';
+    else if(hasChildOfClass(item, 'terminus' + suffix))
+        return 'terminus';
+    else if(hasChildOfClass(item, 'action' + suffix))
+        return 'action';
+    else if(hasChildOfClass(item, 'instruction' + suffix))
+        return 'instruction';
+}
+
+function getTypeOfItem(item){
+    return getTypeOf(item, '-item');
+}
+
+function getTypeOfField(item){
+    return getTypeOf(item, '-field');
+}
+
 function removeInterrelationship(one, another){
     removeRelationship(document.getElementById(one), another);
     removeRelationship(document.getElementById(another), one);
     removeNextLink(document.getElementById(one), document.getElementById(another));
 }
 
-function setFieldValue(item, object){
+function setFieldValue(item, objectWithValue, dataArrayIndex){
     var order = item.getAttribute('order');
+    var type = getTypeOfField(item);
+    var objectType = getTypeFromID(objectWithValue.id);
+    var tascDatumID = item.parentNode.getAttribute('id');
     for(var i=0; i<item.parentNode.children.length ; i++){
-        if(item.parentNode.children[i].tagName ==='text' && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
-            item.parentNode.children[i].classList.add('field-value-confirmed');
-            item.parentNode.children[i].innerHTML = object['name'];
+        if(type === objectType){ // normal assign
+            if(item.parentNode.children[i].classList.contains('field-value') && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
+                item.setAttribute('data-array-index',dataArrayIndex);
+                item.parentNode.children[i].classList.add('field-value-confirmed');
+                var fieldContext = orderToContext(order);
+                updateOutput(tascDatumID, fieldContext, objectWithValue);
+                setAsAdditionalField(item, objectWithValue['name']);
+                showText(item.parentNode.children[i], tascDatumID, fieldContext);
+                //item.parentNode.children[i].innerHTML = objectWithValue['name'];
+            }
+            else if(item.parentNode.children[i].classList.contains('field-description') && item.parentNode.children[i].getAttributeNS(null, 'order') === order)
+                item.parentNode.children[i].innerHTML = "";
         }
-        else if(item.parentNode.children[i].classList.contains('field-description') && item.parentNode.children[i].getAttributeNS(null, 'order') === order)
-            item.parentNode.children[i].innerHTML = "";
+        else{ // additional field
+            if(item.parentNode.children[i].classList.contains(objectType+'-field-additional') && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
+                updateOutput(tascDatumID, orderToContext(order) +':target', objectWithValue);
+            }
+            else if(item.parentNode.children[i].classList.contains('field-value') && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
+                showText(item.parentNode.children[i], tascDatumID, orderToContext(order));
+            }
+        }
+    }
+}
+
+function getOutputDatum(id){
+    return getDatumByDataAndID(outputTascData, id);
+}
+
+function getDatumByDataAndID(data, id){
+    if(data && id){
+        for(var i=0; i<data.length ; i++)
+            if(data[i].id === id)
+                return data[i];
+    }
+    return undefined;
+}
+
+function getDatumByID(objectID){
+    return getDatumByDataAndID(getDataByType(getTypeFromID(objectID)),objectID);
+}
+
+function getIndexByID(dataArray, id){
+    for(var i=0; i<dataArray.length ; i++){
+        if(dataArray[i].id === id)
+            return i;
+    }
+    return -1;
+}
+
+function doesArrayHaveID(dataArray, id){
+    return getIndexByID(dataArray, id) >= 0;
+}
+
+function registerDatumToOutput(datum){
+    outputTascData.push(JSON.clone(datum));
+}
+
+function updateOutputDatum(id, fieldContext, object){
+    var datum = outputTascData[getIndexByID(outputTascData, id)];
+    if(datum && fieldContext){
+        if(getTypeFromFieldContext(fieldContext) === getTypeFromID(object.id))
+            datum[fieldContext] = JSON.clone(object);
+        else if(fieldContext.includes(':')){
+            var keys = fieldContext.split(':')
+            datum[keys[0]][keys[1]] = JSON.clone(object);
+        }
+    }
+}
+
+function registerOutput(id){
+    if(!doesArrayHaveID(outputTascData, id)){
+        registerDatumToOutput(getDatumByDataAndID(tascData,id));
+    }
+}
+
+function updateOutput(id, fieldContext, object){
+    registerOutput(id);
+    updateOutputDatum(id, fieldContext, object);
+}
+
+function showText(item, id, key){
+    var outputDatum = getOutputDatum(id);
+    if(outputDatum[key].name.includes('[') && outputDatum[key].target){
+        item.innerHTML = outputDatum[key].name.substr(0, outputDatum[key].name.indexOf('[')) +'[' + outputDatum[key].target.name +']';
+    }
+    else{
+        item.innerHTML = outputDatum[key].name;
+    }
+}
+
+function setAsAdditionalField(item, value){
+    if(value.includes('[')){
+        var context = value.substring(value.indexOf('[')+1,value.indexOf(']'));
+        item.classList.add(context+"-field-additional");
     }
 }
 
@@ -269,6 +399,23 @@ function getFieldDatum(item){
         return undefined;
 }
 
+function getDataByType(type){
+    if(type==='tasc')
+        return tascData;
+    else if(type==='action')
+        return actionData;
+    else if(type==='condition')
+        return conditionData;
+    else if(type==='instruction')
+        return instructionData;
+    else if(type==='terminus')
+        return terminusData;
+}
+
+function getDatum(type, index){
+    return getDataByType(type)[index];
+}
+
 function removeNextLink(from, to){
     var fromIndex = from.getAttribute('data-array-index');
     var toIndex = to.getAttribute('data-array-index');
@@ -288,6 +435,17 @@ function removeRelationship(element, id_of_another){
         links.splice( links.indexOf(id_of_another), 1 );
         element.setAttributeNS(null,'data-links',links);
     }
+}
+
+function getTypeFromFieldContext(fieldContext){
+    if(fieldContext === 'when' || fieldContext === 'until')
+        return 'condition';
+    else if(fieldContext === 'do')
+        return 'action';
+    else if(fieldContext === 'who')
+        return 'terminus';
+    else if(fieldContext === 'following')
+        return 'instruction';
 }
 
 function updateHistory(svg) {

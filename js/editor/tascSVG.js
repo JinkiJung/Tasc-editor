@@ -334,14 +334,22 @@ function makeFieldItemUnselectable(item){
     }
 }
 
-function activateFieldHighlight(item, type){
-    if(hasChildOfClass(item, type + '-item')){
-        var items = document.getElementsByClassName( type + '-field');
-        for(var t=0; t<items.length ; t++){
-            items[t].classList.add('field-highlighted');
-        }
-        relatedFieldHighlighted = true;
+function activateFieldHighlight(item){
+    var type = getTypeOfItem(item);
+    addHighlightStyle(item, type, '-field');
+    addHighlightStyle(item, type, '-field-additional');
+}
+
+function addHighlightStyle(item, type, context){
+    var items = gatherRelatedItems(type, context);
+    for(var t=0; t<items.length ; t++){
+        items[t].classList.add('field-highlighted');
     }
+    relatedFieldHighlighted = true;
+}
+
+function gatherRelatedItems(type, context){
+    return document.getElementsByClassName( type + context);
 }
 
 function deactiveFieldHighlight(){
@@ -422,7 +430,6 @@ function createLinkHead(start_id, start_x, start_y){
     head.setAttributeNS(null, 'start_y', start_y);
     head.setAttributeNS(null, 'class', 'path-head');
     head.setAttributeNS(null, 'd', getHeadPath(start_x,start_y));
-    head.setAttributeNS(null, 'fill', '#f00');
     head.classList.add('unselectable');
     return head;
 }

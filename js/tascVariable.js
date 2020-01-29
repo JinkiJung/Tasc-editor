@@ -11,6 +11,7 @@ var yOffset= 10;
 var svgURI = 'http://www.w3.org/2000/svg';
 var tascItemHeaderOffset = 34;
 var tascItemNamelessOffset = -20;
+var testIDP = "dmc";
 
 var paths = [];
 var pathHeads = [];
@@ -21,5 +22,7 @@ var actionData = [];
 var terminusData = [];
 var conditionData = [];
 var instructionData = [];
+var outputTascData = [{id:"start"},{id:"end"}];
+
 var svgHistory = [];
 var svgHistoryIndex = 1;

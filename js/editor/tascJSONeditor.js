@@ -42,8 +42,7 @@ function convertJSONToTasc(json){
                 prepareMakingLink(elem, linkedPair);
             }
             else if(document.getElementById(elem.id)===null){
-                var data = new Tasc(elem.id, elem.name, elem.given, elem.when, elem.who, elem.do, elem.until, elem.following);
-                addNewItemWithObject(elem, 'tasc');
+                addNewItemWithObject(elem, testIDP,'tasc');
                 prepareMakingLink(elem, linkedPair);
             }
         }
@@ -53,7 +52,7 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.terminuses.length ; i++){
             var elem = json.terminuses[i];
             if(document.getElementById(elem.id)===null) {
-                addNewItemWithObject(elem, 'terminus');
+                addNewItemWithObject(elem, testIDP,'terminus');
             }
         }
     }
@@ -61,7 +60,7 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.actions.length ; i++){
             var elem = json.actions[i];
             if(document.getElementById(elem.id)===null) {
-                addNewItemWithObject(elem, 'action');
+                addNewItemWithObject(elem, testIDP,'action');
             }
         }
     }
@@ -69,7 +68,7 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.conditions.length ; i++){
             var elem = json.conditions[i];
             if(document.getElementById(elem.id)===null) {
-                addNewItemWithObject(elem, 'condition');
+                addNewItemWithObject(elem, testIDP,'condition');
             }
         }
     }
@@ -77,7 +76,7 @@ function convertJSONToTasc(json){
         for(var i=0; i<json.instructions.length ; i++){
             var elem = json.instructions[i];
             if(document.getElementById(elem.id)===null) {
-                addNewItemWithObject(elem, 'instruction');
+                addNewItemWithObject(elem, testIDP,'instruction');
             }
         }
     }
@@ -125,4 +124,36 @@ function makeLink(linkListGroup){
             parseFloat(toItem.getAttribute('x')) + linkItemSizeOffset,
             parseFloat(toItem.getAttribute('y')) + linkItemSizeOffset);
     }
+}
+
+function exportTascToJSON(id, name, description, tascs){
+    if(!validate(tascs))
+        return undefined;
+    //id, name, description, terminuses, actions, conditions, instructions, tascs
+    var terminuses = [];
+    var actions = [];
+    var conditions = [];
+    var instructions = [];
+    for(var i=0; i<tascs.length ; i++){
+        var tascItem = tascs[i];
+        for (var key in tascItem) {
+            if (tascItem.hasOwnProperty(key)) {
+                var type = getTypeFromFieldContext(key)
+                if(type && tascItem[key])
+                {
+                    if(type === 'terminus')
+                        terminuses.push(tascItem[key]);
+                    else if(type === 'action')
+                        actions.push(tascItem[key]);
+                    else if(type === 'instruction')
+                        instructions.push(tascItem[key]);
+                    else if(type === 'condition')
+                        conditions.push(tascItem[key]);
+                    tascItem[key] =tascItem[key].id;
+                }
+                console.log(key + " -> " + tascItem[key]);
+            }
+        }
+    }
+    return new Scenario(id, name, description, terminuses, actions, conditions, instructions, tascs);
 }

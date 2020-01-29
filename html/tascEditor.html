@@ -8,6 +8,7 @@
     <script type="text/javascript" src="../js/editor/itemAllocator.js"></script>
     <script type="text/javascript" src="../js/editor/bezierPath.js"></script>
     <script type="text/javascript" src="../js/editor/tascPropertyForm.js"></script>
+    <script type="text/javascript" src="../js/validator/tascValidator.js"></script>
     <title>Tasc editor testbed</title>
 
 </head>
@@ -91,10 +92,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 
             if(selectedElement && selectedElement.classList.contains('field-item') && !relatedFieldHighlighted){
                 //makeFieldItemUnselectable(selectedElement);
-                activateFieldHighlight(selectedElement, 'terminus');
-                activateFieldHighlight(selectedElement, 'condition');
-                activateFieldHighlight(selectedElement, 'action');
-                activateFieldHighlight(selectedElement, 'instruction');
+                activateFieldHighlight(selectedElement);
             }
         }
 
@@ -137,30 +135,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             orderedAlready = false;
             if(linkPath){
                 if(evt.target.classList.contains('linkable')){
-                    // if it is already included then do nothing
-                    // otherwise store it to both side
-                    var dstTascItemID = evt.target.id.split('::')[0];
-                    var srcTascItemID = linkPath.getAttributeNS(null,"startID").split('::')[0];
-                    if(IsAlreadyIncluded(srcTascItemID,dstTascItemID)){ // || IsAlreadyIncluded(dstTascItemID,srcTascItemID)){
-                        svg.removeChild(linkPath);
-                        svg.removeChild(linkHead);
-                        linkPath = null;
-                        linkHead = null;
-                        return ;
-                    }
-                    updateHistory(document.getElementById('editorPane'));
-
-                    linkPath.setAttributeNS(null, 'endID', evt.target.id);
-                    linkPath.classList.remove('unselectable');
-                    linkPath.setAttribute('id',getSortedPathID(linkPath.getAttribute('startID'),linkPath.getAttribute('endID')));
-                    activateLinkedItemStyle(document.getElementById(linkPath.getAttributeNS(null, 'startID')));
-                    activateLinkedItemStyle(evt.target);
-                    evt.target.setAttributeNS(null, 'pathIndex', paths.length);
-
-                    updateNextOfData(srcTascItemID, dstTascItemID);
-
-                    paths.push(linkPath);
-                    pathHeads.push(linkHead);
+                    registerLink(evt);
                 }
                 else{
                     svg.removeChild(linkPath);
@@ -202,6 +177,8 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 
             }
             configure(evt.target.parentNode);
+            setConfiguringStyle();
+            cancelChosenItem();
         }
 
         function orderingElement(element){
@@ -215,7 +192,32 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             orderedAlready = true;
         }
 
+        function registerLink(evt){
+            // if it is already included then do nothing
+            // otherwise store it to both side
+            var dstTascItemID = evt.target.id.split('::')[0];
+            var srcTascItemID = linkPath.getAttributeNS(null,"startID").split('::')[0];
+            if(IsAlreadyIncluded(srcTascItemID,dstTascItemID)){ // || IsAlreadyIncluded(dstTascItemID,srcTascItemID)){
+                svg.removeChild(linkPath);
+                svg.removeChild(linkHead);
+                linkPath = null;
+                linkHead = null;
+                return ;
+            }
+            updateHistory(document.getElementById('editorPane'));
 
+            linkPath.setAttributeNS(null, 'endID', evt.target.id);
+            linkPath.classList.remove('unselectable');
+            linkPath.setAttribute('id',getSortedPathID(linkPath.getAttribute('startID'),linkPath.getAttribute('endID')));
+            activateLinkedItemStyle(document.getElementById(linkPath.getAttributeNS(null, 'startID')));
+            activateLinkedItemStyle(evt.target);
+            evt.target.setAttributeNS(null, 'pathIndex', paths.length);
+
+            updateNextOfData(srcTascItemID, dstTascItemID);
+
+            paths.push(linkPath);
+            pathHeads.push(linkHead);
+        }
     }
 
     document.addEventListener('keydown', function(event) {
