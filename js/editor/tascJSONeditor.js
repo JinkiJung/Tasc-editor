@@ -50,7 +50,7 @@ function convertJSONToTasc(json){
     makeLink(linkedPair);
     if(json.terminuses!==undefined){
         for(var i=0; i<json.terminuses.length ; i++){
-            var elem = json.terminuses[i];
+            var elem = new Terminus(json.terminuses[i].id, json.terminuses[i].name, json.terminuses[i].location, json.terminuses[i].role);
             if(document.getElementById(elem.id)===null) {
                 addNewItemWithObject(elem, testIDP,'terminus');
             }
@@ -129,31 +129,5 @@ function makeLink(linkListGroup){
 function exportTascToJSON(id, name, description, tascs){
     if(!validate(tascs))
         return undefined;
-    //id, name, description, terminuses, actions, conditions, instructions, tascs
-    var terminuses = [];
-    var actions = [];
-    var conditions = [];
-    var instructions = [];
-    for(var i=0; i<tascs.length ; i++){
-        var tascItem = tascs[i];
-        for (var key in tascItem) {
-            if (tascItem.hasOwnProperty(key)) {
-                var type = getTypeFromFieldContext(key)
-                if(type && tascItem[key])
-                {
-                    if(type === 'terminus')
-                        terminuses.push(tascItem[key]);
-                    else if(type === 'action')
-                        actions.push(tascItem[key]);
-                    else if(type === 'instruction')
-                        instructions.push(tascItem[key]);
-                    else if(type === 'condition')
-                        conditions.push(tascItem[key]);
-                    tascItem[key] =tascItem[key].id;
-                }
-                console.log(key + " -> " + tascItem[key]);
-            }
-        }
-    }
-    return new Scenario(id, name, description, terminuses, actions, conditions, instructions, tascs);
+    return new Scenario(id, name, description, terminusData, actionData, conditionData, instructionData, outputTascData);
 }

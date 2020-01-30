@@ -292,14 +292,37 @@ function registerDatumToOutput(datum){
     outputTascData.push(JSON.clone(datum));
 }
 
+function assignFieldValue(object){
+    if (object instanceof Object)
+        return JSON.clone(object)
+    else
+        return object;
+}
+
+function updateSubfieldRecursively(datum, fieldContext, object){
+    if(fieldContext.includes(':')){
+        var keys = fieldContext.split(':');
+        var firstKey = keys[0];
+        keys.shift();
+        if(datum[firstKey])
+            updateSubfieldRecursively(datum[firstKey],keys.join(':'), object);
+    }
+    else{
+        datum[fieldContext] = assignFieldValue(object);
+    }
+}
+
 function updateOutputDatum(id, fieldContext, object){
     var datum = outputTascData[getIndexByID(outputTascData, id)];
     if(datum && fieldContext){
-        if(getTypeFromFieldContext(fieldContext) === getTypeFromID(object.id))
-            datum[fieldContext] = JSON.clone(object);
+        if(object instanceof Object && getTypeFromFieldContext(fieldContext) === getTypeFromID(object.id)) // where they are same type
+            datum[fieldContext] = assignFieldValue(object);
         else if(fieldContext.includes(':')){
-            var keys = fieldContext.split(':')
-            datum[keys[0]][keys[1]] = JSON.clone(object);
+            updateSubfieldRecursively(datum, fieldContext, object);
+
+            // update the id as well
+            //datum.id = getAugmentedID(datum.id, object.name);
+            //console.log(datum.id);
         }
     }
 }
@@ -442,7 +465,7 @@ function getTypeFromFieldContext(fieldContext){
         return 'condition';
     else if(fieldContext === 'do')
         return 'action';
-    else if(fieldContext === 'who')
+    else if(fieldContext === 'who' || fieldContext === 'target')
         return 'terminus';
     else if(fieldContext === 'following')
         return 'instruction';

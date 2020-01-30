@@ -9,7 +9,10 @@ function hidePropertyForm() {
 function showPropertyForm(item){
     if(item.getAttribute('data-array-index')){
         removeForm();
-        createForm(item);
+        var div = document.getElementById("itemForm");
+        var json = getTascObject(item);
+        openedObject = json;
+        createForm(div, json, true);
         document.getElementById("itemForm").style.display = "block";
     }
 }
@@ -28,21 +31,23 @@ function updateObjectFromForm(object){
     var inputs = document.getElementsByClassName('property-form-input');
     for(var i=0 ; i<inputs.length; i++){
         var input = inputs[i];
-        var tagName = input.getAttribute('for');
-        if(getTypeFromID(object.id) === 'tasc'){
-            tascData[index][tagName] = input.value;
-        }
-        else if(getTypeFromID(object.id) === 'terminus'){
-            terminusData[index][tagName] = input.value;
-        }
-        else if(getTypeFromID(object.id) === 'action'){
-            actionData[index][tagName] = input.value;
-        }
-        else if(getTypeFromID(object.id) === 'condition'){
-            conditionData[index][tagName] = input.value;
-        }
-        else if(getTypeFromID(object.id) === 'instruction'){
-            instructionData[index][tagName] = input.value;
+        if(input.value){
+            var tagName = input.getAttribute('for');
+            if(getTypeFromID(object.id) === 'tasc'){
+                updateOutput(object.id, tagName, input.value);
+            }
+            else if(getTypeFromID(object.id) === 'terminus'){
+                terminusData[index][tagName] = input.value;
+            }
+            else if(getTypeFromID(object.id) === 'action'){
+                actionData[index][tagName] = input.value;
+            }
+            else if(getTypeFromID(object.id) === 'condition'){
+                conditionData[index][tagName] = input.value;
+            }
+            else if(getTypeFromID(object.id) === 'instruction'){
+                instructionData[index][tagName] = input.value;
+            }
         }
     }
 }
@@ -51,6 +56,7 @@ function saveAndClose(){
     updateObjectFromForm(openedObject);
     openedObject = undefined;
     openedObjectIndex = -1;
+    hidePropertyForm();
 }
 
 function getTascObject(item){
@@ -76,18 +82,26 @@ function getTascObject(item){
     }
 }
 
-function createForm(item){
-    var json = getTascObject(item);
-    openedObject = json;
+function makeSectionOfObject(div, object, fieldContext){
+    var section = document.createElement("section");
+    createForm(section, object, false, fieldContext);
+    div.appendChild(section);
+}
 
-    var div = document.getElementById("itemForm");
-    //div.setAttribute('class', 'form-container');
+function getNestedFieldContext(parent, child){
+    if(parent)
+        return parent + ":" + child;
+    else
+        return child;
+}
+
+function createForm(htmlElement, json, addButtons, fieldContext){
 
     if(json.name){
-        var label = document.createElement("H1");
+        var label = document.createElement("H3");
         label.setAttribute('for','name');
         label.innerHTML = json.name;
-        div.appendChild(label);
+        htmlElement.appendChild(label);
     }
 
     for(var tagName in json){
@@ -96,32 +110,37 @@ function createForm(item){
         {
             var label = document.createElement("label");
             label.setAttribute('for','name');
-            label.innerHTML = tagName;
-
-            var input = document.createElement("input");
-            input.setAttribute('class', 'property-form-input');
-            input.setAttribute('type','text');
-            input.setAttribute('for',tagName);
-            input.setAttribute('placeholder','Enter '+tagName);
-            if(json[tagName])
+            label.innerHTML = tagName + ": ";
+            htmlElement.appendChild(label);
+            if(json[tagName] && json[tagName] instanceof Object){
+                makeSectionOfObject(htmlElement, json[tagName], getNestedFieldContext(fieldContext, tagName));
+            }
+            else{
+                var input = document.createElement("input");
+                input.setAttribute('class', 'property-form-input');
+                input.setAttribute('type','text');
+                input.setAttribute('for',getNestedFieldContext(fieldContext, tagName));
+                input.setAttribute('placeholder','Enter '+tagName);
                 input.value = json[tagName];
-
-            div.appendChild(label);
-            div.appendChild(input);
+                htmlElement.appendChild(input);
+                htmlElement.appendChild(document.createElement("br"));
+            }
         }
     }
 
-    var submit = document.createElement("button");
-    submit.setAttribute('class', 'btn');
-    submit.setAttribute('onclick', 'saveAndClose()');
-    submit.innerHTML = "Save";
-    div.appendChild(submit);
+    if(addButtons){
+        var submit = document.createElement("button");
+        submit.setAttribute('class', 'btn');
+        submit.setAttribute('onclick', 'saveAndClose()');
+        submit.innerHTML = "Save";
+        htmlElement.appendChild(submit);
 
-    var cancel = document.createElement("button");
-    cancel.setAttribute('onclick', 'hidePropertyForm()');
-    cancel.setAttribute('class', 'btn cancel');
-    cancel.innerHTML = "Close";
-    div.appendChild(cancel);
+        var cancel = document.createElement("button");
+        cancel.setAttribute('onclick', 'hidePropertyForm()');
+        cancel.setAttribute('class', 'btn cancel');
+        cancel.innerHTML = "Close";
+        htmlElement.appendChild(cancel);
+    }
 }
 
 function removeForm(){

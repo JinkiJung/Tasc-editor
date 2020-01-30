@@ -337,7 +337,8 @@
           },
           "propertyOrder": 10
         }
-      }
+      },
+      "required": ["who", "do", "until"]
     }
   }
 }

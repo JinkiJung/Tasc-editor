@@ -1,5 +1,4 @@
 function Tasc(id, name, given, when, who, does, until, next, following){ //, evaluation){
-
     return {id: id, name: getLink(name), given: getLink(given), when: getLink(when), who: getLink(who), do: getLink(does),
         until: getLink(until), following: getLink(following), next: getArray(next), };
 }
@@ -20,11 +19,11 @@ function getArray(object){
 
 function DummyField(type, id, name){
     if(type ==='terminus')
-        return new Terminus(id,name);
+        return new Terminus(id,name, '', '');
     else if(type ==='action')
         return new Action(id,name);
     else if(type ==='condition')
-        return new Condition(id,name);
+        return new Condition(id,name,'');
     else if(type ==='instruction')
         return new Instruction(id,name);
     else
@@ -36,7 +35,7 @@ function Context(id, name){
 }
 
 function Terminus(id, name, location, role){
-    return { id: id, name: name, location: location, role: role };
+    return { id: id, name: name, location: getLink(location), role: getLink(role) };
 }
 
 function Condition(id, name, state, target){
