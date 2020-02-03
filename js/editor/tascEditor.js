@@ -356,14 +356,29 @@ function updateOutput(id, fieldContext, object){
     updateOutputDatum(id, fieldContext, object);
 }
 
+function getNameWithTarget(object){
+    if(object && object.name){
+        if(object.target && object.target instanceof Object)
+            return getAugmentedName(object.name, object.target.name);
+        else
+            return getAugmentedName(object.name);
+    }
+    else
+        return "";
+}
+
+function getAugmentedName(name, additionalName){
+    if(name === undefined)
+        return "";
+    if(name.includes('[') && additionalName)
+        return name.substr(0, name.indexOf('[')) +'[' + additionalName +']';
+    else
+        return name;
+}
+
 function showText(item, id, key){
     var outputDatum = getOutputDatum(id);
-    if(outputDatum[key].name.includes('[') && outputDatum[key].target){
-        item.innerHTML = outputDatum[key].name.substr(0, outputDatum[key].name.indexOf('[')) +'[' + outputDatum[key].target.name +']';
-    }
-    else{
-        item.innerHTML = outputDatum[key].name;
-    }
+    item.innerHTML = getNameWithTarget(outputDatum[key]);
 }
 
 function setAsAdditionalField(item, value){

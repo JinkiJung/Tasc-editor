@@ -45,10 +45,10 @@ function createTascItem(tascObject, x, y, width, height) {
     }
 
     var givenValue = (tascObject.given === undefined) ? '' : tascObject.given.name;
-    var whenValue =(tascObject.when === undefined) ? '' : tascObject.when.name;
+    var whenValue =(tascObject.when === undefined) ? '' : getNameWithTarget(tascObject.when);
     var whoValue = (tascObject.who === undefined) ? '' : tascObject.who.name;
-    var doValue = (tascObject.do === undefined) ? '' : tascObject.do.name;
-    var untilValue = (tascObject.until === undefined) ? '' : tascObject.until.name;
+    var doValue = (tascObject.do === undefined) ? '' : getNameWithTarget(tascObject.do);
+    var untilValue = (tascObject.until === undefined) ? '' : getNameWithTarget(tascObject.until);
     var followingValue = (tascObject.following === undefined) ? '' : tascObject.following.name;
     createField(group,'context', x, y, width, 0, topOffset, 'given',givenValue);
     createField(group,'condition', x, y, width, 1, topOffset, 'when',whenValue);
@@ -244,6 +244,10 @@ function createEditableText(){
     svg.appendChild(myforeign);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function updateFieldItem(fieldObject, value){
+    fieldObject.innerHTML = value;
+}
 
 function createFieldItem(fieldObject, x, y, width, height, type) {
     var group = document.createElementNS( svgURI, 'g');

@@ -3,15 +3,19 @@
   "description": "A user is required to memorize five stretching poses in order.",
   "terminuses": [
     {
+      "id":"tasc:terminus:dmc:user001",
       "name": "user001"
     },
     {
+      "id":"tasc:terminus:dmc:leftHandBall",
       "name": "leftHandBall"
     },
     {
+      "id":"tasc:terminus:dmc:rightHandBall",
       "name": "rightHandBall"
     },
     {
+      "id":"tasc:terminus:dmc:headBall",
       "name": "headBall"
     }
   ],
@@ -21,6 +25,9 @@
     },
     {
       "name": "take rest"
+    },
+    {
+      "name": "explore"
     }
   ],
   "conditions": [
@@ -28,27 +35,27 @@
       "name": "anytime"
     },
     {
-      "name": "pressing [input] for 5 secs"
+      "name": "pressing button for 5 secs",
+
     }
   ],
   "instructions": [
     {
       "name": "default",
-      "interface": ["annotation"],
-      "context": ["Title", "Narration", "Description"],
+      "interface": ["basic_guidance"],
       "information": [
-        {"Title":  "Tutorial"},
-        {"Narration": "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."},
-        {"Description":  "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."}
+        {"Title":  ""},
+        {"Narration": ""},
+        {"Description":  ""}
       ]
     },
     {
       "name": "annotation",
       "interface": ["leftHandBall", "rightHandBall", "headBall"],
-      "content": [
-        {"Title":  "Tutorial"},
-        {"Narration": "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."},
-        {"Description":  "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."}
+      "information": [
+        {"leftHandBall": ""},
+        {"rightHandBall": ""},
+        {"headBall": ""}
       ]
     }
   ],

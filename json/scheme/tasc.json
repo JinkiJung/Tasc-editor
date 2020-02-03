@@ -60,6 +60,12 @@
         "state": {
           "$ref": "#/definitions/state"
         },
+        "timeState": {
+          "type": "string"
+        },
+        "isSatisfied": {
+          "type": "boolean"
+        },
         "and": {
           "type": "string"
         },
@@ -337,8 +343,7 @@
           },
           "propertyOrder": 10
         }
-      },
-      "required": ["who", "do", "until"]
+      }
     }
   }
 }

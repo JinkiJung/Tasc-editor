@@ -25,6 +25,14 @@ function replaceDataWithObject(data, datum){
     }
 }
 
+function getFieldValueText(object){
+    for(var i=0; i<object.children.length ; i++){
+        if(object.children[i].classList.contains('field-value-confirmed'))
+            return object.children[i];
+    }
+    return undefined;
+}
+
 function updateObjectFromForm(object){
     var index = openedObjectIndex;
 
@@ -38,6 +46,9 @@ function updateObjectFromForm(object){
             }
             else if(getTypeFromID(object.id) === 'terminus'){
                 terminusData[index][tagName] = input.value;
+                console.log(document.getElementById(object.id));
+                if(tagName === 'name')
+                    updateFieldItem(getFieldValueText(document.getElementById(object.id)), input.value);
             }
             else if(getTypeFromID(object.id) === 'action'){
                 actionData[index][tagName] = input.value;

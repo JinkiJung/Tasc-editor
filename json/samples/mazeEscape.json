@@ -3,25 +3,32 @@
   "description": "A user is required to memorize a way to get the goal point.",
   "terminuses": [
     {
+      "id":"tasc:terminus:dmc:user001",
       "name": "user001"
     },
     {
-      "name": "CrossroadPoint1"
+      "name": "CrossroadPoint1",
+      "id":"tasc:terminus:dmc:cp1"
     },
     {
-      "name": "CrossroadPoint2"
+      "name": "CrossroadPoint2",
+      "id":"tasc:terminus:dmc:cp2"
     },
     {
-      "name": "CrossroadPoint3"
+      "name": "CrossroadPoint3",
+      "id":"tasc:terminus:dmc:cp3"
     },
     {
-      "name": "CrossroadPoint4"
+      "name": "CrossroadPoint4",
+      "id":"tasc:terminus:dmc:cp4"
     },
     {
-      "name": "CrossroadPoint5"
+      "name": "CrossroadPoint5",
+      "id":"tasc:terminus:dmc:cp5"
     },
     {
-      "name": "Goal"
+      "name": "Goal",
+      "id":"tasc:terminus:dmc:goal"
     }
   ],
   "actions": [
@@ -30,9 +37,6 @@
     },
     {
       "name": "explore"
-    },
-    {
-      "name": "give penalty to [terminus]"
     }
   ],
   "conditions": [
@@ -40,21 +44,39 @@
       "name": "anytime"
     },
     {
-      "name": "approaching to [terminus]"
+      "name": "approaching to [terminus]",
+      "state": {
+        "type": "DistanceState",
+        "one": {
+          "type": "MoveState",
+          "terminusID": "tasc:terminus:dmc:user001"
+        },
+        "another": {
+          "type": "MoveState",
+          "terminusID": "tasc:terminus:dmc:cp1"
+        },
+        "distance": 7.0
+      },
+      "relationalOperator": "smallerOrEqual"
     },
     {
-      "name": "10 secs"
+      "name": "press button C",
+      "state" : {
+        "type": "InputUpState",
+        "terminusID": "tasc:terminus:dmc:user001",
+        "paramValue": "(int)KeyCode.C"
+      },
+      "relationalOperator": "equal"
     }
   ],
   "instructions": [
     {
       "name": "default",
-      "interface": ["annotation"],
-      "context": ["training", "Narration", "Description"],
+      "interface": ["basic_guidance"],
       "information": [
-        {"Title":  "Tutorial"},
-        {"Narration": "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."},
-        {"Description":  "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."}
+        {"Title":  ""},
+        {"Narration": ""},
+        {"Description":  ""}
       ]
     }
   ],
