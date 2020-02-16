@@ -101,12 +101,19 @@ function makeLink(linkListGroup){
         var linkItem = linkListGroup[g];
         if(linkItem.from === undefined || document.getElementById(linkItem.from) === undefined
             || linkItem.to === undefined || document.getElementById(linkItem.to) === undefined){
-            console.log("ERROR: there were no from and to infomation");
+            console.log("ERROR: there were no from and to information");
             return ;
         }
         var fromItem = document.getElementById(linkItem.from + "::right");
         var toItem = document.getElementById(linkItem.to + "::left");
-
+        if(fromItem === undefined || fromItem === null){
+            console.log("Warning: " + linkItem.from +" is missing!");
+            continue;
+        }
+        if(toItem === undefined || toItem === null){
+            console.log("Warning: " + linkItem.to +" is missing!");
+            continue;
+        }
         var tempLinkPath = generateLinkPath(fromItem.id, toItem.id);
         svg.appendChild(tempLinkPath);
 

@@ -197,7 +197,8 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
             // otherwise store it to both side
             var dstTascItemID = evt.target.id.split('::')[0];
             var srcTascItemID = linkPath.getAttributeNS(null,"startID").split('::')[0];
-            if(IsAlreadyIncluded(srcTascItemID,dstTascItemID)){ // || IsAlreadyIncluded(dstTascItemID,srcTascItemID)){
+            if(dstTascItemID === srcTascItemID || // when source and destination ID are same
+                IsAlreadyIncluded(srcTascItemID,dstTascItemID)){ // when there exist a link already
                 svg.removeChild(linkPath);
                 svg.removeChild(linkHead);
                 linkPath = null;
@@ -223,11 +224,7 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
     document.addEventListener('keydown', function(event) {
         const key = event.key; // const {key} = event; ES6+
         if (key === "Delete" || key ==="Backspace") {
-            if (chosenPath) {
-                deletePath(chosenPath);
-            }else if(chosenItem){
-                deleteItem(chosenItem);
-            }
+            removeChosenOne(chosenPath, chosenItem);
         }
     });
 

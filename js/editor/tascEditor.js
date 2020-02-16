@@ -403,30 +403,54 @@ function getSortedPathID(one, another){
     return one + '--' + another;
 }
 
-function deletePath(path){
+function getItemID(linkID){
+    if(typeof linkID === 'string')
+        return linkID.split('::')[0];
+    else
+        return '';
+}
+
+function removePath(path){
     // removing style of link boxes
     var one = path.getAttributeNS(null,'startID');
     var another = path.getAttributeNS(null,'endID')
-    removeInterrelationship(one.split('::')[0], another.split('::')[0]);
+    removeInterrelationship(getItemID(one), getItemID(another));
     deactivateLinkedItemStyle(document.getElementById(one));
     deactivateLinkedItemStyle(document.getElementById(another));
     document.getElementById('editorPane').removeChild(path);
     var pathIndex = paths.indexOf(path);
-
-    document.getElementById('editorPane').removeChild(pathHeads[pathIndex]);
-    paths.splice( pathIndex, 1 );
-    pathHeads.splice( pathIndex, 1 );
-    path = null;
+    if(pathIndex>=0){
+        document.getElementById('editorPane').removeChild(pathHeads[pathIndex]);
+        paths.splice( pathIndex, 1 );
+        pathHeads.splice( pathIndex, 1 );
+        path = null;
+        return true;
+    }
+    else
+        return false;
 }
 
-function deleteItem(item){
-    document.getElementById('editorPane').removeChild(item);
-    //////////////////////////////////////////////////////////////////
-    // how to actually delete this object from array??
-    //var data = getFieldData(item);
-    //data.splice( item.getAttribute('data-array-index'), 1 );
-    //////////////////////////////////////////////////////////////////
+function removeRelatedPaths(item){
+    for(var i=0; i<paths.length ; i++){
+        if((paths[i].getAttributeNS(null,'startID') && getItemID(paths[i].getAttributeNS(null,'startID')) === item.id)
+        || (paths[i].getAttributeNS(null,'endID') && getItemID(paths[i].getAttributeNS(null,'endID')) === item.id))
+            if(removePath(paths[i]))
+                return removeRelatedPaths(item); // recursively remove path when there is update..
+    }
+}
+
+function removeItem(item){
+    removeRelatedPaths(item);
     cancelChosenItem();
+    removeOutputTascData(item.id);
+    document.getElementById('editorPane').removeChild(item);
+}
+
+function removeOutputTascData(id){
+    for(var i=0; i<outputTascData.length ; i++){
+        if(outputTascData[i].id === id)
+            outputTascData.splice( i, 1 );
+    }
 }
 
 function getFieldData(item){
@@ -482,14 +506,16 @@ function removeNextLink(from, to){
 }
 
 function removeRelationship(element, id_of_another){
-    var links = element.getAttributeNS(null, 'data-links');
-    if(links ===null)
-        links = [];
-    else
-        links = links.split(',');
-    if(links.includes(id_of_another)){
-        links.splice( links.indexOf(id_of_another), 1 );
-        element.setAttributeNS(null,'data-links',links);
+    if(element){
+        var links = element.getAttributeNS(null, 'data-links');
+        if(links ===null)
+            links = [];
+        else
+            links = links.split(',');
+        if(links.includes(id_of_another)){
+            links.splice( links.indexOf(id_of_another), 1 );
+            element.setAttributeNS(null,'data-links',links);
+        }
     }
 }
 
@@ -505,6 +531,14 @@ function getTypeFromFieldContext(fieldContext){
 }
 
 function updateHistory(svg) {
+}
+
+function removeChosenOne(chosenPath, chosenItem){
+    if (chosenPath) {
+        removePath(chosenPath);
+    }else if(chosenItem){
+        removeItem(chosenItem);
+    }
 }
 
 /*

@@ -46,18 +46,23 @@ function updateObjectFromForm(object){
             }
             else if(getTypeFromID(object.id) === 'terminus'){
                 terminusData[index][tagName] = input.value;
-                console.log(document.getElementById(object.id));
                 if(tagName === 'name')
                     updateFieldItem(getFieldValueText(document.getElementById(object.id)), input.value);
             }
             else if(getTypeFromID(object.id) === 'action'){
                 actionData[index][tagName] = input.value;
+                if(tagName === 'name')
+                    updateFieldItem(getFieldValueText(document.getElementById(object.id)), input.value);
             }
             else if(getTypeFromID(object.id) === 'condition'){
                 conditionData[index][tagName] = input.value;
+                if(tagName === 'name')
+                    updateFieldItem(getFieldValueText(document.getElementById(object.id)), input.value);
             }
             else if(getTypeFromID(object.id) === 'instruction'){
                 instructionData[index][tagName] = input.value;
+                if(tagName === 'name')
+                    updateFieldItem(getFieldValueText(document.getElementById(object.id)), input.value);
             }
         }
     }
