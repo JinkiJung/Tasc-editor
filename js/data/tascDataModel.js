@@ -31,26 +31,26 @@ function DummyField(type, id, name){
 }
 
 function Context(id, name){
-    return { id: id, name: name };
+    return { id: id, name: name, template:false };
 }
 
 function Terminus(id, name, location, role){
-    return { id: id, name: name, location: getLink(location), role: getLink(role) };
+    return { id: id, name: name, location: getLink(location), role: getLink(role), template:false };
 }
 
 function Condition(id, name, state, target){
-    return { id: id, name: name, state: state, target: getLink(target)};
+    return { id: id, name: name, state: state, target: getLink(target), template:false };
 }
 
 function Action(id, name, target){
-    return { id: id, name: name, target: getLink(target) };
+    return { id: id, name: name, target: getLink(target), template:false };
 }
 
 function Instruction(id, name){
-    return { id: id, name: name};
+    return { id: id, name: name, template:false};
 }
 
 function Scenario(id, name, description, terminuses, actions, conditions, instructions, tascs){
         return { id: id, name: name, description: description, terminuses: terminuses,
-        actions: actions, conditions: conditions, instructions: instructions, scenario: tascs };
+        actions: actions, conditions: conditions, instructions: instructions, scenario: tascs, templates:[] };
 }

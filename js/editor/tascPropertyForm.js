@@ -39,33 +39,38 @@ function updateObjectFromForm(object){
     var inputs = document.getElementsByClassName('property-form-input');
     for(var i=0 ; i<inputs.length; i++){
         var input = inputs[i];
-        if(input.value){
+        if(input.value || input.checked){
             var tagName = input.getAttribute('for');
             if(getTypeFromID(object.id) === 'tasc'){
                 updateOutput(object.id, tagName, input.value);
             }
-            else if(getTypeFromID(object.id) === 'terminus'){
-                terminusData[index][tagName] = input.value;
-                if(tagName === 'name')
-                    updateFieldItem(getFieldValueText(document.getElementById(object.id)), input.value);
-            }
-            else if(getTypeFromID(object.id) === 'action'){
-                actionData[index][tagName] = input.value;
-                if(tagName === 'name')
-                    updateFieldItem(getFieldValueText(document.getElementById(object.id)), input.value);
-            }
-            else if(getTypeFromID(object.id) === 'condition'){
-                conditionData[index][tagName] = input.value;
-                if(tagName === 'name')
-                    updateFieldItem(getFieldValueText(document.getElementById(object.id)), input.value);
-            }
-            else if(getTypeFromID(object.id) === 'instruction'){
-                instructionData[index][tagName] = input.value;
-                if(tagName === 'name')
-                    updateFieldItem(getFieldValueText(document.getElementById(object.id)), input.value);
+            else {
+                updateData(object.id, index, tagName, input);
             }
         }
     }
+}
+
+function getValueFromInput(input){
+    if(input.type ==='checkbox')
+        return input.checked;
+    else
+        return input.value;
+}
+
+// update boolean value
+function updateData(id, index, tagName, input){
+    if(getTypeFromID(id) === 'terminus')
+        terminusData[index][tagName] = getValueFromInput(input);
+    else if(getTypeFromID(id) === 'action')
+        actionData[index][tagName] = getValueFromInput(input);
+    else if(getTypeFromID(id) === 'condition')
+        conditionData[index][tagName] = getValueFromInput(input);
+    else if(getTypeFromID(id) === 'instruction')
+        instructionData[index][tagName] = getValueFromInput(input);
+
+    if(tagName === 'name')
+        updateFieldItem(getFieldValueText(document.getElementById(id)), getValueFromInput(input));
 }
 
 function saveAndClose(){
@@ -134,7 +139,13 @@ function createForm(htmlElement, json, addButtons, fieldContext){
             else{
                 var input = document.createElement("input");
                 input.setAttribute('class', 'property-form-input');
-                input.setAttribute('type','text');
+                if(typeof json[tagName] === "boolean"){
+                    input.setAttribute('type','checkbox');
+                    if(json[tagName])
+                        input.setAttribute('checked', json[tagName]);
+                }
+                else
+                    input.setAttribute('type','text');
                 input.setAttribute('for',getNestedFieldContext(fieldContext, tagName));
                 input.setAttribute('placeholder','Enter '+tagName);
                 input.value = json[tagName];
