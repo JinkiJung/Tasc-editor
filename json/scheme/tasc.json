@@ -381,8 +381,8 @@
           },
           "propertyOrder": 10
         },
-        "priority": {
-          "title": "Priority",
+        "metadata": {
+          "title": "Metadata",
           "type": "object",
           "format": "table",
           "properties": {
