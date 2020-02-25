@@ -48,14 +48,14 @@ function createTascItem(tascObject, x, y, width, height) {
     var whenValue =(tascObject.when === undefined) ? '' : getNameWithTarget(tascObject.when);
     var whoValue = (tascObject.who === undefined) ? '' : tascObject.who.name;
     var doValue = (tascObject.do === undefined) ? '' : getNameWithTarget(tascObject.do);
-    var untilValue = (tascObject.until === undefined) ? '' : getNameWithTarget(tascObject.until);
-    var followingValue = (tascObject.following === undefined) ? '' : tascObject.following.name;
+    var beforeValue = (tascObject.before === undefined) ? '' : getNameWithTarget(tascObject.before);
+    var followingValue = (tascObject.follow === undefined) ? '' : tascObject.follow.name;
     createField(group,'context', x, y, width, 0, topOffset, 'given',givenValue);
     createField(group,'condition', x, y, width, 1, topOffset, 'when',whenValue);
     createField(group,'terminus', x, y, width, 2, topOffset, 'who',whoValue);
     createField(group,'action', x, y, width, 3, topOffset, 'do',doValue);
-    createField(group,'condition', x, y, width, 4, topOffset, 'until',untilValue);
-    createField(group,'instruction', x, y, width, 5, topOffset, 'following',followingValue);
+    createField(group,'instruction', x, y, width, 4, topOffset, 'follow',followingValue);
+    createField(group,'condition', x, y, width, 5, topOffset, 'before',beforeValue);
     // Link items
     group.appendChild(createLinkItem(tascObject.id, x, y, width, height, 0, 'top'));
     group.appendChild(createLinkItem(tascObject.id, x, y, width, height, topOffset, 'bottom'));
@@ -210,8 +210,8 @@ function createFieldValue(x, y, width, order, namelessOffset, classValue, text){
 
 function createFieldDescription(x, y, width, order, namelessOffset, classValue, context, shouldBeVisible){
     var element = document.createElementNS( svgURI, 'text');
-    var widthOffset = width/2;
-    var heightOffset = fieldItemHeight / 2  + namelessOffset;
+    var widthOffset = 10; // width/2;
+    var heightOffset = fieldItemHeight / 2  + namelessOffset - 13;
     element.setAttribute( 'offset-x', widthOffset );
     element.setAttribute( 'offset-y', tascItemHeaderOffset + (fieldOffset* parseFloat(order))+heightOffset);
     element.setAttribute( 'x', x+ widthOffset );

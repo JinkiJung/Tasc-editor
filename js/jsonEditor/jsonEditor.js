@@ -67,7 +67,7 @@ var starting_value = [
                 "when": {"name": "Morning of 21th January, 2020"},
                 "who": {"name": "Jinki"},
                 "do": { "name" :"ride a bike"},
-                "until": {"name": "get to the office"},
+                "before": {"name": "get to the office"},
                 "next": ["step002"]
             },
             {
@@ -77,7 +77,7 @@ var starting_value = [
                 "when": {"name": ""},
                 "who": {"name": "Thomas"},
                 "do": { "name" :"drive"},
-                "until": {"name": "get to the Micheal's office"}
+                "before": {"name": "get to the Micheal's office"}
             },
             {
                 "id": "step003",
@@ -86,7 +86,7 @@ var starting_value = [
                 "when": {"name": ""},
                 "who": {"name": "Thomas"},
                 "do": { "name" :"drive"},
-                "until": {"name": "get to Kiel office"}
+                "before": {"name": "get to Kiel office"}
             }
         ]
     }

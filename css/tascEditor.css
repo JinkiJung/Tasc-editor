@@ -157,10 +157,10 @@ svg {
 
 .field-description{
     font-family: Verdana;
-    font-size: small;
+    font-size: x-small;
     fill: gray;
-    dominant-baseline: middle;
-    text-anchor: middle;
+    dominant-baseline: left;
+    text-anchor: left;
 }
 
 .field{

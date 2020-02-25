@@ -1,6 +1,6 @@
-function Tasc(id, name, given, when, who, does, until, next, following){ //, evaluation){
+function Tasc(id, name, given, when, who, does, follow, before, then){
     return {id: id, name: getLink(name), given: getLink(given), when: getLink(when), who: getLink(who), do: getLink(does),
-        until: getLink(until), following: getLink(following), next: getArray(next), };
+        follow: getLink(follow), before: getLink(before),  then: getArray(then) };
 }
 
 function getLink(object){

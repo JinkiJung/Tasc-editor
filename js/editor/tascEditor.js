@@ -60,9 +60,9 @@ function orderToContext(order){
     else if(order === '3')
         return 'do';
     else if(order === '4')
-        return 'until';
+        return 'follow';
     else if(order === '5')
-        return 'following';
+        return 'before';
 }
 
 function download(data, filename, type) {
@@ -263,8 +263,9 @@ function setFieldValue(item, objectWithValue, dataArrayIndex){
                 showText(item.parentNode.children[i], tascDatumID, fieldContext);
                 //item.parentNode.children[i].innerHTML = objectWithValue['name'];
             }
-            else if(item.parentNode.children[i].classList.contains('field-description') && item.parentNode.children[i].getAttributeNS(null, 'order') === order)
-                item.parentNode.children[i].innerHTML = "";
+            else if(item.parentNode.children[i].classList.contains('field-description') && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
+                //item.parentNode.children[i].innerHTML = ""; // continue to visualize it
+            }
         }
         else{ // additional field
             if(item.parentNode.children[i].classList.contains(objectType+'-field-additional') && item.parentNode.children[i].getAttributeNS(null, 'order') === order){
@@ -384,7 +385,7 @@ function showText(item, id, key){
 function setAsAdditionalField(item, value){
     if(value.includes('[')){
         var context = value.substring(value.indexOf('[')+1,value.indexOf(']'));
-        item.classList.add(context+"-field-additional");
+        item.classList.add(context.toLowerCase()+"-field-additional");
     }
 }
 
@@ -520,13 +521,13 @@ function removeRelationship(element, id_of_another){
 }
 
 function getTypeFromFieldContext(fieldContext){
-    if(fieldContext === 'when' || fieldContext === 'until')
+    if(fieldContext === 'when' || fieldContext === 'before')
         return 'condition';
     else if(fieldContext === 'do')
         return 'action';
     else if(fieldContext === 'who' || fieldContext === 'target')
         return 'terminus';
-    else if(fieldContext === 'following')
+    else if(fieldContext === 'follow')
         return 'instruction';
 }
 
