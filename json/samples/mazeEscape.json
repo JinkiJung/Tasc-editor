@@ -1,0 +1,86 @@
+{
+  "name": "Maze escape 3D",
+  "description": "A user is required to memorize a way to get the goal point.",
+  "terminuses": [
+    {
+      "id":"tasc:terminus:dmc:user001",
+      "name": "user001"
+    },
+    {
+      "name": "CrossroadPoint1",
+      "id":"tasc:terminus:dmc:cp1"
+    },
+    {
+      "name": "CrossroadPoint2",
+      "id":"tasc:terminus:dmc:cp2"
+    },
+    {
+      "name": "CrossroadPoint3",
+      "id":"tasc:terminus:dmc:cp3"
+    },
+    {
+      "name": "CrossroadPoint4",
+      "id":"tasc:terminus:dmc:cp4"
+    },
+    {
+      "name": "CrossroadPoint5",
+      "id":"tasc:terminus:dmc:cp5"
+    },
+    {
+      "name": "Goal",
+      "id":"tasc:terminus:dmc:goal"
+    }
+  ],
+  "actions": [
+    {
+      "name": "move"
+    },
+    {
+      "name": "explore"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "anytime"
+    },
+    {
+      "name": "approaching to [terminus]",
+      "state": {
+        "type": "DistanceState",
+        "one": {
+          "type": "MoveState",
+          "terminusID": "tasc:terminus:dmc:user001"
+        },
+        "another": {
+          "type": "MoveState",
+          "terminusID": "tasc:terminus:dmc:cp1"
+        },
+        "distance": 7.0
+      },
+      "relationalOperator": "smallerOrEqual"
+    },
+    {
+      "name": "press button C",
+      "state" : {
+        "type": "InputUpState",
+        "terminusID": "tasc:terminus:dmc:user001",
+        "paramValue": "(int)KeyCode.C"
+      },
+      "relationalOperator": "equal"
+    }
+  ],
+  "instructions": [
+    {
+      "name": "default",
+      "interface": ["basic_guidance"],
+      "information": [
+        {"Title":  ""},
+        {"Narration": ""},
+        {"Description":  ""}
+      ]
+    }
+  ],
+  "scenario": [
+
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "name": "Crane manipulation",
+  "description": "A user is required to memorize a series of equipment operations.",
+  "terminuses": [
+    {
+      "id":"tasc:terminus:dmc:user001",
+      "name": "user001"
+    },
+    {
+      "id":"tasc:terminus:dmc:crane:joystick",
+      "name": "Joystick"
+    },
+    {
+      "id":"tasc:terminus:dmc:crane:wheel",
+      "name": "Wheel"
+    },
+    {
+      "id":"tasc:terminus:dmc:crane:button1",
+      "name": "Button1"
+    },
+    {
+      "id":"tasc:terminus:dmc:crane:button2",
+      "name": "Button2"
+    },
+    {
+      "id":"tasc:terminus:dmc:crane:button3",
+      "name": "Button3"
+    },
+    {
+      "id":"tasc:terminus:dmc:crane:button4",
+      "name": "Button4"
+    },
+    {
+      "id":"tasc:terminus:dmc:crane:button5",
+      "name": "Button5"
+    },
+    {
+      "id":"tasc:terminus:dmc:crane:button6",
+      "name": "Button6"
+    },
+    {
+      "id":"tasc:terminus:dmc:crane:buttonGroup",
+      "name": "Buttons",
+      "items": [
+        "tasc:terminus:dmc:crane:button1",
+        "tasc:terminus:dmc:crane:button2",
+        "tasc:terminus:dmc:crane:button3",
+        "tasc:terminus:dmc:crane:button4",
+        "tasc:terminus:dmc:crane:button5",
+        "tasc:terminus:dmc:crane:button6"
+      ]
+    },
+    {
+      "id":"tasc:terminus:dmc:crane:lever",
+      "name": "Lever"
+    }
+  ],
+  "actions": [
+    {
+      "name": "control [terminus]"
+    },
+    {
+      "name": "explore"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "anytime"
+    },
+    {
+      "name": "set specific coordinate of joystick",
+      "state" : {
+        "type": "VariableDistanceState",
+        "variable": {
+          "type": "VectorVariableState",
+          "terminusID": "tasc:terminus:dmc:crane:joystick",
+          "paramName": "leverCoord",
+          "paramValue": "(43, -29, 0)"
+        },
+        "distance": "10.0"
+      },
+      "relationalOperator": "smallerOrEqual"
+    },
+    {
+      "name": "turn the wheel clockwise one turn",
+      "state" : {
+        "type": "BoolVariableState",
+        "terminusID": "tasc:terminus:dmc:crane:wheel",
+        "paramName": "didCW",
+        "paramValue": true
+      },
+      "relationalOperator": "equal"
+    },
+    {
+      "name": "turn the wheel counterclockwise one turn",
+      "state" : {
+        "type": "BoolVariableState",
+        "terminusID": "tasc:terminus:dmc:crane:wheel",
+        "paramName": "didCCW",
+        "paramValue": true
+      },
+      "relationalOperator": "equal"
+    },
+    {
+      "name": "set the gear to 1",
+      "state" : {
+        "type": "IntVariableState",
+        "terminusID": "tasc:terminus:dmc:crane:lever",
+        "paramName": "gearValue",
+        "paramValue": 1
+      },
+      "relationalOperator": "equal"
+    },
+    {
+      "name": "press button C",
+      "state" : {
+        "type": "InputUpState",
+        "terminusID": "tasc:terminus:dmc:user001",
+        "paramValue": "(int)KeyCode.C"
+      },
+      "relationalOperator": "equal"
+    },
+    {
+      "name": "for 5 secs",
+      "state": {
+        "type": "TimeState",
+        "paramValue": "5"
+      },
+      "relationalOperator": "largerOrEqual"
+    }
+  ],
+  "instructions": [
+    {
+      "name": "default",
+      "interface": ["basic_guidance"],
+      "content": [
+        {"Title":  ""},
+        {"Narration": ""},
+        {"Description":  ""}
+      ]
+    }
+  ],
+  "scenario": [
+
+  ]
+}

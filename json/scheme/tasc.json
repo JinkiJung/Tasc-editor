@@ -1,0 +1,411 @@
+{
+  "title": "Tasc scenario",
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "properties": {
+    "title": {
+      "title": "Title",
+      "type": "string",
+      "options": {
+        "inputAttributes": {
+          "placeholder": "Enter name"
+        }
+      }
+    },
+    "description": {
+      "title": "Description",
+      "type": "string",
+      "options": {
+        "inputAttributes": {
+          "placeholder": "Enter description"
+        }
+      }
+    },
+    "terminuses": {
+      "title": "Actors",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/terminus"
+      }
+    },
+    "actions": {
+      "title": "Actions",
+      "type": "array",
+      "items": {
+        "$ref" : "#/definitions/action"
+      }
+    },
+    "conditions": {
+      "title": "Conditions",
+      "type": "array",
+      "items": {
+        "$ref" : "#/definitions/condition"
+      }
+    },
+    "scenario": {
+      "title": "Scenario",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/tasc"
+      }
+    }
+  },
+  "definitions": {
+    "condition": {
+      "title": "Condition",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "state": {
+          "$ref": "#/definitions/state"
+        },
+        "timeState": {
+          "type": "string"
+        },
+        "isSatisfied": {
+          "type": "boolean"
+        },
+        "and": {
+          "type": "string"
+        },
+        "or": {
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/definitions/terminus"
+        }
+      }
+    },
+    "state": {
+      "title": "State",
+      "type": "object",
+      "properties": {
+        "type": {
+          "title": "State type",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter a state type"
+            }
+          }
+        }
+      }
+    },
+    "terminus":{
+      "title": "Terminus",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "string"
+        },
+        "name": {
+          "title": "name",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter name"
+            }
+          }
+        },
+        "location": {
+          "title": "location",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter location"
+            }
+          }
+        },
+        "role": {
+          "title": "as a",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter role"
+            }
+          }
+        }
+      }
+    },
+    "action":{
+      "title": "Action",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter an action ID"
+            }
+          }
+        },
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter name"
+            }
+          }
+        },
+        "target": {
+          "$ref": "#/definitions/terminus"
+        },
+        "measurements": {
+          "title": "Measurements",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/measurement"
+          }
+        }
+      }
+    },
+    "measurement": {
+      "title": "Measurement",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Identifier",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter identifier of measurement"
+            }
+          }
+        },
+        "state": {
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter State type"
+            }
+          }
+        }
+      }
+    },
+    "context": {
+      "title": "Context",
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Given..."
+            }
+          }
+        }
+      }
+    },
+    "information": {
+      "type" : "object",
+      "properties" : {
+        "context" : {
+          "type" : "string"
+        },
+        "content" : {
+          "type" : "string"
+        }
+      }
+    },
+    "interface": {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        }
+      }
+    },
+    "instruction": {
+      "title": "Instruction",
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter name"
+            }
+          }
+        },
+        "context": {
+          "title": "Context",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["none", "tutorial", "training","testing","assessment","simulation"]
+          }
+        },
+        "interface": {
+          "title": "Interface",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/interface"
+          }
+        },
+        "information": {
+          "title": "Information",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/information"
+          }
+        }
+      }
+    },
+    "flow": {
+      "title": "Flow",
+      "type": "object",
+      "properties": {
+        "equation": {
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter equation with measurement identifier"
+            }
+          }
+        },
+        "priority": {
+          "type": "integer"
+        },
+        "feedback": {
+          "$ref": "#/definitions/feedback"
+        },
+        "next": {
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter Tasc ID"
+            }
+          }
+        }
+      }
+    },
+    "feedback": {
+      "title": "Feedback",
+      "type": "object",
+      "properties": {
+        "interface": {
+          "type": "string"
+        },
+        "effect": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "interactive": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/flow"
+          }
+        }
+      }
+    },
+    "tasc": {
+      "title": "Tasc",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "ID",
+          "type": "string",
+          "propertyOrder": 1,
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter ID"
+            }
+          }
+        },
+        "name": {
+          "title": "Name",
+          "type": "string",
+          "propertyOrder": 2,
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter name"
+            }
+          }
+        },
+        "desc": {
+          "title": "Description",
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter description"
+            }
+          },
+          "propertyOrder": 3
+        },
+        "given": {
+          "title": "Given",
+          "$ref": "#/definitions/context",
+          "propertyOrder": 4
+        },
+        "when": {
+          "title": "When",
+          "$ref": "#/definitions/condition",
+          "propertyOrder": 5
+        },
+        "who": {
+          "title": "Who",
+          "$ref": "#/definitions/terminus",
+          "propertyOrder": 6
+        },
+        "do": {
+          "title": "Do",
+          "$ref": "#/definitions/action",
+          "propertyOrder": 7
+        },
+        "follow": {
+          "title": "Follow",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/instruction"
+          },
+          "propertyOrder": 8
+        },
+        "before": {
+          "title": "Before",
+          "$ref": "#/definitions/condition",
+          "propertyOrder": 9
+        },
+        "then": {
+          "title": "Then",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/flow"
+          },
+          "propertyOrder": 10
+        },
+        "priority": {
+          "title": "Priority",
+          "type": "object",
+          "format": "table",
+          "properties": {
+            "priority": {
+              "title": "Priority",
+              "type": "number"
+            },
+            "importance": {
+              "title": "Importance",
+              "type": "number"
+            },
+            "difficulty": {
+              "title": "Difficulty",
+              "type": "number"
+            },
+            "estimatedTime": {
+              "title": "Estimated Time (sec)",
+              "type": "number"
+            }
+          },
+          "propertyOrder": 12
+        }
+      }
+    }
+  }
+}

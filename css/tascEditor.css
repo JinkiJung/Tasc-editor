@@ -1,0 +1,250 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+svg {
+    width: 100%;
+    height: 90%;
+    margin: 0px;
+}
+
+/* Button used to open the contact form - fixed at the bottom of the page */
+.open-button {
+    background-color: #555;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    opacity: 0.8;
+    position: fixed;
+    bottom: 23px;
+    right: 28px;
+    width: 280px;
+}
+
+/* The popup form - hidden by default */
+.form-popup {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 15px;
+    border: 3px solid #f1f1f1;
+    z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+    max-width: 300px;
+    padding: 10px;
+    background-color: white;
+}
+
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=password] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+}
+
+/* Set a style for the submit/login button */
+.form-container .btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom:10px;
+    opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+    background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+    opacity: 1;
+}
+
+.tasc-editor-button{
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 12px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.handle {
+    fill: dodgerblue;
+}
+
+.path {
+    fill: transparent;
+    stroke: dimgray;
+    stroke-width: 2;
+}
+
+.path-head {
+    fill: dimgray;
+    stroke: dimgray;
+    stroke-width: 2;
+}
+
+.chosen-path-head {
+    fill: firebrick;
+    stroke: firebrick;
+    stroke-width: 3;
+}
+
+.chosen-path {
+    fill: transparent;
+    stroke: firebrick;
+    stroke-width: 3;
+}
+
+.chosen-item {
+    stroke: firebrick;
+    stroke-width: 3;
+}
+
+.tasc-editor {
+    fill: ghostwhite;
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+}
+
+.tasc-item{
+    fill: #ccc;
+    text-align: center;
+    border: dashed 4px transparent;
+    border-radius: 4px;
+    margin: 10px auto 30px;
+    padding: 0px;
+    width: 200px;
+    transition: background-color 0.3s;
+    touch-action: none;
+    render-order: 0;
+}
+
+.static {
+    cursor: not-allowed;
+}
+.draggable {
+    cursor: move;
+}
+.linkable {
+
+}
+
+.title-description{
+    font-family: Verdana;
+    font-size: medium;
+    fill: black;
+}
+
+.field-description{
+    font-family: Verdana;
+    font-size: x-small;
+    fill: gray;
+    dominant-baseline: left;
+    text-anchor: left;
+}
+
+.field{
+    fill: lightgray;
+    background-color: indianred;
+    border: dashed 4px transparent;
+    border-radius: 4px;
+    margin: 10px auto 30px;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.linkItem{
+    fill: lightcyan;
+    dominant-baseline: middle;
+}
+
+.linkedItem{
+    fill: dodgerblue;
+    dominant-baseline: middle;
+}
+
+.terminus-field{
+
+}
+
+.action-field{
+
+}
+
+.condition-field{
+
+}
+
+.field-item{
+
+}
+
+.field-value{
+    font-family: Verdana;
+    font-size: small;
+    fill: gray;
+    dominant-baseline: middle;
+    text-anchor: middle;
+    font-weight: normal;
+}
+
+.field-value-confirmed{
+    font-family: Verdana;
+    font-size: small;
+    fill: black;
+    dominant-baseline: middle;
+    text-anchor: middle;
+    font-weight: bold;
+}
+
+.terminus-item{
+    fill: mediumseagreen;
+}
+
+.action-item{
+    fill: forestgreen;
+}
+
+.condition-item{
+    fill: darkseagreen;
+}
+
+.instruction-item{
+    fill: lightpink;
+}
+
+.unselectable {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+.field-highlighted{
+    fill: palevioletred;
+}
+
+.field-focused{
+    fill: mediumvioletred;
+}

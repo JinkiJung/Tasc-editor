@@ -1,0 +1,65 @@
+{
+  "name": "Stretching exercise 3D",
+  "description": "A user is required to memorize five stretching poses in order.",
+  "terminuses": [
+    {
+      "id":"tasc:terminus:dmc:user001",
+      "name": "user001"
+    },
+    {
+      "id":"tasc:terminus:dmc:leftHandBall",
+      "name": "leftHandBall"
+    },
+    {
+      "id":"tasc:terminus:dmc:rightHandBall",
+      "name": "rightHandBall"
+    },
+    {
+      "id":"tasc:terminus:dmc:headBall",
+      "name": "headBall"
+    }
+  ],
+  "actions": [
+    {
+      "name": "take gesture"
+    },
+    {
+      "name": "take rest"
+    },
+    {
+      "name": "explore"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "anytime"
+    },
+    {
+      "name": "pressing button for 5 secs",
+
+    }
+  ],
+  "instructions": [
+    {
+      "name": "default",
+      "interface": ["basic_guidance"],
+      "information": [
+        {"Title":  ""},
+        {"Narration": ""},
+        {"Description":  ""}
+      ]
+    },
+    {
+      "name": "annotation",
+      "interface": ["leftHandBall", "rightHandBall", "headBall"],
+      "information": [
+        {"leftHandBall": ""},
+        {"rightHandBall": ""},
+        {"headBall": ""}
+      ]
+    }
+  ],
+  "scenario": [
+
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "name": "Maze escape 3D",
+  "description": "A user is required to memorize a way to get the goal point.",
+  "terminuses": [
+    {
+      "name": "user001"
+    },
+    {
+      "name": "MIR"
+    },
+    {
+      "name": "MSR"
+    },
+    {
+      "name": "cert of user001"
+    },
+    {
+      "name": "SP - routing"
+    },
+    {
+      "name": "vessel001"
+    },
+    {
+      "name": "device001"
+    },
+    {
+      "name": "dest port"
+    }
+  ],
+  "actions": [
+    {
+      "name": "request [terminus]"
+    },
+    {
+      "name": "navigate to [terminus]"
+    },
+    {
+      "name": "send [terminus]"
+    },
+    {
+      "name": "search service"
+    }
+  ],
+  "conditions": [
+    {
+      "name": "anytime"
+    },
+    {
+      "name": "get route"
+    },
+    {
+      "name": "find proper service"
+    },
+    {
+      "name": "approaching to [terminus]"
+    },
+    {
+      "name": "10 secs"
+    }
+  ],
+  "instructions": [
+    {
+      "name": "default",
+      "interface": ["annotation"],
+      "context": ["Title", "Narration", "Description"],
+      "content": [
+        {"Title":  "Tutorial"},
+        {"Narration": "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."},
+        {"Description":  "Hi. Maze escape training is just started. In this training you are asked to remember five choices of right direction at crossroads."}
+      ]
+    }
+  ],
+  "scenario": [
+
+  ]
+}
