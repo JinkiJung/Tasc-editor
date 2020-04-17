@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script type="text/javascript" src="../../js/validator/dataModelGenerator.js"></script>
+<script>
+    //usage:
+    readTextFile("../../json/schema/tasc.json", function(text){
+        var data = JSON.parse(text);
+        console.log(data);
+        generate('tasc', data);
+    });
+</script>
+</body>
+</html>

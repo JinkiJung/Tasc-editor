@@ -167,12 +167,12 @@
       "title": "Measurement",
       "type": "object",
       "properties": {
-        "id": {
-          "title": "Identifier",
+        "eqid": {
+          "title": "Equation identifier",
           "type": "string",
           "options": {
             "inputAttributes": {
-              "placeholder": "Enter identifier of measurement"
+              "placeholder": "Enter an equation identifier of measurement"
             }
           }
         },
@@ -265,7 +265,7 @@
           "type": "string",
           "options": {
             "inputAttributes": {
-              "placeholder": "Enter equation with measurement identifier"
+              "placeholder": "Enter TeX equation with measurement identifier"
             }
           }
         },
@@ -290,15 +290,31 @@
       "type": "object",
       "properties": {
         "interface": {
-          "type": "string"
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter type of Interface"
+            }
+          }
         },
         "effect": {
-          "type": "string"
+          "type": "string",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "Enter effect type"
+            }
+          }
         },
         "duration": {
-          "type": "number"
+          "type": "number",
+          "options": {
+            "inputAttributes": {
+              "placeholder": "How long the effect will stay? (in sec)"
+            }
+          }
         },
         "interactive": {
+          // option 형식
           "type": "array",
           "items": {
             "$ref": "#/definitions/flow"

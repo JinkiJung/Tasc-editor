@@ -1,0 +1,30 @@
+{
+  "name": "tasc-editor",
+  "version": "1.0.0",
+  "description": "web editor of Tasc",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JinkiJung/Tasc-editor.git"
+  },
+  "keywords": [
+    "tasc",
+    "editor"
+  ],
+  "author": "Jinki Jung",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JinkiJung/Tasc-editor/issues"
+  },
+  "homepage": "https://github.com/JinkiJung/Tasc-editor#readme"
+}
