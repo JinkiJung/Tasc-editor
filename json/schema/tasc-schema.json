@@ -1,7 +1,8 @@
 {
   "title": "Tasc scenario",
   "type": "object",
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft/2019-09/schema#",
+  "version": "0.2",
   "properties": {
     "title": {
       "title": "Title",
@@ -32,14 +33,14 @@
       "title": "Actions",
       "type": "array",
       "items": {
-        "$ref" : "#/definitions/action"
+        "$ref": "#/definitions/action"
       }
     },
     "conditions": {
       "title": "Conditions",
       "type": "array",
       "items": {
-        "$ref" : "#/definitions/condition"
+        "$ref": "#/definitions/condition"
       }
     },
     "interfaces": {
@@ -101,7 +102,7 @@
         }
       }
     },
-    "terminus":{
+    "terminus": {
       "title": "Terminus",
       "type": "object",
       "properties": {
@@ -138,7 +139,7 @@
         }
       }
     },
-    "action":{
+    "action": {
       "title": "Action",
       "type": "object",
       "properties": {
@@ -211,21 +212,21 @@
       }
     },
     "information": {
-      "type" : "object",
-      "properties" : {
-        "context" : {
-          "type" : "string"
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "string"
         },
-        "content" : {
-          "type" : "string"
+        "content": {
+          "type": "string"
         }
       }
     },
     "interface": {
-      "type" : "object",
-      "properties" : {
-        "name" : {
-          "type" : "string"
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
         }
       }
     },
@@ -247,7 +248,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["none", "tutorial", "training","testing","assessment","simulation"]
+            "enum": [ "none", "tutorial", "training", "testing", "assessment", "simulation" ]
           }
         },
         "informationContainer": {
