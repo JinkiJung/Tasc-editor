@@ -7,9 +7,11 @@ function hidePropertyForm() {
 }
 
 function showPropertyForm(item){
+    console.log(item);
     if(item.getAttribute('data-array-index')){
         removeForm();
         var div = document.getElementById("itemForm");
+        var objectType = item.getAttribute('data-object-type');
         var json = getTascObject(item);
         openedObject = json;
         createForm(div, json, true);
@@ -116,13 +118,13 @@ function getNestedFieldContext(parent, child){
         return child;
 }
 
-function createForm(htmlElement, json, addButtons, fieldContext){
+function createForm(parent, type, json, addButtons, fieldContext){
 
     if(json.name){
         var label = document.createElement("H3");
         label.setAttribute('for','name');
         label.innerHTML = json.name;
-        htmlElement.appendChild(label);
+        parent.appendChild(label);
     }
 
     for(var tagName in json){
@@ -132,9 +134,12 @@ function createForm(htmlElement, json, addButtons, fieldContext){
             var label = document.createElement("label");
             label.setAttribute('for','name');
             label.innerHTML = tagName + ": ";
-            htmlElement.appendChild(label);
+            parent.appendChild(label);
+            console.log(json[tagName]["tasc-editor-form"]);
+            console.log(json.name);
+            console.log(tascSchemaJson["definitions"][json.name]);
             if(json[tagName] && json[tagName] instanceof Object){
-                makeSectionOfObject(htmlElement, json[tagName], getNestedFieldContext(fieldContext, tagName));
+                makeSectionOfObject(parent, json[tagName], getNestedFieldContext(fieldContext, tagName));
             }
             else{
                 var input = document.createElement("input");
@@ -149,8 +154,8 @@ function createForm(htmlElement, json, addButtons, fieldContext){
                 input.setAttribute('for',getNestedFieldContext(fieldContext, tagName));
                 input.setAttribute('placeholder','Enter '+tagName);
                 input.value = json[tagName];
-                htmlElement.appendChild(input);
-                htmlElement.appendChild(document.createElement("br"));
+                parent.appendChild(input);
+                parent.appendChild(document.createElement("br"));
             }
         }
     }
@@ -160,13 +165,13 @@ function createForm(htmlElement, json, addButtons, fieldContext){
         submit.setAttribute('class', 'btn');
         submit.setAttribute('onclick', 'saveAndClose()');
         submit.innerHTML = "Save";
-        htmlElement.appendChild(submit);
+        parent.appendChild(submit);
 
         var cancel = document.createElement("button");
         cancel.setAttribute('onclick', 'hidePropertyForm()');
         cancel.setAttribute('class', 'btn cancel');
         cancel.innerHTML = "Close";
-        htmlElement.appendChild(cancel);
+        parent.appendChild(cancel);
     }
 }
 

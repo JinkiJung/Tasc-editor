@@ -42,6 +42,13 @@
         "$ref" : "#/definitions/condition"
       }
     },
+    "interfaces": {
+      "title": "Interfaces",
+      "type": "array",
+      "items": {
+        "$ref" : "#/definitions/interface"
+      }
+    },
     "scenario": {
       "title": "Scenario",
       "type": "array",
@@ -67,9 +74,11 @@
           "type": "boolean"
         },
         "and": {
+          "description": "other condition's ID",
           "type": "string"
         },
         "or": {
+          "description": "other condition's ID",
           "type": "string"
         },
         "target": {
@@ -241,18 +250,26 @@
             "enum": ["none", "tutorial", "training","testing","assessment","simulation"]
           }
         },
-        "interface": {
-          "title": "Interface",
+        "informationContainer": {
+          "title": "Interface and Information",
           "type": "array",
           "items": {
-            "$ref": "#/definitions/interface"
-          }
-        },
-        "information": {
-          "title": "Information",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/information"
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object",
+              "required" : [
+                "interfaceID",
+                "informationID"
+              ],
+              "properties" : {
+                "interfaceID" : {
+                  "type" : "string"
+                },
+                "informationID" : {
+                  "type" : "string"
+                }
+              }
+            }
           }
         }
       }
@@ -314,7 +331,6 @@
           }
         },
         "interactive": {
-          // option 형식
           "type": "array",
           "items": {
             "$ref": "#/definitions/flow"
@@ -330,51 +346,67 @@
           "title": "ID",
           "type": "string",
           "propertyOrder": 1,
-          "options": {
-            "inputAttributes": {
-              "placeholder": "Enter ID"
-            }
+          "tasc-editor-form": {
+            "type": "textarea",
+            "placeholder": "Enter ID"
           }
         },
         "name": {
           "title": "Name",
           "type": "string",
           "propertyOrder": 2,
-          "options": {
-            "inputAttributes": {
-              "placeholder": "Enter name"
-            }
+          "tasc-editor-form": {
+            "type": "textarea",
+            "placeholder": "Enter name"
           }
         },
         "desc": {
           "title": "Description",
           "type": "string",
-          "options": {
-            "inputAttributes": {
-              "placeholder": "Enter description"
-            }
-          },
-          "propertyOrder": 3
+          "propertyOrder": 3,
+          "tasc-editor-form": {
+            "type": "textarea",
+            "placeholder": "Enter description"
+          }
         },
         "given": {
           "title": "Given",
-          "$ref": "#/definitions/context",
-          "propertyOrder": 4
+          "type" : "array",
+          "propertyOrder": 4,
+          "items": {
+            "$ref": "#/definitions/context"
+          },
+          "tasc-editor-form": {
+            "type": "textarea",
+            "placeholder": "Enter contexts"
+          }
         },
         "when": {
           "title": "When",
           "$ref": "#/definitions/condition",
-          "propertyOrder": 5
+          "propertyOrder": 5,
+          "tasc-editor-form": {
+            "type": "textarea",
+            "placeholder": "Enter starting condition"
+          }
         },
         "who": {
           "title": "Who",
           "$ref": "#/definitions/terminus",
-          "propertyOrder": 6
+          "propertyOrder": 6,
+          "tasc-editor-form": {
+            "type": "textarea",
+            "placeholder": "Enter contexts"
+          }
         },
         "do": {
           "title": "Do",
           "$ref": "#/definitions/action",
-          "propertyOrder": 7
+          "propertyOrder": 7,
+          "tasc-editor-form": {
+            "type": "textarea",
+            "placeholder": "Enter action"
+          }
         },
         "follow": {
           "title": "Follow",
@@ -382,12 +414,20 @@
           "items": {
             "$ref": "#/definitions/instruction"
           },
-          "propertyOrder": 8
+          "propertyOrder": 8,
+          "tasc-editor-form": {
+            "type": "textarea",
+            "placeholder": "Enter instruction"
+          }
         },
         "before": {
           "title": "Before",
           "$ref": "#/definitions/condition",
-          "propertyOrder": 9
+          "propertyOrder": 9,
+          "tasc-editor-form": {
+            "type": "textarea",
+            "placeholder": "Enter termination condition"
+          }
         },
         "then": {
           "title": "Then",
@@ -395,7 +435,11 @@
           "items": {
             "$ref": "#/definitions/flow"
           },
-          "propertyOrder": 10
+          "propertyOrder": 10,
+          "tasc-editor-form": {
+            "type": "textarea",
+            "placeholder": "Enter flow"
+          }
         },
         "metadata": {
           "title": "Metadata",

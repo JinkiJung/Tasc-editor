@@ -6,6 +6,7 @@ function generate(objectName, schema){
     console.log(schema.definitions);
     Object.keys(schema.definitions).forEach(key => {
         if(key === objectName){
+
             console.log(schema.definitions[key].properties);
             jsonObject = {};
             Object.keys(schema.definitions[key].properties).forEach(subkey => {

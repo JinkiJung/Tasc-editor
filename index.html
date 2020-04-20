@@ -13,6 +13,8 @@
 
 </head>
 <body>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script type="text/javascript" src="js/editor/tascSchemaLoader.js"></script>
 <div id="top-bar">
 Tasc editor <button class="tasc-editor-button" onclick="">run</button>
 <button class="tasc-editor-button" onclick="saveScenario()">save scenario</button>
@@ -82,13 +84,6 @@ Tasc editor <button class="tasc-editor-button" onclick="">run</button>
                         parseFloat(selectedElement.getAttributeNS(null, "y")));
                 }
             }
-            /*
-            else if (evt.target.classList.contains('draggable')) {
-                selectedElement = evt.target;
-                offset = getMousePosition(evt);
-                offset.x -= parseFloat(selectedElement.getAttributeNS(null, "x"));
-                offset.y -= parseFloat(selectedElement.getAttributeNS(null, "y"));
-            }*/
 
             if(selectedElement && selectedElement.classList.contains('field-item') && !relatedFieldHighlighted){
                 //makeFieldItemUnselectable(selectedElement);
