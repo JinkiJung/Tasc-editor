@@ -7,11 +7,9 @@ function hidePropertyForm() {
 }
 
 function showPropertyForm(item){
-    console.log(item);
     if(item.getAttribute('data-array-index')){
         removeForm();
         var div = document.getElementById("itemForm");
-        var objectType = item.getAttribute('data-object-type');
         var json = getTascObject(item);
         openedObject = json;
         createForm(div, json, true);
@@ -103,6 +101,9 @@ function getTascObject(item){
         else if(getTypeFromID(item.id) === 'instruction')
             return instructionData[index];
     }
+    else{
+        return generate(getTypeFromID(item.id), tascSchemaJson["definitions"]);
+    }
 }
 
 function makeSectionOfObject(div, object, fieldContext){
@@ -118,28 +119,33 @@ function getNestedFieldContext(parent, child){
         return child;
 }
 
-function createForm(parent, type, json, addButtons, fieldContext){
-
-    if(json.name){
-        var label = document.createElement("H3");
+function createForm(parent, json, addButtons, fieldContext){
+    var tableElement = document.createElement("table");
+    if(json.name && json.name.length >0){
+        var tr = tableElement.appendChild(document.createElement('tr'));
+        var td = tr.appendChild(document.createElement('th'));
+        var label = document.createElement("p");
         label.setAttribute('for','name');
         label.innerHTML = json.name;
-        parent.appendChild(label);
+        td.appendChild(label);
     }
 
     for(var tagName in json){
         if(tagName === 'id')
             continue;
         {
+            var tr = tableElement.appendChild(document.createElement('tr'));
+            var td = tr.appendChild(document.createElement('td'));
+
             var label = document.createElement("label");
             label.setAttribute('for','name');
             label.innerHTML = tagName + ": ";
-            parent.appendChild(label);
-            console.log(json[tagName]["tasc-editor-form"]);
-            console.log(json.name);
-            console.log(tascSchemaJson["definitions"][json.name]);
+            td.appendChild(label);
+            //console.log(json[tagName]["tasc-editor-form"]);
+            //console.log(json.name);
+            //console.log(tascSchemaJson["definitions"][json.name]);
             if(json[tagName] && json[tagName] instanceof Object){
-                makeSectionOfObject(parent, json[tagName], getNestedFieldContext(fieldContext, tagName));
+                makeSectionOfObject(td, json[tagName], getNestedFieldContext(fieldContext, tagName));
             }
             else{
                 var input = document.createElement("input");
@@ -154,25 +160,28 @@ function createForm(parent, type, json, addButtons, fieldContext){
                 input.setAttribute('for',getNestedFieldContext(fieldContext, tagName));
                 input.setAttribute('placeholder','Enter '+tagName);
                 input.value = json[tagName];
-                parent.appendChild(input);
-                parent.appendChild(document.createElement("br"));
+                td.appendChild(input);
+                td.appendChild(document.createElement("br"));
             }
         }
     }
 
     if(addButtons){
+        var tr = tableElement.appendChild(document.createElement('tr'));
+        var td = tr.appendChild(document.createElement('td'));
         var submit = document.createElement("button");
         submit.setAttribute('class', 'btn');
         submit.setAttribute('onclick', 'saveAndClose()');
         submit.innerHTML = "Save";
-        parent.appendChild(submit);
+        td.appendChild(submit);
 
         var cancel = document.createElement("button");
         cancel.setAttribute('onclick', 'hidePropertyForm()');
         cancel.setAttribute('class', 'btn cancel');
         cancel.innerHTML = "Close";
-        parent.appendChild(cancel);
+        td.appendChild(cancel);
     }
+    parent.appendChild(tableElement);
 }
 
 function removeForm(){

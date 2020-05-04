@@ -50,15 +50,30 @@
         "$ref" : "#/definitions/interface"
       }
     },
-    "scenario": {
-      "title": "Scenario",
+    "scenarios": {
+      "title": "Scenarios",
       "type": "array",
       "items": {
-        "$ref": "#/definitions/tasc"
+        "$ref": "#/definitions/scenario"
       }
     }
   },
   "definitions": {
+    "scenario": {
+      "title": "Scenario",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "isMain": { "type": "boolean", "default": false },
+        "tascs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tasc"
+          }
+        }
+      }
+    },
     "condition": {
       "title": "Condition",
       "type": "object",
@@ -212,6 +227,7 @@
       }
     },
     "information": {
+      "title": "Information",
       "type": "object",
       "properties": {
         "context": {
@@ -223,6 +239,7 @@
       }
     },
     "interface": {
+      "title": "Interface",
       "type": "object",
       "properties": {
         "name": {
